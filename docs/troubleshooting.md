@@ -5,7 +5,8 @@
 App logout was observed to revoke the session copied into HA. Sign back into the
 app, capture its new session, and complete the integration's reauthentication
 flow. The lock identity, entity IDs, and dashboard configuration are retained.
-The current release does not automatically log in with your account password.
+Account login in version 0.2 renews sessions using a saved password digest. Use
+Reconfigure to switch an existing captured-session entry to account login.
 
 ## Invalid session
 
@@ -43,3 +44,17 @@ after commands. A sleeping/disconnected device may leave old cloud telemetry.
 Include model, app version, HA version, operation, and sanitized errors. Never
 attach raw captures, tokens, CA keys, account emails, serials, device IDs, Wi-Fi
 SSIDs, or full config-entry data.
+
+## Account login requests verification
+
+DESLOC checks new installations with an email code. Use the most recent code in
+the HA setup form. The installation ID is retained for subsequent logins.
+A changed password or a new security challenge can require reauthentication.
+If sending a code is rate-limited, wait before restarting setup.
+
+## Clock error or CAPTCHA
+
+Synchronize the HA host clock when DESLOC reports a time error. The login payload
+contains the current Unix time. For CAPTCHA, complete the challenge in the
+DESLOC app; the integration does not solve or bypass it. Captured-session setup
+remains available as an alternative.

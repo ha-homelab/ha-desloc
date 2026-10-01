@@ -61,7 +61,7 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
                     raise HomeAssistantError("DESLOC acknowledged the command but the new lock state is not confirmed")
             except DeslocAuthError:
                 self.entry.async_start_reauth(self.hass)
-                raise HomeAssistantError("DESLOC session expired; renew the session") from None
+                raise HomeAssistantError("DESLOC authentication requires attention; reauthenticate in Home Assistant") from None
             except DeslocError as err:
                 raise HomeAssistantError(str(err)) from None
             except TimeoutError:
@@ -74,7 +74,7 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
         try:
             devices = await self.client.async_devices()
         except DeslocAuthError:
-            raise ConfigEntryAuthFailed("DESLOC session expired; capture a new session") from None
+            raise ConfigEntryAuthFailed("DESLOC authentication requires attention; reauthenticate in Home Assistant") from None
         except DeslocError as err:
             raise UpdateFailed(str(err)) from None
         return next((device for device in devices if device.mac == self.mac), None)

@@ -46,7 +46,7 @@ async def test_config_flow_selects_actual_device(hass, row):
     with patch("custom_components.desloc.config_flow.async_get_clientsession"), patch(
         "custom_components.desloc.config_flow.DeslocClient.async_devices", return_value=[Device.from_json(row)]
     ):
-        result = await flow.async_step_user({"token": "test-secret", "app_device_id": "test-phone"})
+        result = await flow.async_step_session({"token": "test-secret", "app_device_id": "test-phone"})
     assert result["step_id"] == "device"
     result = await flow.async_step_device({"device_id": "123"})
     assert result["type"] == "create_entry"
@@ -58,12 +58,12 @@ async def test_config_flow_invalid_session(hass):
     flow = DeslocConfigFlow()
     flow.hass = hass
     flow.context = {"source": "user"}
-    result = await flow.async_step_user({"token": "", "app_device_id": "test-phone"})
+    result = await flow.async_step_session({"token": "", "app_device_id": "test-phone"})
     assert result["errors"] == {"base": "invalid_session"}
     with patch("custom_components.desloc.config_flow.async_get_clientsession"), patch(
         "custom_components.desloc.config_flow.DeslocClient.async_devices", side_effect=DeslocAuthError()
     ):
-        result = await flow.async_step_user({"token": "test-secret", "app_device_id": "test-phone"})
+        result = await flow.async_step_session({"token": "test-secret", "app_device_id": "test-phone"})
     assert result["errors"] == {"base": "invalid_auth"}
 
 
@@ -77,7 +77,7 @@ async def test_reauth_cannot_switch_lock(hass, entry, row):
         Device.from_json(dict(row, mac="AA:BB:CC:DD:EE:FF"))
     ]):
         result = await flow.async_step_reauth_confirm({"token": "new-secret", "app_device_id": "new-phone"})
-    assert result["errors"] == {"base": "device_mismatch"}
+    assert result["reason"] == "device_mismatch"
 
 
 async def test_reauth_updates_session_and_reloads(hass, entry, row):
@@ -112,7 +112,9 @@ async def test_full_setup_entities_and_unload(hass, row):
     ), patch("custom_components.desloc.async_get_clientsession", new=lambda hass: None), patch(
         "custom_components.desloc.api.DeslocClient.async_devices", new=devices
     ):
-        result = await hass.config_entries.flow.async_init("desloc", context={"source": "user"}, data={
+        result = await hass.config_entries.flow.async_init("desloc", context={"source": "user"})
+        result = await hass.config_entries.flow.async_configure(result["flow_id"], {"next_step_id": "session"})
+        result = await hass.config_entries.flow.async_configure(result["flow_id"], {
             "token": "test-secret", "app_device_id": "test-phone",
         })
         assert result["step_id"] == "device"
@@ -122,5 +124,29 @@ async def test_full_setup_entities_and_unload(hass, row):
         states = hass.states.async_all("sensor")
         assert sorted(state.state for state in states) == ["-41", "55"]
         assert [state.state for state in hass.states.async_all("lock")] == ["locked"]
-        assert await hass.config_entries.async_unload(result["result"].entry_id)
+        entry = result["result"]
+        original_entities = {state.entity_id for state in hass.states.async_all()
+                             if state.domain in ("sensor", "lock")}
+        # Exercise the real migration/reload path, including account dataclass
+        # reconstruction and entity registry identity preservation.
+        reconfigure = await hass.config_entries.flow.async_init("desloc", context={
+            "source": "reconfigure", "entry_id": entry.entry_id,
+        })
+        reconfigure = await hass.config_entries.flow.async_configure(
+            reconfigure["flow_id"], {"next_step_id": "account"})
+        reconfigure = await hass.config_entries.flow.async_configure(reconfigure["flow_id"], {
+            "username": "user@example.invalid", "password": "test-password",
+        })
+        assert reconfigure["reason"] == "reconfigure_successful"
+        await hass.async_block_till_done()
+        assert entry.data["auth_type"] == "account"
+        assert set(entry.data["credentials"]) == {
+            "username", "password_hash", "app_device_id", "app_version", "sys_type"}
+        installation = entry.data["credentials"]["app_device_id"]
+        assert installation != "test-phone"
+        assert entry.runtime_data.client._account.app_device_id == installation
+        assert {state.entity_id for state in hass.states.async_all()
+                if state.domain in ("sensor", "lock")} == original_entities
+        assert [state.state for state in hass.states.async_all("lock")] == ["locked"]
+        assert await hass.config_entries.async_unload(entry.entry_id)
         assert all(state.state == "unavailable" for state in hass.states.async_all("sensor"))

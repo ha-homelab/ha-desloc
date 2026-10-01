@@ -5,22 +5,20 @@ the lock; keep `.private/` local and out of public reports.
 
 ## What is verified
 
-The current integration uses an existing DESLOC app session, not an email/password
-login. The setup form validates that session by fetching the account's devices,
-then lets you select a C100 Plus. The selected Bluetooth MAC remains its stable
-identity; reauthentication cannot silently switch to another lock.
+Version 0.2 adds account login. Prefer **Sign in with email and password** in HA;
+this guide documents the optional captured-session fallback. No capture is
+required for the account flow.
 
-An app logout/login capture confirmed where the business access token comes
-from, but the app transforms the password before sending it. The transformation
-and independent login have not been reproduced. See the
-[authentication findings](protocol.md#authentication). Do not enter your account
-password into the token field.
+Both flows validate credentials by fetching the account's devices, then let you
+select a C100 Plus. The selected Bluetooth MAC remains its stable identity;
+reauthentication and reconfiguration cannot silently switch to another lock.
+See [authentication details](protocol.md#authentication) for the password
+transformation, email verification, and renewal behavior.
 
-Logging out of the app was observed to revoke the session also used by HA.
-Logging back in does not automatically update HA's saved credentials: capture the
-new session and complete **Settings → Devices & services → DESLOC → Reauthenticate**
-(or the corresponding Repairs prompt). You do not need to remove the integration,
-re-pair the lock, or recreate dashboard cards.
+For captured sessions, logging out of the app was observed to revoke the session
+also used by HA. Capture the new session and complete **Reauthenticate**, or use
+**Reconfigure** to switch to account login. Keep the integration and dashboard;
+removing or re-pairing the lock is unnecessary.
 
 ## Prepare the computer
 

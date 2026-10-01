@@ -32,7 +32,9 @@ Signing out or another login can revoke that token. Natural expiry is unmeasured
 Other limitations:
 
 - The observed device-list request covers up to 20 entries; pagination is untested.
-- No access-code management, activity history, jam detection, or door-open sensor.
+- The 0.3 beta adds creation of regular permanent PIN users. Live HA-form
+  validation is in progress; modification, deletion, and schedules are unsupported.
+- No activity history, jam detection, or door-open sensor.
 - Cloud telemetry can be cached. A cloud response does not prove the lock is
   currently reachable. The undocumented online-status enum is not interpreted.
 - Undocumented endpoints may change; other regions and models need verification.
@@ -118,10 +120,18 @@ Following an uncertain command, old telemetry is not treated as confirmation.
 Check the physical lock before deciding whether to issue another command.
 Loss of cloud access or removal of the device makes entities unavailable.
 
+## PIN users
+
+In the 0.3 beta, open the lock entry's **Configure** form to create a new regular
+user with a permanent PIN. Enter a unique name and a PIN of 6–8 digits. The
+integration waits for command completion and checks the installed PIN record;
+it does not save the PIN in HA. See [PIN setup and failure handling](docs/pin-users.md).
+
 ## Documentation and contributions
 
 - [Session capture and cleanup](docs/authentication.md)
 - [Protocol, command sequence, and state machine](docs/protocol.md)
+- [Create a permanent PIN user](docs/pin-users.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Development and tests](docs/development.md)
 - [HACS and Core publication](docs/publishing.md)

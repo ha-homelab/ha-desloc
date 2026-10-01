@@ -71,5 +71,28 @@
       "no_devices": "No C100 Plus was returned for this account.",
       "reauth_required": "Start the authentication flow again."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Add a permanent PIN user",
+        "description": "Create a new regular user on this lock and install a permanent PIN over Wi-Fi. Use a unique name and 6–8 digits. Submit creates access to the lock. The PIN is not saved in Home Assistant. If the result is uncertain, check DESLOC before trying again.",
+        "data": {
+          "name": "User name",
+          "pin": "New PIN",
+          "pin_confirm": "Repeat PIN"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "The PINs do not match.",
+      "invalid_pin_user": "Enter a name of 1–24 characters and a PIN of 6–8 digits."
+    },
+    "abort": {
+      "unavailable": "The lock integration is unavailable. Restore its connection first.",
+      "already_submitted": "This request was already submitted. Check DESLOC before starting another.",
+      "user_exists": "A user with this name already exists. No changes were made.",
+      "pin_creation_uncertain": "PIN creation was not confirmed. The user or PIN may already exist. Check the DESLOC app before trying again."
+    }
   }
 }

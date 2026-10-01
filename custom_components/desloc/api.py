@@ -58,6 +58,28 @@ class DeslocCommandTimeout(DeslocError):
     """The cloud no longer has a confirmed result for the command."""
 
 
+class DeslocUserExists(DeslocError):
+    """A user with that name already exists; no write was attempted."""
+
+
+def encrypt_vendor_text(value: str) -> str:
+    """Match the app's wire encryption inside TLS, not credential storage."""
+    padder = PKCS7(128).padder()
+    padded = padder.update(value.encode()) + padder.finalize()
+    encryptor = Cipher(algorithms.AES(b"2897ab5600b54465b5ea0a89d9a192c7"),
+                       modes.CBC(bytes(16))).encryptor()
+    return (encryptor.update(padded) + encryptor.finalize()).hex()
+
+
+def validate_pin_user(name: str, pin: str) -> None:
+    """Validate before any write; six to eight ASCII digits match the app UI."""
+    if (not isinstance(name, str) or not 1 <= len(name.strip()) <= 24
+            or any(ord(c) < 32 for c in name)):
+        raise ValueError("Use a user name of 1 to 24 characters")
+    if not isinstance(pin, str) or not re.fullmatch(r"[0-9]{6,8}", pin):
+        raise ValueError("Use a PIN of 6 to 8 digits")
+
+
 @dataclass(frozen=True)
 class Credentials:
     token: str = field(repr=False)
@@ -111,12 +133,7 @@ class AccountCredentials:
             password = self.password_hash
         else:
             # Wire compatibility with the app, inside TLS; this is not secret storage.
-            plaintext = (self.password_hash + str(time.time_ns() // 1_000_000)).encode()
-            padder = PKCS7(128).padder()
-            padded = padder.update(plaintext) + padder.finalize()
-            encryptor = Cipher(algorithms.AES(b"2897ab5600b54465b5ea0a89d9a192c7"),
-                               modes.CBC(bytes(16))).encryptor()
-            password = (encryptor.update(padded) + encryptor.finalize()).hex()
+            password = encrypt_vendor_text(self.password_hash + str(time.time_ns() // 1_000_000))
         body = {"userName": self.username, "password": password, "childAgreement": True}
         if code is not None:
             body["code"] = code.strip()
@@ -299,6 +316,48 @@ class DeslocClient:
         if not isinstance(data, list) or any(not isinstance(row, dict) for row in data):
             raise DeslocProtocolError("DESLOC device list is malformed")
         return [Device.from_json(row) for row in data]
+
+    async def async_access_users(self, device_id: int) -> list[dict[str, Any]]:
+        data = await self._post("/api/access/user/list", {"deviceId": str(device_id)})
+        if not isinstance(data, list) or any(
+            not isinstance(user, dict) or integer(user.get("id")) is None
+            or not isinstance(user.get("accessName"), str) for user in data
+        ):
+            raise DeslocProtocolError("DESLOC user list is malformed")
+        return data
+
+    async def async_create_access_user(self, device_id: int, name: str) -> int:
+        """Create only a regular permanent user; never modify an existing user."""
+        data = await self._post("/api/access/user/v1/add", {
+            "deviceId": str(device_id), "accessType": 1, "userName": name,
+        })
+        if (not isinstance(data, dict) or integer(data.get("id")) is None
+                or data["id"] <= 0 or integer(data.get("deviceId")) != device_id
+                or integer(data.get("accessType")) != 1 or data.get("accessName") != name):
+            raise DeslocProtocolError("User creation result is uncertain; check the DESLOC app")
+        return data["id"]
+
+    async def async_add_pin(self, access_id: int, name: str, pin: str) -> str:
+        validate_pin_user(name, pin)
+        data = await self._post("/api/access/key/remote/addPwd", {
+            "accessId": str(access_id), "keyName": name, "password": encrypt_vendor_text(pin),
+        })
+        command_id = data.get("commandId") if isinstance(data, dict) else None
+        if not isinstance(command_id, str) or not command_id or len(command_id) > 256:
+            raise DeslocProtocolError("PIN request has no usable result ID; check the DESLOC app")
+        return command_id
+
+    async def async_pin_present(self, access_id: int, device_id: int, name: str) -> bool:
+        data = await self._post("/api/access/user/detail", {"id": str(access_id)})
+        if (not isinstance(data, dict) or integer(data.get("id")) != access_id
+                or integer(data.get("deviceId")) != device_id
+                or not isinstance(data.get("keys"), list)):
+            raise DeslocProtocolError("DESLOC user details are malformed")
+        return (integer(data.get("status")) == 1 and integer(data.get("updateFlag")) == 0
+                and integer(data.get("accessType")) == 1 and any(
+                    isinstance(key, dict) and key.get("passwordName") == name
+                    and integer(key.get("keyType")) == 1 and integer(key.get("updateFlag")) == 0
+                    for key in data["keys"]))
 
     async def async_switch_lock(self, device_id: int, *, unlock: bool) -> str:
         """Send exactly once. A returned ID indicates acceptance, not bolt state."""

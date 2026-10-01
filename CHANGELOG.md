@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0b1 — 2026-10-01
+
+- Add an administrator settings form to create a regular permanent PIN user.
+- Validate name/PIN before writes, reject duplicate names, and never retain PINs
+  in configuration or entity state.
+- Create the user and encrypted PIN once, then wait for command completion and
+  verify the resulting user/PIN record. Report uncertain partial completion
+  without automatic retries or deletion.
+- Serialize access changes with lock/unlock commands for the same lock.
+
+Validation: the full exchange was captured during real app creation with
+Bluetooth disabled. Live HA-form and physical keypad validation are pending.
+
 ## 0.2.1 — 2026-10-01
 
 - Fix repeated mobile-app sign-outs caused by automatic HA re-login after 401.

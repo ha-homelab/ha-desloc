@@ -25,7 +25,9 @@ a stable installation ID. It renews rejected sessions automatically for reads;
 physical commands are never resubmitted automatically. Captured-session setup
 remains available, but those sessions require a new capture after revocation.
 
-Account authentication is undergoing end-to-end validation in the 0.2 beta.
+Email/password login, email-code verification, and a fresh login after an
+integration reload have been validated on a real account. Natural token expiry
+has not yet been observed; renewal after rejection is covered by synthetic tests.
 Other limitations:
 
 - The observed device-list request covers up to 20 entries; pagination is untested.

@@ -124,5 +124,29 @@ async def test_full_setup_entities_and_unload(hass, row):
         states = hass.states.async_all("sensor")
         assert sorted(state.state for state in states) == ["-41", "55"]
         assert [state.state for state in hass.states.async_all("lock")] == ["locked"]
-        assert await hass.config_entries.async_unload(result["result"].entry_id)
+        entry = result["result"]
+        original_entities = {state.entity_id for state in hass.states.async_all()
+                             if state.domain in ("sensor", "lock")}
+        # Exercise the real migration/reload path, including account dataclass
+        # reconstruction and entity registry identity preservation.
+        reconfigure = await hass.config_entries.flow.async_init("desloc", context={
+            "source": "reconfigure", "entry_id": entry.entry_id,
+        })
+        reconfigure = await hass.config_entries.flow.async_configure(
+            reconfigure["flow_id"], {"next_step_id": "account"})
+        reconfigure = await hass.config_entries.flow.async_configure(reconfigure["flow_id"], {
+            "username": "user@example.invalid", "password": "test-password",
+        })
+        assert reconfigure["reason"] == "reconfigure_successful"
+        await hass.async_block_till_done()
+        assert entry.data["auth_type"] == "account"
+        assert set(entry.data["credentials"]) == {
+            "username", "password_hash", "app_device_id", "app_version", "sys_type"}
+        installation = entry.data["credentials"]["app_device_id"]
+        assert installation != "test-phone"
+        assert entry.runtime_data.client._account.app_device_id == installation
+        assert {state.entity_id for state in hass.states.async_all()
+                if state.domain in ("sensor", "lock")} == original_entities
+        assert [state.state for state in hass.states.async_all("lock")] == ["locked"]
+        assert await hass.config_entries.async_unload(entry.entry_id)
         assert all(state.state == "unavailable" for state in hass.states.async_all("sensor"))

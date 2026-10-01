@@ -70,9 +70,12 @@ sequenceDiagram
     Note over HA,Cloud: Later, a rejected read session triggers one login and one read retry
 ```
 
-The 0.2 beta's email-code completion and independent-installation renewal still
-require end-to-end validation. Synthetic tests cover the implementation but do
-not substitute for that check.
+Version 0.2 was validated with a real account: the user entered their password
+and email code in HA, then a reload logged in again using the saved digest and
+the same independent installation ID without another code. The existing lock
+and sensor entities remained available. Natural token expiry has not yet been
+observed; renewal after rejection and concurrent login behavior are covered by
+synthetic tests.
 
 The app separately posts to `https://iot.desloc.com/oauth/token` with a URL-encoded
 form containing `appId` and `biz_token`. That returns an access token, refresh

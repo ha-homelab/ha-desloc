@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0b1 — 2026-10-01
+## 0.2.0 — 2026-10-01
 
 - Add email/password setup and email verification for a new HA installation.
 - Store a password-equivalent digest and stable installation ID; never retain
@@ -11,10 +11,13 @@
   lock and entity IDs; keep captured-session setup as a fallback.
 - Report CAPTCHA, account, verification, and clock errors without server bodies.
 
-Validation: 66 synthetic tests pass on Linux/Home Assistant 2026.9.1. The password
-transformation matches an observed iOS login. The beta is installed in HA;
-end-to-end email verification and login after reload remain under validation.
-The physical HA-cycle confirmation described below is still pending.
+Validation: 66 synthetic tests pass on Linux/Home Assistant 2026.9.1, including
+the real HA migration/reload path and preservation of entity IDs. The password
+transformation matches an observed iOS login. A real account completed password
+and email-code setup in HA; reloading the integration logged in again without
+another code. Natural token expiry remains unobserved.
+A second HA service cycle using account authentication received fresh `unlocked`
+and then `locked` reports. Human confirmation of that cycle is pending.
 
 ## 0.1.0 — 2026-10-01
 

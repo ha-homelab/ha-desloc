@@ -1,14 +1,14 @@
 {
+  "domain": "desloc",
+  "name": "DESLOC (experimental)",
   "codeowners": [
     "@4alvit"
   ],
   "config_flow": true,
   "documentation": "https://github.com/ha-homelab/ha-desloc",
-  "domain": "desloc",
   "integration_type": "device",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/ha-homelab/ha-desloc/issues",
-  "name": "DESLOC (experimental)",
   "requirements": [],
   "version": "0.1.0"
 }

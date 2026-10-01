@@ -14,9 +14,10 @@ D110 Plus, are admitted for community testing and marked **experimental**.
 Discovery is not a claim that their state reporting, commands, or PIN workflow
 are compatible. TTLock/Tuya accounts are not supported by this integration.
 
-![DESLOC C100 Plus dashboard card showing a reported locked state, battery, Wi-Fi signal, and controls](docs/images/lock-card-locked.jpg)
+![Animated DESLOC walkthrough: authentication, discovered locks, dashboard card, visual editor, and empty PIN form](docs/media/desloc-overview.gif)
 
-Shown with the optional [DESLOC Lock Card](https://github.com/ha-homelab/ha-desloc-card).
+The silent 30-second animation loops through real Home Assistant screenshots,
+including the optional [DESLOC Lock Card](https://github.com/ha-homelab/ha-desloc-card).
 See the [screenshot walkthrough](docs/screenshots.md) for authentication,
 discovered devices, and the PIN user form.
 

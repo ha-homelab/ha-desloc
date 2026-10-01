@@ -22,7 +22,8 @@ limits must remain prominent.
 Independent concurrent authentication and broader testing would improve
 readiness for general users. The observed session-conflict limitation and
 interactive reauthentication requirement must be disclosed.
-No default-catalog acceptance is claimed.
+The [integration submission](https://github.com/hacs/default/pull/11471) is
+awaiting review. No default-catalog acceptance is claimed.
 
 ## Home Assistant Core
 

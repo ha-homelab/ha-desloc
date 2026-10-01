@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0b1 — 2026-10-01
+## 0.3.0 — 2026-10-01
 
 - Add an administrator settings form to create a regular permanent PIN user.
 - Validate name/PIN before writes, reject duplicate names, and never retain PINs
@@ -10,8 +10,11 @@
   without automatic retries or deletion.
 - Serialize access changes with lock/unlock commands for the same lock.
 
-Validation: the full exchange was captured during real app creation with
-Bluetooth disabled. Live HA-form and physical keypad validation are pending.
+Validation: 92 tests pass on Linux/Home Assistant 2026.9.1, with HACS and
+Hassfest validation passing. The full exchange was captured during real app
+creation with Bluetooth disabled. The user then created a new user through the
+HA Configure form and confirmed that its PIN works at the physical keypad.
+This validates the C100 Plus path; other models and regions remain unverified.
 
 ## 0.2.1 — 2026-10-01
 

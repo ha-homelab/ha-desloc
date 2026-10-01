@@ -1,17 +1,21 @@
 # Create a permanent PIN user
 
-Available in the 0.3 beta for C100 Plus. The protocol was captured from a real
-Wi-Fi operation in the DESLOC iOS app, with Bluetooth disabled. End-to-end
-creation from the HA form still needs live validation.
+Available in stable version 0.3.0 or newer for C100 Plus. The protocol was
+captured from a real Wi-Fi operation in the DESLOC iOS app with Bluetooth
+disabled. Creation through the HA form and the resulting PIN at the physical
+keypad were confirmed by the lock owner on Home Assistant 2026.9.1.
 
 ## Home Assistant form
 
 1. Open **Settings → Devices & services → DESLOC**.
-2. Choose **Configure** for the lock entry.
-3. Enter a unique user name of 1–24 characters, a PIN of 6–8 digits, and repeat
-   the PIN. Submitting the form creates access to the lock.
+2. Click **Configure** (the gear icon beside the C100 Plus entry). This opens
+   **Add a permanent PIN user**.
+3. Fill in **User name** (a new name of 1–24 characters), **New PIN** (6–8 digits),
+   and **Repeat PIN**, then choose **Submit**. Use your own PIN and do not post it
+   in an issue or chat. Submitting the form creates access to the lock.
 4. Wait for completion. The integration checks the command result and the
-   resulting user/PIN record. Test the PIN at the physical keypad.
+   resulting user/PIN record. Test the PIN at the physical keypad and relock
+   the door after testing. You can also check the new user in the DESLOC app.
 
 The form creates a new regular, permanent user. It does not grant app-account
 access or owner privileges. The same name is used for the user and PIN label.

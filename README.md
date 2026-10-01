@@ -32,8 +32,9 @@ Signing out or another login can revoke that token. Natural expiry is unmeasured
 Other limitations:
 
 - The observed device-list request covers up to 20 entries; pagination is untested.
-- The 0.3 beta adds creation of regular permanent PIN users. Live HA-form
-  validation is in progress; modification, deletion, and schedules are unsupported.
+- Version 0.3.0 adds regular permanent PIN users. Creation through the HA form
+  and use at the physical keypad were confirmed on C100 Plus; modification,
+  deletion, and schedules are unsupported.
 - No activity history, jam detection, or door-open sensor.
 - Cloud telemetry can be cached. A cloud response does not prove the lock is
   currently reachable. The undocumented online-status enum is not interpreted.
@@ -149,7 +150,7 @@ Loss of cloud access or removal of the device makes entities unavailable.
 
 ## PIN users
 
-In the 0.3 beta, open **Settings → Devices & services → DESLOC** and click
+In version 0.3.0 or newer, open **Settings → Devices & services → DESLOC** and click
 **Configure** (the gear icon beside the C100 Plus entry). The form is titled
 **Add a permanent PIN user**. Enter a new, unique **User name**, a **New PIN** of
 6–8 digits, and **Repeat PIN**, then choose **Submit**. This creates a regular

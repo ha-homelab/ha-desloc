@@ -19,9 +19,11 @@ using the iOS app with Bluetooth disabled. Device reads were reproduced with
 See [CHANGELOG.md](CHANGELOG.md) for physical validation from Home Assistant.
 Synthetic tests do not establish physical operation.
 
-**Authentication requires an app-session capture.** Main-session lifetime and
-automatic renewal are unknown. After expiry, Home Assistant requests a new
-session from a fresh capture. Other limitations:
+**Authentication requires an app-session capture; email/password setup is not
+implemented.** Independent login, actual session lifetime, and automatic renewal
+remain unverified. Logging out of the app was observed to revoke the shared
+session. After expiry or revocation, Home Assistant requests a new session from
+a fresh capture. Other limitations:
 
 - The observed device-list request covers up to 20 entries; pagination is untested.
 - No access-code management, activity history, jam detection, or door-open sensor.

@@ -7,8 +7,46 @@ not an official API specification.
 
 The business API `https://appadmin.desloc.com` requires `authorization`,
 `deviceid`, `appversion`, and `systype` headers. Removing any one caused rejection.
-The opaque authorization token is sent verbatim. Its lifetime and renewal
-mechanism remain unknown.
+The opaque authorization token is sent verbatim.
+
+A logout/login capture from iOS 1.2.1 established the following sequence:
+
+1. `POST /api/user/login/isNeedCaptcha` with `userName` checks whether CAPTCHA is
+   required. The observed successful response had `data.isNeedCaptcha: false`.
+2. `POST /api/user/login` sends `userName`, `password`, and `childAgreement: true`.
+   In this capture, `password` was a 160-character hexadecimal value, not the
+   password as typed. Its transformation has not been established.
+3. Successful login returns `data.accessToken`, `data.expireIn`, and `data.userId`.
+   That access token exactly matched the subsequent business API authorization.
+   The reported `expireIn` was `5184000`; units and actual expiry behavior have
+   not been independently verified.
+4. `POST /api/user/logout` revoked the session previously used by Home Assistant.
+   Supplying the newly captured session through HA reauthentication restored
+   device reads without changing the selected lock or sending a lock command.
+
+A single replay of the captured login body with a newly generated app device ID
+and the four minimal headers was rejected with business status `1103`. This does
+not establish whether the cause was the device ID, omitted headers, freshness,
+or another requirement. Replaying a saved login body is not a verified login or
+renewal mechanism. The integration still supports captured sessions only.
+
+```mermaid
+sequenceDiagram
+    participant App as DESLOC app
+    participant Cloud as Business API
+    participant HA as Home Assistant
+    App->>Cloud: Check CAPTCHA requirement
+    Cloud-->>App: CAPTCHA not required in observed login
+    App->>Cloud: Login with transformed password
+    Cloud-->>App: accessToken and expireIn
+    App->>Cloud: Device list with accessToken
+    Note over App,HA: Capture transfers the session to HA once
+    HA->>Cloud: Device list with captured session
+    App->>Cloud: Logout
+    HA->>Cloud: Device list with previous session
+    Cloud-->>HA: Authentication rejected
+    HA-->>HA: Request reauthentication
+```
 
 The app separately posts to `https://iot.desloc.com/oauth/token` with a URL-encoded
 form containing `appId` and `biz_token`. That returns an access token, refresh

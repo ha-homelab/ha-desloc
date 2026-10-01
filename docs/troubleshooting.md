@@ -1,5 +1,12 @@
 # Troubleshooting
 
+## Devices became unavailable after signing out of DESLOC
+
+App logout was observed to revoke the session copied into HA. Sign back into the
+app, capture its new session, and complete the integration's reauthentication
+flow. The lock identity, entity IDs, and dashboard configuration are retained.
+The current release does not automatically log in with your account password.
+
 ## Invalid session
 
 Use the business API `authorization` value unchanged and its `deviceid` header.

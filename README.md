@@ -70,6 +70,12 @@ repository. Copy only `custom_components/desloc/` into your Home Assistant
 configuration's `custom_components/` directory. Restart and add the integration.
 Capture files, certificates, and development tools are not runtime dependencies.
 
+## Dashboard card
+
+The optional [DESLOC Lock Card](https://github.com/ha-homelab/ha-desloc-card) is
+distributed separately as a HACS **Dashboard** repository. It provides state,
+battery/RSSI, and lock controls with mandatory unlock confirmation.
+
 ## Configuration
 
 Use [the capture guide](docs/authentication.md) to create the private

@@ -13,6 +13,7 @@ live feed or proof that a door is closed.
 [Watch the 30-second overview](media/desloc-overview.mp4), or read its
 [accessible transcript](video.md). It presents these screenshots and the card's
 visual editor with English captions; it is not a continuous screen recording.
+The [README](../README.md) embeds the same walkthrough as an animated GIF.
 
 ## 1. Choose how to authenticate
 

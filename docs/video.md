@@ -2,6 +2,11 @@
 
 [Watch or download the 30-second MP4](media/desloc-overview.mp4).
 
+The README embeds the [looping GIF version](media/desloc-overview.gif) directly.
+It preserves all six scenes and their five-second reading time, with no audio.
+For a non-animated reference, use the [screenshot walkthrough](screenshots.md)
+or the transcript below.
+
 The silent video presents real, cropped Home Assistant screenshots with English
 captions. It is an edited screenshot walkthrough, not a continuous recording or
 a demonstration of physical lock movement. The empty PIN form is not submitted.
@@ -38,6 +43,8 @@ The closing scene links to the
 ## Media details
 
 - H.264 MP4, 1280 × 720, 30 frames per second, exactly 30 seconds, no audio track.
+- GIF preview: 1280 × 720, six frames held for five seconds each, a 30-second
+  infinite loop, approximately 566 KiB. It uses an optimized 256-color palette.
 - Original UI crops retain their contents; titles and captions sit outside them.
 - Composed locally with FFmpeg and the
   [video-use](https://github.com/browser-use/video-use/tree/9575612f066aa517354790a645fd90f9f95a743b)

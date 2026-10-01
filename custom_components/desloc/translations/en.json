@@ -1,0 +1,44 @@
+{
+  "title": "DESLOC (experimental)",
+  "config": {
+    "step": {
+      "user": {
+        "title": "DESLOC app session",
+        "description": "Enter the session from the local capture to control C100 Plus and read battery and Wi-Fi signal. A new capture is required if this session expires.",
+        "data": {
+          "token": "App authorization token",
+          "app_device_id": "App device ID",
+          "app_version": "App version",
+          "sys_type": "System type"
+        }
+      },
+      "device": {
+        "title": "Choose the lock",
+        "data": {
+          "device_id": "Lock"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Renew DESLOC session",
+        "description": "Capture a new session for the same lock and enter it below.",
+        "data": {
+          "token": "App authorization token",
+          "app_device_id": "App device ID",
+          "app_version": "App version",
+          "sys_type": "System type"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Check the session fields.",
+      "invalid_auth": "DESLOC rejected the session. Capture a new session.",
+      "cannot_connect": "Could not read the DESLOC device list.",
+      "no_devices": "No C100 Plus was found in the returned device list.",
+      "device_mismatch": "This session does not contain the configured lock."
+    },
+    "abort": {
+      "already_configured": "This lock is already configured.",
+      "reauth_successful": "Session renewed."
+    }
+  }
+}

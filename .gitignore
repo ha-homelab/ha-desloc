@@ -1,0 +1,12 @@
+.private/
+.venv/
+.venv-ha/
+tools/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.har
+*.mitm
+dist/
+*.log
+.DS_Store

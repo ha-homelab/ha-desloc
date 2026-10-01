@@ -30,7 +30,7 @@ awaiting review. No default-catalog acceptance is claimed.
 Core inclusion is a separate contribution process. This experimental project is
 not ready for submission. First establish maintainable authentication/renewal,
 extract the protocol client into a separately maintained Python library, expand
-tests and diagnostics, verify model/region scope, and meet current integration
+tests and diagnostics, verify additional model/region compatibility, and meet current integration
 quality and documentation requirements.
 
 Consult the official [contribution documentation](https://developers.home-assistant.io/docs/creating_integration_file_structure/)

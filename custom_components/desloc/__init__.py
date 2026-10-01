@@ -1,4 +1,4 @@
-"""DESLOC C100 Plus cloud integration, derived from a real app capture."""
+"""DESLOC cloud integration, with the C100 Plus protocol physically tested."""
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant

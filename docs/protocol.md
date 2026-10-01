@@ -69,7 +69,7 @@ sequenceDiagram
     Cloud-->>HA: Access token
     HA->>HA: Save token and installation ID, discard digest
     HA->>Cloud: Fetch devices
-    User->>HA: Select C100 Plus
+    HA->>HA: Add all returned locks by stable MAC identity
     Note over HA,Cloud: Reuse token after restart; stop on rejection, without background login
 ```
 
@@ -108,6 +108,27 @@ does not require that interface or reproduce its signatures.
 - `batteryValue`: percentage, accepted only within 0–100.
 - `networkSignal`: RSSI in dBm.
 - `onlineStatus`: unverified enum, exposed only as a raw diagnostic.
+- `sortFlag`: nullable integer cursor used by the vendor's device-list request.
+
+The Android request model has `groupId`, `size`, and `sortFlag`; its device
+manager replaces the cached list for a null cursor and appends for a non-null
+cursor. A read-only probe on the current account fetched one row with `size: 1`
+and then an empty page using that row's `sortFlag`. This establishes cursor
+acceptance/exclusion at the observed boundary; multiple populated pages remain
+covered by synthetic tests rather than a large real account.
+
+The client requests the next page when a page is full, using its final row's
+integer `sortFlag`, and stops on a short/empty page. It deduplicates MACs and
+rejects missing/repeated cursors or more than 100 full pages instead of silently
+returning a partial result. Group `0` is the app's default; enumeration across
+separate groups/homes remains unverified.
+
+Setup creates a separate HA entry for every returned lock, regardless of model
+name. Interactive reconfiguration refreshes matching sessions and adds new
+locks without changing existing entity IDs or enabling disabled entries. Normal
+polling only updates already configured locks. Account discovery never sends a
+lock or PIN command. Other models reuse the C100 Plus protocol experimentally;
+the `model_validation` attribute and diagnostics make that scope visible.
 
 Authentication failure can arrive as HTTP 200 with business `status: 401` and
 `success: false`. HTTP success alone is insufficient.

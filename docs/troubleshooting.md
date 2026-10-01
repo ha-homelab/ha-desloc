@@ -25,11 +25,25 @@ Use the business API `authorization` value unchanged and its `deviceid` header.
 The lock ID, Bluetooth MAC, and IoT token are different values. Do not prepend
 `Bearer`. Match the app version/system type. Capture again after expiry or revocation.
 
-## No devices offered
+## A lock is missing
 
-Only the reported model `C100 Plus` is accepted. Check the account's device list
-in DESLOC. Other models and device lists beyond the observed 20-entry request
-need further verification.
+Version 0.3.0 adds every lock returned by the authenticated DESLOC account;
+there is no C100 Plus model filter. Check the account's list in the DESLOC app.
+For a lock paired after setup, use **Reconfigure** on an existing DESLOC entry.
+Reconfiguration adds missing entries and updates the shared session for returned
+locks; it preserves entity IDs and disabled entries. Normal state polling does
+not add entries automatically. The device-list response must contain a valid
+numeric device ID and MAC; an unfamiliar or malformed response is reported as a
+protocol error rather than inventing an identity.
+
+## An experimental model does not work
+
+C100 Plus is physically tested. Other model names are admitted for testing and
+have `model_validation: experimental` on their entities. State codes, remote
+control, and PIN support may differ. Download diagnostics from the entry menu and
+report the model/firmware, HA/app versions, affected feature, and sanitized error.
+Do not repeatedly send a command after an uncertain result. Compatibility fixes
+or explicit model exclusions will follow evidence from community reports.
 
 ## App device list disappears during capture
 

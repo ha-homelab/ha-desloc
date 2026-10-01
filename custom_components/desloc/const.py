@@ -4,3 +4,4 @@ CONF_CREDENTIALS = "credentials"
 CONF_DEVICE_ID = "device_id"
 CONF_MAC = "mac"
 POLL_SECONDS = 60
+TESTED_MODELS = frozenset({"C100 Plus"})

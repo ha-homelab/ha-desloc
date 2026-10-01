@@ -168,7 +168,7 @@ async def test_login_requires_a_valid_token(payload):
         await api.async_devices()
 
 
-async def test_account_config_flow_verifies_then_selects_lock(hass, row):
+async def test_account_config_flow_verifies_then_adds_all_locks(hass, row):
     flow = DeslocConfigFlow()
     flow.hass = hass
     flow.context = {"source": "user"}
@@ -178,18 +178,20 @@ async def test_account_config_flow_verifies_then_selects_lock(hass, row):
     ), patch("custom_components.desloc.config_flow.DeslocClient.async_send_verification_code") as send, patch(
         "custom_components.desloc.config_flow.DeslocClient.async_login"
     ) as login, patch("custom_components.desloc.config_flow.DeslocClient.session_credentials",
-                      new_callable=PropertyMock, return_value=Credentials("test-session", "test-installation")):
+                      new_callable=PropertyMock, return_value=Credentials("test-session", "test-installation")), patch(
+        "custom_components.desloc.config_flow.async_reconcile_devices", return_value=1,
+    ) as reconcile:
         result = await flow.async_step_account({"username": "user@example.invalid", "password": "test-password"})
         assert result["step_id"] == "verification"
         send.assert_awaited_once()
         result = await flow.async_step_verification({"code": "123456"})
         login.assert_awaited_once_with("123456")
-        assert result["step_id"] == "device"
-        result = await flow.async_step_device({"device_id": "123"})
-    assert result["data"]["auth_type"] == "account"
-    assert "password" not in result["data"]["credentials"]
-    assert "password_hash" not in result["data"]["credentials"]
-    assert "123456" not in str(result["data"])
+        assert result["reason"] == "devices_added"
+    assert reconcile.call_args.args[3] == "account"
+    saved = asdict(reconcile.call_args.args[2])
+    assert "password" not in saved
+    assert "password_hash" not in saved
+    assert "123456" not in str(saved)
 
 
 async def test_reconfigure_rejects_another_lock(hass, entry, row):

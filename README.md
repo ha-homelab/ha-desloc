@@ -3,13 +3,16 @@
 [![Tests](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml/badge.svg)](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-An **unofficial, experimental cloud integration** for the **DESLOC C100 Plus**
-using the DESLOC mobile app. It provides lock/unlock controls, reported bolt
+An **unofficial, experimental cloud integration** for locks linked to the
+**DESLOC mobile app**. It automatically adds every lock returned by the account
+during setup; **C100 Plus is the physically tested model**. It provides lock/unlock controls, reported bolt
 state, battery percentage, and Wi-Fi signal in Home Assistant.
 
 This project is independent of DESLOC, Home Assistant, and HACS. It does not
-provide local/offline or Bluetooth control. D110 Plus, B200, TTLock, and other
-models have **not** been verified; device selection currently accepts C100 Plus.
+provide local/offline or Bluetooth control. Other DESLOC models, including
+D110 Plus, are admitted for community testing and marked **experimental**.
+Discovery is not a claim that their state reporting, commands, or PIN workflow
+are compatible. TTLock/Tuya accounts are not supported by this integration.
 
 ## Status and limitations
 
@@ -31,7 +34,11 @@ import the current app session with the [capture guide](docs/authentication.md).
 Signing out or another login can revoke that token. Natural expiry is unmeasured.
 Other limitations:
 
-- The observed device-list request covers up to 20 entries; pagination is untested.
+- Device discovery reads 20-entry cursor pages from the app's default group
+  (`groupId: 0`). The cursor boundary was checked on a real one-lock account;
+  multiple populated pages and accounts spanning multiple groups/homes still
+  need community verification. A repeated cursor or 100-page limit is reported
+  as an error rather than silently accepting a truncated list.
 - Version 0.3.0 adds regular permanent PIN users. Creation through the HA form
   and use at the physical keypad were confirmed on C100 Plus; modification,
   deletion, and schedules are unsupported.
@@ -45,23 +52,24 @@ Other limitations:
 ```mermaid
 flowchart LR
     User[Home Assistant user] --> Entities[Lock and sensor entities]
-    Entities --> Coordinator[Shared coordinator]
+    Entities --> Coordinator[Coordinator for each lock]
     Coordinator -->|HTTPS status and commands| Cloud[DESLOC cloud]
-    Cloud <-->|Vendor device connection| Lock[C100 Plus]
+    Cloud <-->|Vendor device connection| Lock[DESLOC locks]
     User -->|Email, password, optional email code| Setup[Configuration flow]
     App[DESLOC mobile app] -.->|Optional session capture| Setup
     Setup -->|Authenticate installation| Cloud
-    Setup --> Coordinator
+    Setup -->|Add all discovered locks| Coordinator
 ```
 
-Normal polling runs once per minute. Each physical command is sent **once**, with
+Normal polling runs once per minute per configured lock. Each physical command is sent **once**, with
 result polling and a requirement for a newer matching state report. Timeouts do
 not cause automatic command retries. See [protocol details](docs/protocol.md).
 
 ## Requirements
 
 - Home Assistant **2026.9.1 or newer**; 2026.9.1 is the tested baseline.
-- C100 Plus already paired with DESLOC, with working cloud control.
+- Locks already paired with the DESLOC app, with working cloud control.
+  C100 Plus is tested; other models require community verification.
 - HTTPS access from Home Assistant to `appadmin.desloc.com`.
 - A captured app session, or your DESLOC account email/password and verification email access.
 
@@ -82,7 +90,8 @@ works without it.
    prerelease. Leave beta versions disabled for normal use.
 5. Restart Home Assistant, then open **Settings → Devices & services → Add
    integration → DESLOC**.
-6. Complete [configuration](#configuration) below and select your C100 Plus.
+6. Complete [configuration](#configuration) below. Every returned lock is added
+   automatically; there is no model filter or device chooser.
 
 For updates, download the newer stable version from HACS and restart HA. The
 existing entry and entity IDs are retained; you do not need to add it again.
@@ -103,7 +112,7 @@ existing entry and entity IDs are retained; you do not need to add it again.
 4. Restart Home Assistant. Reload your browser if DESLOC does not appear in the
    integration picker.
 5. Open **Settings → Devices & services → Add integration → DESLOC**, complete
-   the authentication form below, and select your C100 Plus.
+   the authentication form below. All returned locks are added automatically.
 
 To update a manual installation, back up your configuration, replace only the
 `custom_components/desloc` directory with the stable release's copy, and restart
@@ -120,15 +129,23 @@ battery/RSSI, and lock controls with mandatory unlock confirmation.
 
 For the same account as your phone, choose **Use a captured app session** and
 follow [the capture guide](docs/authentication.md). This reuses the app's token
-without signing in again. Select your C100 Plus from the returned devices.
+without signing in again. All returned locks are added automatically, with a
+separate integration entry and entities for each lock.
 
 Alternatively choose **Sign in with email and password**. Enter your DESLOC
-credentials and any requested email code, then select your lock. This new login
+credentials and any requested email code. The integration adds all returned locks. This new login
 can invalidate another session on the same account, including the phone app.
 
 To change the authentication method of an existing entry, open its three-dot
 menu under **Settings → Devices & services → DESLOC → Reconfigure**.
-The existing lock must be present in the new account; entity IDs are retained.
+The existing lock must be present in the account; existing entry/entity IDs are
+retained. The same validated session is applied to the other returned locks, and
+new ones are added without another login. Disabled entries remain disabled.
+
+To discover a lock paired after initial setup, run **Reconfigure** on one DESLOC
+entry using the current app session (or interactive account login). Discovery
+runs during setup/reconfiguration; regular state polling does not create new
+entries. Setup and discovery never send unlock, lock, or PIN commands.
 
 HA stores the resulting session token and installation ID. New entries do not
 retain the password, its digest, or the one-time code. Protect HA configuration
@@ -151,12 +168,33 @@ Loss of cloud access or removal of the device makes entities unavailable.
 ## PIN users
 
 In version 0.3.0 or newer, open **Settings → Devices & services → DESLOC** and click
-**Configure** (the gear icon beside the C100 Plus entry). The form is titled
+**Configure** (the gear icon beside the entry for the intended lock). The form is titled
 **Add a permanent PIN user**. Enter a new, unique **User name**, a **New PIN** of
 6–8 digits, and **Repeat PIN**, then choose **Submit**. This creates a regular
 user with permanent access to the physical lock. The
 integration waits for command completion and checks the installed PIN record;
-it does not save the PIN in HA. See [PIN setup and failure handling](docs/pin-users.md).
+it does not save the PIN in HA. The PIN is added only to that entry's lock. This
+workflow is physically verified on C100 Plus; other models are experimental.
+See [PIN setup and failure handling](docs/pin-users.md).
+
+## Community model testing
+
+Every lock entity exposes `model_validation: tested` for C100 Plus and
+`model_validation: experimental` for other model names. These labels record
+project testing, not certification by the vendor. Unknown state codes remain
+unknown, and a command must receive a fresh matching report to be confirmed.
+
+For another model, report which features work: discovery, reported bolt state,
+battery/RSSI, lock/unlock, and PIN creation. Include model, firmware/app versions,
+HA version, and a description of any failure. Under **Settings → Devices &
+services → DESLOC**, the lock entry's menu offers **Download diagnostics**. The
+integration exports an allowlist of model/firmware, availability, and telemetry;
+it excludes credentials, PINs, names, MACs, device IDs, and raw responses. Review
+the downloaded file before posting it.
+
+We will fix models where this API can support them and document or exclude
+models whose protocol is incompatible. Please do not assume an untested model
+works solely because it appears in HA.
 
 ## Documentation and contributions
 

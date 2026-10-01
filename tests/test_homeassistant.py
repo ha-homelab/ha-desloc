@@ -152,5 +152,14 @@ async def test_full_setup_entities_and_unload(hass, row):
         assert {state.entity_id for state in hass.states.async_all()
                 if state.domain in ("sensor", "lock")} == original_entities
         assert [state.state for state in hass.states.async_all("lock")] == ["locked"]
+        with patch.object(entry.runtime_data, "async_add_pin_user", new=AsyncMock()) as add_pin:
+            options = await hass.config_entries.options.async_init(entry.entry_id)
+            assert options["step_id"] == "init"
+            options = await hass.config_entries.options.async_configure(options["flow_id"], {
+                "name": "Synthetic guest", "pin": "825194", "pin_confirm": "825194",
+            })
+            assert options["type"] == "create_entry" and options["data"] == {}
+            add_pin.assert_awaited_once_with("Synthetic guest", "825194")
+            assert entry.options == {}
         assert await hass.config_entries.async_unload(entry.entry_id)
         assert all(state.state == "unavailable" for state in hass.states.async_all("sensor"))

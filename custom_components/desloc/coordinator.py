@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .api import DeslocAuthError, DeslocClient, DeslocError, Device
+from .api import DeslocAuthError, DeslocClient, DeslocError, DeslocUserExists, Device, validate_pin_user
 from .const import CONF_MAC, DOMAIN, POLL_SECONDS
 
 LOGGER = logging.getLogger(__name__)
@@ -78,3 +78,37 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
         except DeslocError as err:
             raise UpdateFailed(str(err)) from None
         return next((device for device in devices if device.mac == self.mac), None)
+
+    async def async_add_pin_user(self, name: str, pin: str) -> None:
+        """Create a permanent user and PIN once, then verify device acknowledgement."""
+        validate_pin_user(name, pin)
+        name = name.strip()
+        if self._command_lock.locked():
+            raise HomeAssistantError("A DESLOC command is already in progress")
+        if not self.last_update_success or self.data is None:
+            raise HomeAssistantError("DESLOC status is unavailable")
+        async with self._command_lock:
+            try:
+                async with asyncio.timeout(60):
+                    device_id = self.data.id
+                    users = await self.client.async_access_users(device_id)
+                    if any(user["accessName"].strip().casefold() == name.casefold() for user in users):
+                        raise DeslocUserExists("A user with this name already exists")
+                    access_id = await self.client.async_create_access_user(device_id, name)
+                    command_id = await self.client.async_add_pin(access_id, name, pin)
+                    while not await self.client.async_command_complete(command_id):
+                        await asyncio.sleep(2)
+                    for _ in range(6):
+                        if await self.client.async_pin_present(access_id, device_id, name):
+                            return
+                        await asyncio.sleep(2)
+                    raise HomeAssistantError("PIN installation is unconfirmed; check the DESLOC app")
+            except DeslocUserExists:
+                raise
+            except DeslocAuthError:
+                self.entry.async_start_reauth(self.hass)
+                raise HomeAssistantError("Authentication failed; check the DESLOC app before retrying") from None
+            except (DeslocError, TimeoutError):
+                # Creation may have succeeded before PIN installation failed.
+                # Neither retry nor delete a possibly created user automatically.
+                raise HomeAssistantError("PIN creation is uncertain; check the DESLOC app before retrying") from None

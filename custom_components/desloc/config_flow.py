@@ -5,12 +5,15 @@ from uuid import uuid4
 
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow
+from homeassistant.core import callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import TextSelector, TextSelectorConfig, TextSelectorType
 
 from .api import (AccountCredentials, Credentials, DeslocAuthError, DeslocCaptchaRequired,
-    DeslocClient, DeslocClockError, DeslocError, DeslocInvalidCode, DeslocVerificationRequired, Device)
+    DeslocClient, DeslocClockError, DeslocError, DeslocInvalidCode, DeslocVerificationRequired,
+    DeslocUserExists, Device, validate_pin_user)
 from .const import CONF_CREDENTIALS, CONF_DEVICE_ID, CONF_MAC, DOMAIN
 
 PASSWORD = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
@@ -26,6 +29,11 @@ SESSION_SCHEMA = vol.Schema({
 
 class DeslocConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 1
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
+        return DeslocOptionsFlow()
 
     def __init__(self) -> None:
         self._credentials: Credentials | AccountCredentials | None = None
@@ -154,3 +162,40 @@ class DeslocConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         return await self.async_step_user()
+
+
+class DeslocOptionsFlow(OptionsFlow):
+    """Admin-only HA settings flow; PINs never enter options, entities, or services."""
+
+    def __init__(self) -> None:
+        self._submitted = False
+
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        if self._submitted:
+            return self.async_abort(reason="already_submitted")
+        coordinator = getattr(self.config_entry, "runtime_data", None)
+        if coordinator is None or not coordinator.last_update_success or coordinator.data is None:
+            return self.async_abort(reason="unavailable")
+        errors = {}
+        if user_input is not None:
+            try:
+                validate_pin_user(user_input["name"], user_input["pin"])
+                if user_input["pin"] != user_input.get("pin_confirm"):
+                    errors["base"] = "pin_mismatch"
+            except (ValueError, KeyError, TypeError):
+                errors["base"] = "invalid_pin_user"
+            if not errors:
+                self._submitted = True
+                try:
+                    await coordinator.async_add_pin_user(user_input["name"], user_input["pin"])
+                except DeslocUserExists:
+                    return self.async_abort(reason="user_exists")
+                except HomeAssistantError:
+                    return self.async_abort(reason="pin_creation_uncertain")
+                # No user name, PIN, or operation details are persisted in HA options.
+                return self.async_create_entry(title="", data={})
+        return self.async_show_form(step_id="init", data_schema=vol.Schema({
+            vol.Required("name"): str,
+            vol.Required("pin"): PASSWORD,
+            vol.Required("pin_confirm"): PASSWORD,
+        }), errors=errors)

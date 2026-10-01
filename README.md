@@ -32,7 +32,10 @@ Signing out or another login can revoke that token. Natural expiry is unmeasured
 Other limitations:
 
 - The observed device-list request covers up to 20 entries; pagination is untested.
-- No access-code management, activity history, jam detection, or door-open sensor.
+- Version 0.3.0 adds regular permanent PIN users. Creation through the HA form
+  and use at the physical keypad were confirmed on C100 Plus; modification,
+  deletion, and schedules are unsupported.
+- No activity history, jam detection, or door-open sensor.
 - Cloud telemetry can be cached. A cloud response does not prove the lock is
   currently reachable. The undocumented online-status enum is not interpreted.
 - Undocumented endpoints may change; other regions and models need verification.
@@ -66,19 +69,46 @@ not cause automatic command retries. See [protocol details](docs/protocol.md).
 
 ### HACS custom repository
 
-This is **not currently listed in the default HACS catalog**.
+**Not yet published in the default HACS catalog.** Install it as a custom
+repository using the steps below. A submission or an open review request does
+not mean HACS has accepted the project. HACS is optional; manual installation
+works without it.
 
-1. In HACS, open the menu → **Custom repositories**.
-2. Add `https://github.com/ha-homelab/ha-desloc`, type **Integration**.
-3. Download **DESLOC (experimental)** and restart Home Assistant.
-4. Open **Settings → Devices & services → Add integration → DESLOC**.
+1. If needed, [install and configure HACS](https://www.hacs.xyz/docs/use/download/download/).
+2. Open **HACS → ⋮ → Custom repositories**.
+3. Enter `https://github.com/ha-homelab/ha-desloc` and choose **Integration**.
+4. Find **DESLOC (experimental)** in HACS and choose **Download**. Select the
+   latest numbered release without a `b`/`rc` suffix, rather than `main` or a
+   prerelease. Leave beta versions disabled for normal use.
+5. Restart Home Assistant, then open **Settings → Devices & services → Add
+   integration → DESLOC**.
+6. Complete [configuration](#configuration) below and select your C100 Plus.
+
+For updates, download the newer stable version from HACS and restart HA. The
+existing entry and entity IDs are retained; you do not need to add it again.
 
 ### Manual installation
 
-Download a [release](https://github.com/ha-homelab/ha-desloc/releases) or clone this
-repository. Copy only `custom_components/desloc/` into your Home Assistant
-configuration's `custom_components/` directory. Restart and add the integration.
-Capture files, certificates, and development tools are not runtime dependencies.
+1. Open [Releases](https://github.com/ha-homelab/ha-desloc/releases/latest) and
+   download the latest stable release's **Source code (zip)**. Extract it on your
+   computer.
+2. Locate your HA configuration directory, the one containing
+   `configuration.yaml`. On HA OS this is `/config`; for Container installations
+   it is the host directory mounted at `/config`.
+3. Create `custom_components` there if needed. Copy the extracted
+   `custom_components/desloc` directory into it, including all its files and
+   subdirectories. The final file must be
+   `/config/custom_components/desloc/manifest.json`, without an extra repository
+   or `custom_components` directory in between.
+4. Restart Home Assistant. Reload your browser if DESLOC does not appear in the
+   integration picker.
+5. Open **Settings → Devices & services → Add integration → DESLOC**, complete
+   the authentication form below, and select your C100 Plus.
+
+To update a manual installation, back up your configuration, replace only the
+`custom_components/desloc` directory with the stable release's copy, and restart
+HA. Capture files, certificates, Node.js, mimic, and development tools are not
+runtime dependencies. Do not copy this entire development repository into HA.
 
 ## Dashboard card
 
@@ -96,8 +126,8 @@ Alternatively choose **Sign in with email and password**. Enter your DESLOC
 credentials and any requested email code, then select your lock. This new login
 can invalidate another session on the same account, including the phone app.
 
-To move an existing entry from a captured session to account login, open the
-entry menu under **Settings → Devices & services → DESLOC → Reconfigure**.
+To change the authentication method of an existing entry, open its three-dot
+menu under **Settings → Devices & services → DESLOC → Reconfigure**.
 The existing lock must be present in the new account; entity IDs are retained.
 
 HA stores the resulting session token and installation ID. New entries do not
@@ -118,10 +148,21 @@ Following an uncertain command, old telemetry is not treated as confirmation.
 Check the physical lock before deciding whether to issue another command.
 Loss of cloud access or removal of the device makes entities unavailable.
 
+## PIN users
+
+In version 0.3.0 or newer, open **Settings → Devices & services → DESLOC** and click
+**Configure** (the gear icon beside the C100 Plus entry). The form is titled
+**Add a permanent PIN user**. Enter a new, unique **User name**, a **New PIN** of
+6–8 digits, and **Repeat PIN**, then choose **Submit**. This creates a regular
+user with permanent access to the physical lock. The
+integration waits for command completion and checks the installed PIN record;
+it does not save the PIN in HA. See [PIN setup and failure handling](docs/pin-users.md).
+
 ## Documentation and contributions
 
 - [Session capture and cleanup](docs/authentication.md)
 - [Protocol, command sequence, and state machine](docs/protocol.md)
+- [Create a permanent PIN user](docs/pin-users.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Development and tests](docs/development.md)
 - [HACS and Core publication](docs/publishing.md)

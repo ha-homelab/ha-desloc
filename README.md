@@ -14,6 +14,12 @@ D110 Plus, are admitted for community testing and marked **experimental**.
 Discovery is not a claim that their state reporting, commands, or PIN workflow
 are compatible. TTLock/Tuya accounts are not supported by this integration.
 
+![DESLOC C100 Plus dashboard card showing a reported locked state, battery, Wi-Fi signal, and controls](docs/images/lock-card-locked.jpg)
+
+Shown with the optional [DESLOC Lock Card](https://github.com/ha-homelab/ha-desloc-card).
+See the [screenshot walkthrough](docs/screenshots.md) for authentication,
+discovered devices, and the PIN user form.
+
 ## Status and limitations
 
 The protocol and both command directions were captured from a real C100 Plus
@@ -198,6 +204,7 @@ works solely because it appears in HA.
 
 ## Documentation and contributions
 
+- [Screenshots and setup walkthrough](docs/screenshots.md)
 - [Session capture and cleanup](docs/authentication.md)
 - [Protocol, command sequence, and state machine](docs/protocol.md)
 - [Create a permanent PIN user](docs/pin-users.md)

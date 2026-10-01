@@ -16,25 +16,33 @@ Captured October 1, 2026 with **Home Assistant 2026.9.1**, **DESLOC integration
 [integration gallery](screenshots.md) and
 [card gallery](https://github.com/ha-homelab/ha-desloc-card/blob/main/docs/screenshots.md).
 
+The captions were revised after the
+[D110 Plus community report](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18702050).
+The actual UI screenshots still show the maintainer's C100 Plus; they do not
+depict a D110 Plus test. See the [compatibility notes](compatibility.md) for the
+scope of each model's validation.
+
 ## Transcript
 
 1. **00:00–00:05 — Set up DESLOC.** Choose email sign-in or reuse an existing app
    session. A new sign-in can invalidate the phone app session.
-2. **00:05–00:10 — Every discovered lock, automatically.** C100 Plus is tested;
-   other models are experimental. Discovery runs during setup or reconfiguration.
+2. **00:05–00:10 — Every discovered lock, automatically.** C100 Plus:
+   maintainer-tested. D110 Plus: community-reported working. Discovery runs
+   during setup or reconfiguration. Other models are experimental.
 3. **00:10–00:15 — See reported state at a glance.** Bolt state, battery, and
    Wi-Fi appear in one dashboard card. Cloud reports may be cached; this is not
    a door-open sensor.
 4. **00:15–00:20 — Configure the card visually.** Choose a lock, display name,
    and optional sensors. The card uses Home Assistant entities, not DESLOC
    credentials.
-5. **00:20–00:25 — Add a permanent PIN user.** Open **Settings → Devices &
-   services → DESLOC → Configure**. Submitting creates permanent access; the
-   form shown is empty.
+5. **00:20–00:25 — Add a permanent PIN user.** Permanent PIN creation is
+   physically tested on C100 Plus. Submitting creates permanent access.
+   D110 Plus PIN testing is unreported.
 6. **00:25–00:30 — DESLOC for Home Assistant.** An unofficial cloud integration
    and optional dashboard card. Install both as HACS custom repositories; they
-   are not yet included in the default HACS catalog. C100 Plus is physically
-   tested; other models remain experimental.
+   are not yet included in the default HACS catalog. C100 Plus is
+   maintainer-tested; D110 Plus is community-reported working. Other models
+   remain experimental. Community reports are welcome.
 
 The closing scene links to the
 [integration](https://github.com/ha-homelab/ha-desloc) and
@@ -44,7 +52,7 @@ The closing scene links to the
 
 - H.264 MP4, 1280 × 720, 30 frames per second, exactly 30 seconds, no audio track.
 - GIF preview: 1280 × 720, six frames held for five seconds each, a 30-second
-  infinite loop, approximately 566 KiB. It uses an optimized 256-color palette.
+  infinite loop, approximately 588 KiB. It uses an optimized 256-color palette.
 - Original UI crops retain their contents; titles and captions sit outside them.
 - Composed locally with FFmpeg and the
   [video-use](https://github.com/browser-use/video-use/tree/9575612f066aa517354790a645fd90f9f95a743b)

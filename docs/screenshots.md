@@ -3,8 +3,10 @@
 These are cropped screenshots of the installed integration **0.3.0** and
 companion card **0.1.1** in **Home Assistant 2026.9.1**, captured on
 October 1, 2026. Appearance follows the active Home Assistant theme. They show
-one C100 Plus; other models remain experimental. Account details, server
-addresses, and private device identifiers are outside the captured regions.
+the maintainer's C100 Plus. D110 Plus is also community-reported working; see
+the [compatibility notes](compatibility.md) for the scope of that report.
+Account details, server addresses, and private device identifiers are outside
+the captured regions.
 
 No lock/unlock command or PIN creation was submitted while taking these images.
 The displayed state and sensor readings are snapshots of cloud reports, not a
@@ -14,6 +16,8 @@ live feed or proof that a door is closed.
 [accessible transcript](video.md). It presents these screenshots and the card's
 visual editor with English captions; it is not a continuous screen recording.
 The [README](../README.md) embeds the same walkthrough as an animated GIF.
+Its captions acknowledge both C100 Plus maintainer testing and the D110 Plus
+community report; the UI screenshots themselves remain the C100 Plus captures.
 
 ## 1. Choose how to authenticate
 

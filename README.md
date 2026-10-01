@@ -5,14 +5,18 @@
 
 An **unofficial, experimental cloud integration** for locks linked to the
 **DESLOC mobile app**. It automatically adds every lock returned by the account
-during setup; **C100 Plus is the physically tested model**. It provides lock/unlock controls, reported bolt
-state, battery percentage, and Wi-Fi signal in Home Assistant.
+during setup. **C100 Plus is maintainer-tested; D110 Plus is community-reported
+working.** It provides lock/unlock controls, reported bolt state, battery
+percentage, and Wi-Fi signal in Home Assistant.
 
 This project is independent of DESLOC, Home Assistant, and HACS. It does not
-provide local/offline or Bluetooth control. Other DESLOC models, including
-D110 Plus, are admitted for community testing and marked **experimental**.
-Discovery is not a claim that their state reporting, commands, or PIN workflow
-are compatible. TTLock/Tuya accounts are not supported by this integration.
+provide local/offline or Bluetooth control. A D110 Plus owner
+[reported that it works perfectly](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18702050).
+That report does not list individual features tested, including PIN creation;
+see [model compatibility](docs/compatibility.md) for the evidence and scope.
+Models without maintainer validation still carry an **experimental** runtime
+label. Discovery alone does not establish compatibility. TTLock/Tuya accounts
+are not supported by this integration.
 
 ![Animated DESLOC walkthrough: authentication, discovered locks, dashboard card, visual editor, and empty PIN form](docs/media/desloc-overview.gif)
 
@@ -87,7 +91,8 @@ not cause automatic command retries. See [protocol details](docs/protocol.md).
 
 - Home Assistant **2026.9.1 or newer**; 2026.9.1 is the tested baseline.
 - Locks already paired with the DESLOC app, with working cloud control.
-  C100 Plus is tested; other models require community verification.
+  C100 Plus is maintainer-tested and D110 Plus has a community success report;
+  see [model compatibility](docs/compatibility.md) for details.
 - HTTPS access from Home Assistant to `appadmin.desloc.com`.
 - A captured app session, or your DESLOC account email/password and verification email access.
 
@@ -197,9 +202,18 @@ See [PIN setup and failure handling](docs/pin-users.md).
 
 ## Community model testing
 
+**D110 Plus has a community success report.** On October 1, 2026,
+[Marty-McFly73 reported successful use](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18702050)
+with their D110 Plus. The report is general; individual feature results and
+software/firmware versions were not provided. The
+[compatibility notes](docs/compatibility.md) distinguish this report from the
+feature-by-feature C100 Plus validation.
+
 Every lock entity exposes `model_validation: tested` for C100 Plus and
 `model_validation: experimental` for other model names. These labels record
-project testing, not certification by the vendor. Unknown state codes remain
+maintainer validation, not certification by the vendor. D110 Plus retains its
+experimental runtime label while its community report is recorded in the docs.
+Unknown state codes remain
 unknown, and a command must receive a fresh matching report to be confirmed.
 
 For another model, report which features work: discovery, reported bolt state,
@@ -216,6 +230,7 @@ works solely because it appears in HA.
 
 ## Documentation and contributions
 
+- [Model compatibility and community reports](docs/compatibility.md)
 - [Screenshots and setup walkthrough](docs/screenshots.md)
 - [Session capture and cleanup](docs/authentication.md)
 - [Protocol, command sequence, and state machine](docs/protocol.md)

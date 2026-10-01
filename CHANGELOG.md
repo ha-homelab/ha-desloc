@@ -21,7 +21,13 @@ HA Configure form and confirmed that its PIN works at the physical keypad.
 Mixed-model discovery, peer reauthentication, duplicate prevention, pagination,
 and diagnostic privacy are covered by synthetic tests. The pagination cursor
 boundary was also probed read-only on the real account. Physical validation
-remains limited to C100 Plus; other models and regions remain unverified.
+by the maintainer remains limited to C100 Plus.
+
+Community follow-up, October 1, 2026: a D110 Plus owner
+[reported successful use](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18702050).
+The report did not provide individual feature results or version details; see
+[model compatibility](docs/compatibility.md). Runtime labels and behavior are
+unchanged by this documentation update.
 
 ## 0.2.1 — 2026-10-01
 

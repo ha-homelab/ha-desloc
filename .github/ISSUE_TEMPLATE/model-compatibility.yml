@@ -5,8 +5,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        C100 Plus is physically tested; other models are experimental. Please
-        share reproducible observations, not assumptions based on discovery.
+        C100 Plus is maintainer-tested, and D110 Plus has a community success
+        report. Please share feature-by-feature observations, not assumptions
+        based on discovery. Mark any feature you have not tested as untested.
         Never include credentials, PINs, tokens, MACs, serials, or raw captures.
   - type: input
     id: model

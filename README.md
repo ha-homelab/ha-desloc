@@ -19,15 +19,16 @@ using the iOS app with Bluetooth disabled. Device reads were reproduced with
 See [CHANGELOG.md](CHANGELOG.md) for physical validation from Home Assistant.
 Synthetic tests do not establish physical operation.
 
-**Version 0.2 adds email/password login and email verification for new HA
-installations.** The account flow keeps a password-equivalent SHA-256 digest and
-a stable installation ID. It renews rejected sessions automatically for reads;
-physical commands are never resubmitted automatically. Captured-session setup
-remains available, but those sessions require a new capture after revocation.
+**Update 0.2.0 installations to 0.2.1.** Automatic login in 0.2.0 was observed to
+conflict with the phone app and repeatedly sign it out. Version 0.2.1 saves and
+reuses the authenticated session token and stops on rejection; it never signs
+in automatically after a rejected request. A distinct installation ID did not
+prevent the observed session conflict.
 
-Email/password login, email-code verification, and a fresh login after an
-integration reload have been validated on a real account. Natural token expiry
-has not yet been observed; renewal after rejection is covered by synthetic tests.
+Email/password login and email-code verification work, but a new login can
+invalidate the phone app's session. To use the same account in HA and the app,
+import the current app session with the [capture guide](docs/authentication.md).
+Signing out or another login can revoke that token. Natural expiry is unmeasured.
 Other limitations:
 
 - The observed device-list request covers up to 20 entries; pagination is untested.
@@ -59,7 +60,7 @@ not cause automatic command retries. See [protocol details](docs/protocol.md).
 - Home Assistant **2026.9.1 or newer**; 2026.9.1 is the tested baseline.
 - C100 Plus already paired with DESLOC, with working cloud control.
 - HTTPS access from Home Assistant to `appadmin.desloc.com`.
-- Your DESLOC account email and password, with access to its verification emails.
+- A captured app session, or your DESLOC account email/password and verification email access.
 
 ## Installation
 
@@ -87,22 +88,23 @@ battery/RSSI, and lock controls with mandatory unlock confirmation.
 
 ## Configuration
 
-Choose **Sign in with email and password**. Enter the same credentials used by
-the DESLOC app. If DESLOC requires verification for the new installation, enter
-the code sent to your email, then select your C100 Plus from the account's devices.
+For the same account as your phone, choose **Use a captured app session** and
+follow [the capture guide](docs/authentication.md). This reuses the app's token
+without signing in again. Select your C100 Plus from the returned devices.
+
+Alternatively choose **Sign in with email and password**. Enter your DESLOC
+credentials and any requested email code, then select your lock. This new login
+can invalidate another session on the same account, including the phone app.
 
 To move an existing entry from a captured session to account login, open the
 entry menu under **Settings → Devices & services → DESLOC → Reconfigure**.
 The existing lock must be present in the new account; entity IDs are retained.
 
-HA stores a password-equivalent digest, not the plaintext password or one-time
-code. Protect HA configuration and backups as credentials. Password changes,
-CAPTCHA, and security checks can require interactive reauthentication. The host
-clock must be synchronized.
-
-For the alternative **Use a captured app session** option, follow
-[the capture guide](docs/authentication.md). Its token belongs to the phone's
-installation and can be revoked when you sign out of the app.
+HA stores the resulting session token and installation ID. New entries do not
+retain the password, its digest, or the one-time code. Protect HA configuration
+and backups as credentials. Rejected sessions require interactive
+reauthentication; HA never retries login in the background. Existing 0.2.0
+account entries must reauthenticate or import the app session during upgrade.
 
 ## Entities
 

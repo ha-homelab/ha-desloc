@@ -1,12 +1,23 @@
 # Troubleshooting
 
+## The phone app repeatedly returns to login
+
+Version 0.2.0 could automatically sign in after the phone had displaced HA's
+session, which in turn displaced the phone's session. Temporarily disable the
+DESLOC integration, sign in to the app, and update to 0.2.1. Import the current
+app session through **Reconfigure → Use a captured app session** before enabling
+the integration again. Version 0.2.1 saves the session token across restarts and
+stops after rejection instead of signing in again. A separate installation ID
+alone did not isolate concurrent logins on the tested account.
+
 ## Devices became unavailable after signing out of DESLOC
 
 App logout was observed to revoke the session copied into HA. Sign back into the
 app, capture its new session, and complete the integration's reauthentication
 flow. The lock identity, entity IDs, and dashboard configuration are retained.
-Account login in version 0.2 renews sessions using a saved password digest. Use
-Reconfigure to switch an existing captured-session entry to account login.
+Email/password login is interactive and may revoke the phone session. It is not
+an automatic renewal mechanism. Version 0.2.0 digest entries require
+reauthentication or a session import when updating to 0.2.1.
 
 ## Invalid session
 

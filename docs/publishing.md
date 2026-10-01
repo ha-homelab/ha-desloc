@@ -19,7 +19,9 @@ Acceptance and timing belong to its maintainers; see
 
 The experimental status, account-verification requirements, and measured testing
 limits must remain prominent.
-Reliable renewal and broader testing would improve readiness for general users.
+Independent concurrent authentication and broader testing would improve
+readiness for general users. The observed session-conflict limitation and
+interactive reauthentication requirement must be disclosed.
 No default-catalog acceptance is claimed.
 
 ## Home Assistant Core

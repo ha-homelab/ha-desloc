@@ -5,19 +5,20 @@ the lock; keep `.private/` local and out of public reports.
 
 ## What is verified
 
-Version 0.2 adds account login. Prefer **Sign in with email and password** in HA;
-this guide documents the optional captured-session fallback. No capture is
-required for the account flow.
+Use this flow to share the phone app's existing session without creating a
+competing login. Email/password setup is also available, but a new login can
+invalidate the phone's session. In 0.2.0, automatic re-login repeatedly displaced
+the app; 0.2.1 removes that behavior.
 
 Both flows validate credentials by fetching the account's devices, then let you
 select a C100 Plus. The selected Bluetooth MAC remains its stable identity;
 reauthentication and reconfiguration cannot silently switch to another lock.
 See [authentication details](protocol.md#authentication) for the password
-transformation, email verification, and renewal behavior.
+transformation, email verification, and session-rejection behavior.
 
 For captured sessions, logging out of the app was observed to revoke the session
 also used by HA. Capture the new session and complete **Reauthenticate**, or use
-**Reconfigure** to switch to account login. Keep the integration and dashboard;
+**Reconfigure → Use a captured app session**. Keep the integration and dashboard;
 removing or re-pairing the lock is unnecessary.
 
 ## Prepare the computer

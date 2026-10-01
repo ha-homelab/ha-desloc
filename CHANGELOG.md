@@ -1,6 +1,25 @@
 # Changelog
 
+## 0.2.1 — 2026-10-01
+
+- Fix repeated mobile-app sign-outs caused by automatic HA re-login after 401.
+- Save the authenticated session token during setup and reuse it on reload.
+  New entries no longer retain the password-equivalent digest.
+- Stop on authentication rejection and request interactive reauthentication.
+  Neither the rejected request nor login is retried in the background.
+- Require reauthentication for legacy 0.2.0 digest entries, without logging in
+  during upgrade. Importing the app session preserves the existing lock/entities.
+- Explain the observed same-account session conflict in setup and documentation.
+
+Validation: 69 tests pass on Linux/Home Assistant 2026.9.1, including token reuse
+on reload, no login after session rejection, and safe handling of old entries.
+The user confirmed the phone stopped signing out with the competing HA login
+disabled. HA was then restored by importing the current phone session.
+
 ## 0.2.0 — 2026-10-01
+
+Superseded by 0.2.1: the renewal behavior below was found to conflict with the
+mobile app's session. Update before using the same account in both clients.
 
 - Add email/password setup and email verification for a new HA installation.
 - Store a password-equivalent digest and stable installation ID; never retain

@@ -50,7 +50,7 @@ class DeslocConfigFlow(ConfigFlow, domain=DOMAIN):
             if device is None:
                 return self.async_abort(reason="device_mismatch")
             return self.async_update_reload_and_abort(entry, data_updates={
-                CONF_CREDENTIALS: asdict(self._credentials), CONF_DEVICE_ID: device.id,
+                CONF_CREDENTIALS: asdict(self._client.session_credentials), CONF_DEVICE_ID: device.id,
                 "auth_type": "account" if isinstance(self._credentials, AccountCredentials) else "session",
             })
         if not self._devices:
@@ -136,7 +136,7 @@ class DeslocConfigFlow(ConfigFlow, domain=DOMAIN):
                 self._abort_if_unique_id_configured()
                 assert self._credentials is not None
                 return self.async_create_entry(title=device.name, data={
-                    CONF_CREDENTIALS: asdict(self._credentials),
+                    CONF_CREDENTIALS: asdict(self._client.session_credentials),
                     "auth_type": "account" if isinstance(self._credentials, AccountCredentials) else "session",
                     CONF_DEVICE_ID: device.id, CONF_MAC: device.mac,
                 })

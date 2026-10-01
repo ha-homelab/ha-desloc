@@ -5,7 +5,7 @@ import pytest
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import UpdateFailed
 
-from custom_components.desloc.api import DeslocAuthError, DeslocConnectionError, Device
+from custom_components.desloc.api import Credentials, DeslocAuthError, DeslocConnectionError, Device
 from custom_components.desloc.config_flow import DeslocConfigFlow
 from custom_components.desloc.coordinator import DeslocCoordinator
 from custom_components.desloc.sensor import DESCRIPTIONS, DeslocSensor
@@ -105,6 +105,8 @@ async def test_full_setup_entities_and_unload(hass, row):
     loader.async_setup(hass)
     assert await async_load_base_functionality(hass)
     async def devices(self):
+        if self._account is not None:
+            self._credentials = Credentials("account-session", self._account.app_device_id)
         return [Device.from_json(row)]
 
     with patch(
@@ -141,10 +143,12 @@ async def test_full_setup_entities_and_unload(hass, row):
         await hass.async_block_till_done()
         assert entry.data["auth_type"] == "account"
         assert set(entry.data["credentials"]) == {
-            "username", "password_hash", "app_device_id", "app_version", "sys_type"}
+            "token", "app_device_id", "app_version", "sys_type"}
         installation = entry.data["credentials"]["app_device_id"]
         assert installation != "test-phone"
-        assert entry.runtime_data.client._account.app_device_id == installation
+        assert entry.runtime_data.client._account is None
+        assert entry.runtime_data.client.session_credentials.app_device_id == installation
+        assert entry.runtime_data.client.session_credentials.token == "account-session"
         assert {state.entity_id for state in hass.states.async_all()
                 if state.domain in ("sensor", "lock")} == original_entities
         assert [state.state for state in hass.states.async_all("lock")] == ["locked"]

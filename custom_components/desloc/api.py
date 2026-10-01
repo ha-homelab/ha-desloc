@@ -77,7 +77,7 @@ class Credentials:
 
 @dataclass(frozen=True)
 class AccountCredentials:
-    """A password-equivalent digest, never a plaintext account password."""
+    """A temporary password digest used only during interactive login."""
 
     username: str = field(repr=False)
     password_hash: str = field(repr=False)
@@ -244,6 +244,13 @@ class DeslocClient:
                 self._auth_blocked = error
                 raise
 
+    @property
+    def session_credentials(self) -> Credentials:
+        """Export the validated session without retaining the account password digest."""
+        if self._credentials is None:
+            raise DeslocAuthError("DESLOC has no authenticated session")
+        return self._credentials
+
     async def async_send_verification_code(self) -> None:
         assert self._account is not None
         result = await self._raw_request("/api/user/login/sendCode",
@@ -253,38 +260,36 @@ class DeslocClient:
                 or not isinstance(data, dict) or integer(data.get("flag")) != 1):
             raise DeslocProtocolError("DESLOC could not send a verification code; try again later")
 
-    async def _ensure_session(self, rejected: Credentials | None = None) -> None:
-        if self._account is None:
-            return
+    async def _ensure_session(self) -> None:
         async with self._login_lock:
             if self._auth_blocked is not None:
                 raise self._auth_blocked
-            if self._credentials is not None and self._credentials is not rejected:
+            if self._credentials is not None:
                 return
-            self._credentials = None
+            if self._account is None:
+                raise DeslocAuthError("DESLOC has no authenticated session")
             try:
                 await self._login()
             except DeslocAuthError as error:
                 self._auth_blocked = error
                 raise
 
-    async def _request(self, path: str, body: dict[str, Any], *, safe_read: bool = True) -> dict[str, Any]:
+    async def _request(self, path: str, body: dict[str, Any]) -> dict[str, Any]:
         await self._ensure_session()
         assert self._credentials is not None
         credentials = self._credentials
         try:
             return await self._raw_request(path, body, credentials.headers())
-        except DeslocAuthError:
-            if self._account is None:
-                raise
-            await self._ensure_session(rejected=credentials)
-            if not safe_read:
-                raise DeslocError("Session renewed; check the lock before requesting another command") from None
-            assert self._credentials is not None
-            return await self._raw_request(path, body, self._credentials.headers())
+        except DeslocAuthError as error:
+            # Logging in again can evict the mobile app's session. A 401 does
+            # not distinguish expiry from another login, so never renew here.
+            if self._credentials is credentials:
+                self._credentials = None
+                self._auth_blocked = error
+            raise
 
-    async def _post(self, path: str, body: dict[str, Any], *, safe_read: bool = True) -> Any:
-        payload = await self._request(path, body, safe_read=safe_read)
+    async def _post(self, path: str, body: dict[str, Any]) -> Any:
+        payload = await self._request(path, body)
         if payload.get("status") != 200 or payload.get("success") is not True:
             raise DeslocProtocolError("DESLOC rejected the request")
         return payload.get("data")
@@ -301,7 +306,7 @@ class DeslocClient:
             raise ValueError("Invalid command arguments")
         data = await self._post("/api/device/remoteSwitchLock", {
             "deviceId": str(device_id), "unlock": unlock,
-        }, safe_read=False)
+        })
         command_id = data.get("commandId") if isinstance(data, dict) else None
         if not isinstance(command_id, str) or not command_id or len(command_id) > 256:
             raise DeslocProtocolError("Command accepted without a usable result ID; check the lock")

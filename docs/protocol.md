@@ -25,7 +25,8 @@ to the iOS 1.2.1 login capture, including its millisecond timestamp:
 
 These constants provide vendor wire compatibility; they are not protection for
 stored credentials. The request still uses verified HTTPS without redirects.
-HA retains the derived digest as a password-equivalent secret.
+The digest is held only during interactive setup. HA saves the resulting session
+token and installation ID, not the password or digest.
 
 Business status `1103` means a new installation requires email verification.
 The app sends `POST /api/user/login/sendCode` with `userName`. A successful send
@@ -40,8 +41,9 @@ The one-time code is not retained. Other observed/source-derived login statuses:
 Successful login returns `data.accessToken`, `data.expireIn`, and `data.userId`.
 The access token matched the subsequent business API authorization. Reported
 `expireIn` was `5184000`; actual expiry behavior has not been independently
-measured. The integration renews a rejected session on demand rather than
-assuming a lifetime. A lock command rejected during renewal is not replayed.
+measured. The integration does not assume a lifetime and does not automatically
+sign in after rejection. An authentication error requires interactive reauth;
+neither reads nor physical commands are retried after a rejected session.
 
 `POST /api/user/logout` was observed to revoke the captured session used by HA.
 Captured-session reauthentication restored reads without changing the lock's
@@ -55,7 +57,7 @@ sequenceDiagram
     participant HA as Home Assistant
     participant Cloud as DESLOC business API
     User->>HA: Email and password
-    HA->>HA: Derive password digest and retain installation ID
+    HA->>HA: Derive temporary password digest
     HA->>Cloud: Check CAPTCHA requirement
     HA->>Cloud: Login with digest and current time encrypted
     alt New installation requires verification
@@ -65,17 +67,24 @@ sequenceDiagram
         HA->>Cloud: Login with digest and one-time code
     end
     Cloud-->>HA: Access token
+    HA->>HA: Save token and installation ID, discard digest
     HA->>Cloud: Fetch devices
     User->>HA: Select C100 Plus
-    Note over HA,Cloud: Later, a rejected read session triggers one login and one read retry
+    Note over HA,Cloud: Reuse token after restart; stop on rejection, without background login
 ```
 
-Version 0.2 was validated with a real account: the user entered their password
-and email code in HA, then a reload logged in again using the saved digest and
-the same independent installation ID without another code. The existing lock
-and sensor entities remained available. Natural token expiry has not yet been
-observed; renewal after rejection and concurrent login behavior are covered by
-synthetic tests.
+Password and email-code login succeeded on a real account. However, the 0.2.0
+renewal implementation conflicted with subsequent app logins: the app entered
+successfully, then its requests returned 401 after HA signed in again. A distinct
+installation ID did not prevent this. The app stayed signed in when HA was
+disabled. The server's precise session-scope rules remain undocumented.
+
+Version 0.2.1 removes background login and reuses the saved token on reload.
+Importing the app's current session lets HA use that same session without a
+competing login. App logout or a later login can revoke it. Legacy 0.2.0 account
+entries require interactive reauthentication, avoiding a surprise login during
+upgrade. Tests cover no login on rejection/reload and no retry of physical
+commands. Natural token expiry remains unobserved.
 
 The app separately posts to `https://iot.desloc.com/oauth/token` with a URL-encoded
 form containing `appId` and `biz_token`. That returns an access token, refresh

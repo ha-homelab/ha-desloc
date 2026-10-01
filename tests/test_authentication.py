@@ -2,13 +2,13 @@
 import asyncio
 from collections import deque
 from dataclasses import asdict
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
 
 import pytest
 
 from custom_components.desloc.api import (
-    AccountCredentials, DeslocAuthError, DeslocCaptchaRequired, DeslocClient,
-    DeslocClockError, DeslocError, DeslocInvalidCode, DeslocProtocolError,
+    AccountCredentials, Credentials, DeslocAuthError, DeslocCaptchaRequired, DeslocClient,
+    DeslocClockError, DeslocInvalidCode, DeslocProtocolError,
     DeslocVerificationRequired, Device,
 )
 from custom_components.desloc.config_flow import DeslocConfigFlow
@@ -75,22 +75,57 @@ async def test_concurrent_reads_share_one_login(row):
     assert sum(c.args[0].endswith("/user/login") for c in session.post.call_args_list) == 1
 
 
-async def test_expired_session_renews_and_retries_only_the_read(row):
-    api, session, account = transport(CAPTCHA, LOGIN, ok([row]), {"status": 401},
-        CAPTCHA, ok({"accessToken": "replacement-session"}), ok([row]))
+async def test_rejected_session_stops_without_evicting_mobile_app(row):
+    api, session, account = transport(CAPTCHA, LOGIN, ok([row]), {"status": 401})
     await api.async_devices()
-    assert (await api.async_devices())[0].is_locked is True
-    assert session.post.call_count == 7
-    assert session.post.call_args.kwargs["headers"]["authorization"] == "replacement-session"
+    for _ in range(3):
+        with pytest.raises(DeslocAuthError):
+            await api.async_devices()
+    assert session.post.call_count == 4
+    assert sum(c.args[0].endswith("/user/login") for c in session.post.call_args_list) == 1
 
 
-async def test_rejected_physical_command_is_not_replayed_after_renewal(row):
-    api, session, account = transport(CAPTCHA, LOGIN, ok([row]), {"status": 401}, CAPTCHA, LOGIN)
+async def test_rejected_physical_command_neither_replays_nor_signs_in(row):
+    api, session, account = transport(CAPTCHA, LOGIN, ok([row]), {"status": 401})
     await api.async_devices()
-    with pytest.raises(DeslocError, match="Session renewed"):
+    with pytest.raises(DeslocAuthError):
         await api.async_switch_lock(123, unlock=True)
     commands = [c for c in session.post.call_args_list if c.args[0].endswith("/remoteSwitchLock")]
     assert len(commands) == 1
+    assert session.post.call_count == 4
+
+
+async def test_exported_session_reuses_token_without_another_login(row):
+    api, session, account = transport(CAPTCHA, LOGIN, ok([row]), ok([row]))
+    await api.async_devices()
+    saved = asdict(api.session_credentials)
+    assert "password_hash" not in saved and "username" not in saved
+    reloaded = DeslocClient(session, Credentials(**saved))
+    assert (await reloaded.async_devices())[0].is_locked is True
+    assert session.post.call_count == 4
+    assert reloaded._account is None
+    assert session.post.call_args.kwargs["headers"]["authorization"] == "synthetic-session"
+
+
+async def test_saved_session_rejection_remains_blocked():
+    _, session, _ = transport({"status": 401})
+    api = DeslocClient(session, Credentials("revoked-session", "test-installation"))
+    for _ in range(2):
+        with pytest.raises(DeslocAuthError):
+            await api.async_devices()
+    session.post.assert_called_once()
+
+
+async def test_legacy_digest_entry_requires_interactive_reauth_without_login(hass):
+    from homeassistant.exceptions import ConfigEntryAuthFailed
+    from custom_components.desloc import async_setup_entry
+
+    account = AccountCredentials.from_password("user@example.invalid", "test", "test-installation")
+    legacy = MagicMock(data={"auth_type": "account", "credentials": asdict(account)})
+    with patch("custom_components.desloc.async_get_clientsession") as session:
+        with pytest.raises(ConfigEntryAuthFailed):
+            await async_setup_entry(hass, legacy)
+    session.assert_not_called()
 
 
 async def test_captcha_stops_before_login_and_blocks_background_attempts():
@@ -142,7 +177,8 @@ async def test_account_config_flow_verifies_then_selects_lock(hass, row):
         side_effect=[DeslocVerificationRequired(), [Device.from_json(row)]],
     ), patch("custom_components.desloc.config_flow.DeslocClient.async_send_verification_code") as send, patch(
         "custom_components.desloc.config_flow.DeslocClient.async_login"
-    ) as login:
+    ) as login, patch("custom_components.desloc.config_flow.DeslocClient.session_credentials",
+                      new_callable=PropertyMock, return_value=Credentials("test-session", "test-installation")):
         result = await flow.async_step_account({"username": "user@example.invalid", "password": "test-password"})
         assert result["step_id"] == "verification"
         send.assert_awaited_once()
@@ -152,6 +188,7 @@ async def test_account_config_flow_verifies_then_selects_lock(hass, row):
         result = await flow.async_step_device({"device_id": "123"})
     assert result["data"]["auth_type"] == "account"
     assert "password" not in result["data"]["credentials"]
+    assert "password_hash" not in result["data"]["credentials"]
     assert "123456" not in str(result["data"])
 
 

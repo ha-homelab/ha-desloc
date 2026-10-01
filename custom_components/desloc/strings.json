@@ -37,7 +37,7 @@
       },
       "account": {
         "title": "DESLOC account",
-        "description": "Sign in with your existing DESLOC account. Home Assistant keeps a password-equivalent digest for session renewal. DESLOC may email a verification code for this installation.",
+        "description": "Signing in here can sign the DESLOC phone app out of the same account. To keep the app session, use the captured-session option. HA saves the resulting session token, not your password. A revoked session requires reauthentication; HA will not log in automatically.",
         "data": {
           "username": "Email",
           "password": "Password"

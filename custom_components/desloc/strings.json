@@ -2,16 +2,6 @@
   "title": "DESLOC (experimental)",
   "config": {
     "step": {
-      "user": {
-        "title": "DESLOC app session",
-        "description": "Enter the session from the local capture to control C100 Plus and read battery and Wi-Fi signal. A new capture is required if this session expires.",
-        "data": {
-          "token": "App authorization token",
-          "app_device_id": "App device ID",
-          "app_version": "App version",
-          "sys_type": "System type"
-        }
-      },
       "device": {
         "title": "Choose the lock",
         "data": {
@@ -27,18 +17,59 @@
           "app_version": "App version",
           "sys_type": "System type"
         }
+      },
+      "session": {
+        "title": "DESLOC app session",
+        "description": "Enter the session from the local capture to control C100 Plus and read battery and Wi-Fi signal. A new capture is required if this session expires.",
+        "data": {
+          "token": "App authorization token",
+          "app_device_id": "App device ID",
+          "app_version": "App version",
+          "sys_type": "System type"
+        }
+      },
+      "user": {
+        "title": "Set up DESLOC",
+        "menu_options": {
+          "account": "Sign in with email and password",
+          "session": "Use a captured app session"
+        }
+      },
+      "account": {
+        "title": "DESLOC account",
+        "description": "Sign in with your existing DESLOC account. Home Assistant keeps a password-equivalent digest for session renewal. DESLOC may email a verification code for this installation.",
+        "data": {
+          "username": "Email",
+          "password": "Password"
+        }
+      },
+      "verification": {
+        "title": "Verify this installation",
+        "description": "Enter the code DESLOC sent to your account email. The code is used once and is not saved.",
+        "data": {
+          "code": "Email verification code"
+        }
       }
     },
     "error": {
       "invalid_session": "Check the session fields.",
-      "invalid_auth": "DESLOC rejected the session. Capture a new session.",
+      "invalid_auth": "DESLOC rejected these credentials. Check the account or capture a new session.",
       "cannot_connect": "Could not read the DESLOC device list.",
       "no_devices": "No C100 Plus was found in the returned device list.",
-      "device_mismatch": "This session does not contain the configured lock."
+      "device_mismatch": "This session does not contain the configured lock.",
+      "invalid_account": "Enter your DESLOC email and password.",
+      "invalid_code": "The verification code is invalid or expired.",
+      "cannot_send_code": "DESLOC could not send a code. Wait before starting setup again.",
+      "captcha_required": "Complete the security challenge in the DESLOC app, then try again. Captured-session setup is also available.",
+      "clock_error": "Synchronize the Home Assistant host clock and try again."
     },
     "abort": {
       "already_configured": "This lock is already configured.",
-      "reauth_successful": "Session renewed."
+      "reauth_successful": "Session renewed.",
+      "reconfigure_successful": "Authentication updated.",
+      "device_mismatch": "This account does not contain the configured lock.",
+      "no_devices": "No C100 Plus was returned for this account.",
+      "reauth_required": "Start the authentication flow again."
     }
   }
 }

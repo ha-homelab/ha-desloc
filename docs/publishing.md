@@ -17,7 +17,8 @@ checks. The owner or a major contributor can then submit a PR to `hacs/default`.
 Acceptance and timing belong to its maintainers; see
 [the submission process](https://www.hacs.xyz/docs/publish/include/).
 
-Capture-based setup and unknown session lifetime must remain prominent.
+The experimental status, account-verification requirements, and measured testing
+limits must remain prominent.
 Reliable renewal and broader testing would improve readiness for general users.
 No default-catalog acceptance is claimed.
 

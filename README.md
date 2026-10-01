@@ -19,11 +19,14 @@ using the iOS app with Bluetooth disabled. Device reads were reproduced with
 See [CHANGELOG.md](CHANGELOG.md) for physical validation from Home Assistant.
 Synthetic tests do not establish physical operation.
 
-**Authentication requires an app-session capture; email/password setup is not
-implemented.** Independent login, actual session lifetime, and automatic renewal
-remain unverified. Logging out of the app was observed to revoke the shared
-session. After expiry or revocation, Home Assistant requests a new session from
-a fresh capture. Other limitations:
+**Version 0.2 adds email/password login and email verification for new HA
+installations.** The account flow keeps a password-equivalent SHA-256 digest and
+a stable installation ID. It renews rejected sessions automatically for reads;
+physical commands are never resubmitted automatically. Captured-session setup
+remains available, but those sessions require a new capture after revocation.
+
+Account authentication is undergoing end-to-end validation in the 0.2 beta.
+Other limitations:
 
 - The observed device-list request covers up to 20 entries; pagination is untested.
 - No access-code management, activity history, jam detection, or door-open sensor.
@@ -39,7 +42,9 @@ flowchart LR
     Entities --> Coordinator[Shared coordinator]
     Coordinator -->|HTTPS status and commands| Cloud[DESLOC cloud]
     Cloud <-->|Vendor device connection| Lock[C100 Plus]
-    App[DESLOC mobile app] -.->|Initial session capture| Setup[Configuration flow]
+    User -->|Email, password, optional email code| Setup[Configuration flow]
+    App[DESLOC mobile app] -.->|Optional session capture| Setup
+    Setup -->|Authenticate installation| Cloud
     Setup --> Coordinator
 ```
 
@@ -52,7 +57,7 @@ not cause automatic command retries. See [protocol details](docs/protocol.md).
 - Home Assistant **2026.9.1 or newer**; 2026.9.1 is the tested baseline.
 - C100 Plus already paired with DESLOC, with working cloud control.
 - HTTPS access from Home Assistant to `appadmin.desloc.com`.
-- A captured session for your own DESLOC account.
+- Your DESLOC account email and password, with access to its verification emails.
 
 ## Installation
 
@@ -80,17 +85,22 @@ battery/RSSI, and lock controls with mandatory unlock confirmation.
 
 ## Configuration
 
-Use [the capture guide](docs/authentication.md) to create the private
-`.private/ha-session.json` file. Enter its four fields in the setup form:
+Choose **Sign in with email and password**. Enter the same credentials used by
+the DESLOC app. If DESLOC requires verification for the new installation, enter
+the code sent to your email, then select your C100 Plus from the account's devices.
 
-- **App authorization token**: captured `authorization` header, unchanged.
-- **App device ID**: captured `deviceid` identifying the phone's app installation.
-- **App version**: captured `appversion`; tested value `1.2.1`.
-- **System type**: captured `systype`; tested iOS value `1`.
+To move an existing entry from a captured session to account login, open the
+entry menu under **Settings → Devices & services → DESLOC → Reconfigure**.
+The existing lock must be present in the new account; entity IDs are retained.
 
-Do not add a `Bearer` prefix, use the lock's ID as the app device ID, or substitute
-the separate IoT access token. Select the lock after validation. Each config
-entry represents one supported lock. Reauthentication retains the same identity.
+HA stores a password-equivalent digest, not the plaintext password or one-time
+code. Protect HA configuration and backups as credentials. Password changes,
+CAPTCHA, and security checks can require interactive reauthentication. The host
+clock must be synchronized.
+
+For the alternative **Use a captured app session** option, follow
+[the capture guide](docs/authentication.md). Its token belongs to the phone's
+installation and can be revoked when you sign out of the app.
 
 ## Entities
 

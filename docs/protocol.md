@@ -9,44 +9,70 @@ The business API `https://appadmin.desloc.com` requires `authorization`,
 `deviceid`, `appversion`, and `systype` headers. Removing any one caused rejection.
 The opaque authorization token is sent verbatim.
 
-A logout/login capture from iOS 1.2.1 established the following sequence:
+The app checks `POST /api/user/login/isNeedCaptcha` with `userName` first.
+If `data.isNeedCaptcha` is true, the integration stops and asks the user to
+complete the challenge in the official app.
 
-1. `POST /api/user/login/isNeedCaptcha` with `userName` checks whether CAPTCHA is
-   required. The observed successful response had `data.isNeedCaptcha: false`.
-2. `POST /api/user/login` sends `userName`, `password`, and `childAgreement: true`.
-   In this capture, `password` was a 160-character hexadecimal value, not the
-   password as typed. Its transformation has not been established.
-3. Successful login returns `data.accessToken`, `data.expireIn`, and `data.userId`.
-   That access token exactly matched the subsequent business API authorization.
-   The reported `expireIn` was `5184000`; units and actual expiry behavior have
-   not been independently verified.
-4. `POST /api/user/logout` revoked the session previously used by Home Assistant.
-   Supplying the newly captured session through HA reauthentication restored
-   device reads without changing the selected lock or sending a lock command.
+The password transformation was recovered from DESLOC Android 1.2.0 and matched
+to the iOS 1.2.1 login capture, including its millisecond timestamp:
 
-A single replay of the captured login body with a newly generated app device ID
-and the four minimal headers was rejected with business status `1103`. This does
-not establish whether the cause was the device ID, omitted headers, freshness,
-or another requirement. Replaying a saved login body is not a verified login or
-renewal mechanism. The integration still supports captured sessions only.
+1. Compute lowercase hexadecimal SHA-256 of UTF-8 `password + DEqFDHCkeOMGEZAq`.
+2. Append the current Unix timestamp in milliseconds as decimal text.
+3. Encode as UTF-8 and apply AES-256-CBC with PKCS#7 padding, a zero IV, and the
+   UTF-8 bytes of `2897ab5600b54465b5ea0a89d9a192c7` as the key.
+4. Send the ciphertext as lowercase hexadecimal in `password` to
+   `POST /api/user/login`, alongside `userName` and `childAgreement: true`.
+
+These constants provide vendor wire compatibility; they are not protection for
+stored credentials. The request still uses verified HTTPS without redirects.
+HA retains the derived digest as a password-equivalent secret.
+
+Business status `1103` means a new installation requires email verification.
+The app sends `POST /api/user/login/sendCode` with `userName`. A successful send
+returns `data.flag: 1`, with an interval/expiry. It then submits the login request
+with the **unencrypted digest** in `password` and the email verification `code`.
+The one-time code is not retained. Other observed/source-derived login statuses:
+
+- `1101`, `1102`, `1106`: account rejection or failed-attempt protection.
+- `1105`: invalid verification code.
+- `1109`: client time is not synchronized.
+
+Successful login returns `data.accessToken`, `data.expireIn`, and `data.userId`.
+The access token matched the subsequent business API authorization. Reported
+`expireIn` was `5184000`; actual expiry behavior has not been independently
+measured. The integration renews a rejected session on demand rather than
+assuming a lifetime. A lock command rejected during renewal is not replayed.
+
+`POST /api/user/logout` was observed to revoke the captured session used by HA.
+Captured-session reauthentication restored reads without changing the lock's
+identity. A full login replay using the original installation also succeeded;
+a fresh installation requested email verification. Stale password ciphertext
+can produce the clock error, so the client creates a new timestamp each time.
 
 ```mermaid
 sequenceDiagram
-    participant App as DESLOC app
-    participant Cloud as Business API
+    actor User
     participant HA as Home Assistant
-    App->>Cloud: Check CAPTCHA requirement
-    Cloud-->>App: CAPTCHA not required in observed login
-    App->>Cloud: Login with transformed password
-    Cloud-->>App: accessToken and expireIn
-    App->>Cloud: Device list with accessToken
-    Note over App,HA: Capture transfers the session to HA once
-    HA->>Cloud: Device list with captured session
-    App->>Cloud: Logout
-    HA->>Cloud: Device list with previous session
-    Cloud-->>HA: Authentication rejected
-    HA-->>HA: Request reauthentication
+    participant Cloud as DESLOC business API
+    User->>HA: Email and password
+    HA->>HA: Derive password digest and retain installation ID
+    HA->>Cloud: Check CAPTCHA requirement
+    HA->>Cloud: Login with digest and current time encrypted
+    alt New installation requires verification
+        Cloud-->>HA: 1103
+        HA->>Cloud: Send email code
+        User->>HA: Enter email code
+        HA->>Cloud: Login with digest and one-time code
+    end
+    Cloud-->>HA: Access token
+    HA->>Cloud: Fetch devices
+    User->>HA: Select C100 Plus
+    Note over HA,Cloud: Later, a rejected read session triggers one login and one read retry
 ```
+
+The 0.2 beta's email-code completion and independent-installation renewal still
+require end-to-end validation. Synthetic tests cover the implementation but do
+not substitute for that check.
 
 The app separately posts to `https://iot.desloc.com/oauth/token` with a URL-encoded
 form containing `appId` and `biz_token`. That returns an access token, refresh

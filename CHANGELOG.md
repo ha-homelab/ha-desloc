@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.0b1 — 2026-10-01
+
+- Add email/password setup and email verification for a new HA installation.
+- Store a password-equivalent digest and stable installation ID; never retain
+  the plaintext password or verification code.
+- Renew rejected sessions for reads, serialize concurrent logins, and never
+  replay a physical command after authentication failure.
+- Add reconfiguration from captured sessions while preserving the selected
+  lock and entity IDs; keep captured-session setup as a fallback.
+- Report CAPTCHA, account, verification, and clock errors without server bodies.
+
+Validation: 66 synthetic tests pass on Linux/Home Assistant 2026.9.1. The password
+transformation matches an observed iOS login. The beta is installed in HA;
+end-to-end email verification and login after reload remain under validation.
+The physical HA-cycle confirmation described below is still pending.
+
 ## 0.1.0 — 2026-10-01
 
 - Initial experimental C100 Plus cloud integration.

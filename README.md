@@ -14,6 +14,15 @@ D110 Plus, are admitted for community testing and marked **experimental**.
 Discovery is not a claim that their state reporting, commands, or PIN workflow
 are compatible. TTLock/Tuya accounts are not supported by this integration.
 
+![DESLOC C100 Plus dashboard card showing a reported locked state, battery, Wi-Fi signal, and controls](docs/images/lock-card-locked.jpg)
+
+Shown with the optional [DESLOC Lock Card](https://github.com/ha-homelab/ha-desloc-card).
+See the [screenshot walkthrough](docs/screenshots.md) for authentication,
+discovered devices, and the PIN user form.
+
+[Watch the 30-second interface overview](docs/media/desloc-overview.mp4)
+(silent, English captions) · [Video transcript](docs/video.md)
+
 ## Status and limitations
 
 The protocol and both command directions were captured from a real C100 Plus
@@ -49,16 +58,24 @@ Other limitations:
 
 ## Architecture
 
+Setup authenticates with DESLOC and adds every returned lock:
+
 ```mermaid
-flowchart LR
-    User[Home Assistant user] --> Entities[Lock and sensor entities]
-    Entities --> Coordinator[Coordinator for each lock]
-    Coordinator -->|HTTPS status and commands| Cloud[DESLOC cloud]
-    Cloud <-->|Vendor device connection| Lock[DESLOC locks]
-    User -->|Email, password, optional email code| Setup[Configuration flow]
-    App[DESLOC mobile app] -.->|Optional session capture| Setup
-    Setup -->|Authenticate installation| Cloud
-    Setup -->|Add all discovered locks| Coordinator
+flowchart TB
+    Auth["Email login<br/>or captured app session"]
+    Auth --> Setup["Home Assistant setup"]
+    Setup --> Discover["DESLOC cloud<br/>Authenticate and list locks"]
+    Discover --> Entries["All discovered locks<br/>One HA entry per lock"]
+```
+
+After setup, each lock has its own coordinator:
+
+```mermaid
+flowchart TB
+    Entities["HA lock and sensors"]
+    Entities --> Coordinator["Coordinator<br/>for this lock"]
+    Coordinator <-->|HTTPS| Cloud["DESLOC cloud"]
+    Cloud <-->|Vendor connection| Lock["Physical lock"]
 ```
 
 Normal polling runs once per minute per configured lock. Each physical command is sent **once**, with
@@ -198,6 +215,7 @@ works solely because it appears in HA.
 
 ## Documentation and contributions
 
+- [Screenshots and setup walkthrough](docs/screenshots.md)
 - [Session capture and cleanup](docs/authentication.md)
 - [Protocol, command sequence, and state machine](docs/protocol.md)
 - [Create a permanent PIN user](docs/pin-users.md)

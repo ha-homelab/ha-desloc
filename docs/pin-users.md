@@ -8,6 +8,8 @@ keypad were confirmed by the lock owner on Home Assistant 2026.9.1.
 
 ## Home Assistant form
 
+![Empty Add a permanent PIN user form with user name, new PIN, and repeat PIN fields](images/pin-user-form.jpg)
+
 1. Open **Settings → Devices & services → DESLOC**.
 2. Find the entry for the intended lock and click **Configure** (its gear icon). This opens
    **Add a permanent PIN user**.

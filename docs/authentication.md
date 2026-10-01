@@ -10,9 +10,12 @@ competing login. Email/password setup is also available, but a new login can
 invalidate the phone's session. In 0.2.0, automatic re-login repeatedly displaced
 the app; 0.2.1 removes that behavior.
 
-Both flows validate credentials by fetching the account's devices, then let you
-select a C100 Plus. The selected Bluetooth MAC remains its stable identity;
-reauthentication and reconfiguration cannot silently switch to another lock.
+Both flows validate credentials by fetching the account's devices, then
+automatically create an entry for every returned lock. Each Bluetooth MAC remains
+that entry's stable identity. Reauthentication/reconfiguration require the
+original lock to remain present, update the session for matching entries, and
+add newly found locks. They cannot silently retarget an existing entry. C100 Plus
+is physically tested; other model names are marked experimental.
 See [authentication details](protocol.md#authentication) for the password
 transformation, email verification, and session-rejection behavior.
 

@@ -2,6 +2,10 @@
 
 ## 0.3.0 — 2026-10-01
 
+- Add all account-returned locks automatically during setup/reconfiguration,
+  keeping a separate entry per lock and preserving existing entities.
+- Admit other model names for community testing, label them experimental, and
+  provide allowlisted compatibility diagnostics without credentials or identity.
 - Add an administrator settings form to create a regular permanent PIN user.
 - Validate name/PIN before writes, reject duplicate names, and never retain PINs
   in configuration or entity state.
@@ -10,11 +14,14 @@
   without automatic retries or deletion.
 - Serialize access changes with lock/unlock commands for the same lock.
 
-Validation: 92 tests pass on Linux/Home Assistant 2026.9.1, with HACS and
+Validation: 112 tests pass on Linux/Home Assistant 2026.9.1, with HACS and
 Hassfest validation passing. The full exchange was captured during real app
 creation with Bluetooth disabled. The user then created a new user through the
 HA Configure form and confirmed that its PIN works at the physical keypad.
-This validates the C100 Plus path; other models and regions remain unverified.
+Mixed-model discovery, peer reauthentication, duplicate prevention, pagination,
+and diagnostic privacy are covered by synthetic tests. The pagination cursor
+boundary was also probed read-only on the real account. Physical validation
+remains limited to C100 Plus; other models and regions remain unverified.
 
 ## 0.2.1 — 2026-10-01
 

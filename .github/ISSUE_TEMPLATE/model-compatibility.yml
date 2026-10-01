@@ -1,0 +1,40 @@
+name: Model compatibility report
+description: Report which features work or fail with a DESLOC model.
+title: "[Model] Compatibility report"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        C100 Plus is physically tested; other models are experimental. Please
+        share reproducible observations, not assumptions based on discovery.
+        Never include credentials, PINs, tokens, MACs, serials, or raw captures.
+  - type: input
+    id: model
+    attributes:
+      label: Lock model and firmware
+      placeholder: Model as reported by DESLOC; firmware version if available
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Integration, Home Assistant, and DESLOC app versions
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: Feature results
+      description: Describe discovery, reported bolt state, battery/Wi-Fi, lock/unlock, and PIN creation. Mark untested features as untested.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Failure and reproduction steps
+      description: Include the sanitized error and expected versus actual result. Do not repeatedly send a command after an uncertain result.
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Optional diagnostics
+      description: Download diagnostics from the DESLOC entry menu and review the file before attaching it. Do not attach raw traffic or HA configuration files.

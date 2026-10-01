@@ -13,8 +13,9 @@ from homeassistant.helpers.selector import TextSelector, TextSelectorConfig, Tex
 
 from .api import (AccountCredentials, Credentials, DeslocAuthError, DeslocCaptchaRequired,
     DeslocClient, DeslocClockError, DeslocError, DeslocInvalidCode, DeslocVerificationRequired,
-    DeslocUserExists, Device, validate_pin_user)
+    DeslocUserExists, validate_pin_user)
 from .const import CONF_CREDENTIALS, CONF_DEVICE_ID, CONF_MAC, DOMAIN
+from .discovery import ValidatedDevice, async_reconcile_devices, is_valid_handoff
 
 PASSWORD = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
 ACCOUNT_SCHEMA = vol.Schema({vol.Required("username"): str, vol.Required("password"): PASSWORD})
@@ -38,7 +39,6 @@ class DeslocConfigFlow(ConfigFlow, domain=DOMAIN):
     def __init__(self) -> None:
         self._credentials: Credentials | AccountCredentials | None = None
         self._client: DeslocClient | None = None
-        self._devices: list[Device] = []
         self._app_device_id = str(uuid4()).upper()
 
     def _target_entry(self):
@@ -51,19 +51,32 @@ class DeslocConfigFlow(ConfigFlow, domain=DOMAIN):
     async def _validated(self) -> ConfigFlowResult:
         assert self._client is not None and self._credentials is not None
         devices = await self._client.async_devices()
-        self._devices = [device for device in devices if device.model == "C100 Plus"]
         entry = self._target_entry()
+        auth_type = "account" if isinstance(self._credentials, AccountCredentials) else "session"
         if entry is not None:
-            device = next((d for d in self._devices if d.mac == entry.data[CONF_MAC]), None)
+            device = next((d for d in devices if d.mac == entry.data[CONF_MAC]), None)
             if device is None:
                 return self.async_abort(reason="device_mismatch")
+        if not devices:
+            return self.async_abort(reason="no_devices")
+        created = await async_reconcile_devices(
+            self.hass, devices, self._client.session_credentials, auth_type,
+            target=entry)
+        if entry is not None:
             return self.async_update_reload_and_abort(entry, data_updates={
                 CONF_CREDENTIALS: asdict(self._client.session_credentials), CONF_DEVICE_ID: device.id,
-                "auth_type": "account" if isinstance(self._credentials, AccountCredentials) else "session",
+                "auth_type": auth_type,
             })
-        if not self._devices:
-            return self.async_abort(reason="no_devices")
-        return await self.async_step_device()
+        return self.async_abort(reason="devices_added" if created else "devices_updated")
+
+    async def async_step_system(self, user_input: Any = None) -> ConfigFlowResult:
+        """Create one lock from an authenticated, in-process account handoff."""
+        if not is_valid_handoff(self.hass, user_input):
+            return self.async_abort(reason="invalid_discovery")
+        assert isinstance(user_input, ValidatedDevice)
+        await self.async_set_unique_id(user_input.device.mac)
+        self._abort_if_unique_id_configured()
+        return self.async_create_entry(title=user_input.device.name, data=user_input.entry_data())
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         return self.async_show_menu(step_id="user", menu_options=["account", "session"])
@@ -131,26 +144,6 @@ class DeslocConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_session(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         return await self._session_step("session", user_input)
-
-    async def async_step_device(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        choices = {str(d.id): f"{d.name} ({d.model})" for d in self._devices}
-        errors = {}
-        if user_input is not None:
-            device = next((d for d in self._devices if str(d.id) == user_input.get(CONF_DEVICE_ID)), None)
-            if device is None:
-                errors["base"] = "no_devices"
-            else:
-                await self.async_set_unique_id(device.mac)
-                self._abort_if_unique_id_configured()
-                assert self._credentials is not None
-                return self.async_create_entry(title=device.name, data={
-                    CONF_CREDENTIALS: asdict(self._client.session_credentials),
-                    "auth_type": "account" if isinstance(self._credentials, AccountCredentials) else "session",
-                    CONF_DEVICE_ID: device.id, CONF_MAC: device.mac,
-                })
-        return self.async_show_form(step_id="device", data_schema=vol.Schema({
-            vol.Required(CONF_DEVICE_ID): vol.In(choices),
-        }), errors=errors)
 
     async def async_step_reauth(self, entry_data: dict[str, Any]) -> ConfigFlowResult:
         if entry_data.get("auth_type") == "account":

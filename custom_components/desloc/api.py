@@ -20,6 +20,7 @@ from cryptography.hazmat.primitives.padding import PKCS7
 BASE_URL = "https://appadmin.desloc.com"
 LIST_PATH = "/api/device/list"
 LIST_REQUEST = {"groupId": 0, "size": 20}
+MAX_DEVICE_PAGES = 100
 
 
 class DeslocError(Exception):
@@ -312,10 +313,29 @@ class DeslocClient:
         return payload.get("data")
 
     async def async_devices(self) -> list[Device]:
-        data = await self._post(LIST_PATH, LIST_REQUEST)
-        if not isinstance(data, list) or any(not isinstance(row, dict) for row in data):
-            raise DeslocProtocolError("DESLOC device list is malformed")
-        return [Device.from_json(row) for row in data]
+        """Read vendor cursor pages without filtering model names."""
+        request = dict(LIST_REQUEST)
+        devices: dict[str, Device] = {}
+        cursors: set[int] = set()
+        for _ in range(MAX_DEVICE_PAGES):
+            data = await self._post(LIST_PATH, request)
+            if not isinstance(data, list) or any(not isinstance(row, dict) for row in data):
+                raise DeslocProtocolError("DESLOC device list is malformed")
+            for row in data:
+                device = Device.from_json(row)
+                if (existing := devices.get(device.mac)) is not None and existing.id != device.id:
+                    raise DeslocProtocolError("DESLOC device list has conflicting identities")
+                devices.setdefault(device.mac, device)
+            if len(data) < LIST_REQUEST["size"]:
+                return list(devices.values())
+            # The app's list request/response use a Long sortFlag cursor.
+            # Last-row exclusion was verified with a read-only size=1 probe.
+            cursor = integer(data[-1].get("sortFlag"))
+            if cursor is None or cursor in cursors:
+                raise DeslocProtocolError("DESLOC pagination did not advance")
+            cursors.add(cursor)
+            request = {**LIST_REQUEST, "sortFlag": cursor}
+        raise DeslocProtocolError("DESLOC device list exceeded the pagination limit")
 
     async def async_access_users(self, device_id: int) -> list[dict[str, Any]]:
         data = await self._post("/api/access/user/list", {"deviceId": str(device_id)})

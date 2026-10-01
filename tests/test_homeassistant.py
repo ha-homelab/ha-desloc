@@ -39,19 +39,17 @@ async def test_coordinator_errors(hass, entry):
         await coordinator._async_update_data()
 
 
-async def test_config_flow_selects_actual_device(hass, row):
+async def test_config_flow_reconciles_actual_devices_without_a_picker(hass, row):
     flow = DeslocConfigFlow()
     flow.hass = hass
     flow.context = {"source": "user"}
     with patch("custom_components.desloc.config_flow.async_get_clientsession"), patch(
         "custom_components.desloc.config_flow.DeslocClient.async_devices", return_value=[Device.from_json(row)]
-    ):
+    ), patch("custom_components.desloc.config_flow.async_reconcile_devices", return_value=1) as reconcile:
         result = await flow.async_step_session({"token": "test-secret", "app_device_id": "test-phone"})
-    assert result["step_id"] == "device"
-    result = await flow.async_step_device({"device_id": "123"})
-    assert result["type"] == "create_entry"
-    assert result["data"]["mac"] == "001122334455"
-    assert result["data"]["device_id"] == 123
+    assert result["reason"] == "devices_added"
+    assert reconcile.call_args.args[1] == [Device.from_json(row)]
+    assert reconcile.call_args.args[2] == Credentials("test-secret", "test-phone")
 
 
 async def test_config_flow_invalid_session(hass):
@@ -88,7 +86,7 @@ async def test_reauth_updates_session_and_reloads(hass, entry, row):
         flow, "async_update_reload_and_abort", return_value={"type": "abort", "reason": "reauth_successful"}
     ) as update, patch("custom_components.desloc.config_flow.async_get_clientsession"), patch(
         "custom_components.desloc.config_flow.DeslocClient.async_devices", return_value=[Device.from_json(row)]
-    ):
+    ), patch("custom_components.desloc.config_flow.async_reconcile_devices", return_value=0):
         result = await flow.async_step_reauth_confirm({"token": "new-secret", "app_device_id": "new-phone"})
     assert result["reason"] == "reauth_successful"
     assert update.call_args.kwargs["data_updates"]["credentials"]["token"] == "new-secret"
@@ -119,14 +117,12 @@ async def test_full_setup_entities_and_unload(hass, row):
         result = await hass.config_entries.flow.async_configure(result["flow_id"], {
             "token": "test-secret", "app_device_id": "test-phone",
         })
-        assert result["step_id"] == "device"
-        result = await hass.config_entries.flow.async_configure(result["flow_id"], {"device_id": "123"})
-        assert result["type"] == "create_entry"
+        assert result["reason"] == "devices_added"
         await hass.async_block_till_done()
         states = hass.states.async_all("sensor")
         assert sorted(state.state for state in states) == ["-41", "55"]
         assert [state.state for state in hass.states.async_all("lock")] == ["locked"]
-        entry = result["result"]
+        entry = hass.config_entries.async_entries("desloc")[0]
         original_entities = {state.entity_id for state in hass.states.async_all()
                              if state.domain in ("sensor", "lock")}
         # Exercise the real migration/reload path, including account dataclass

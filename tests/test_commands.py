@@ -70,3 +70,13 @@ async def test_busy_command_rejected(hass, entry, row):
             await coordinator.async_set_locked(False)
     api.async_switch_lock.assert_not_called()
     await coordinator.async_shutdown()
+
+async def test_unavailable_status_blocks_command_without_api_call(hass, entry, row):
+    """No lock mutation when coordinator has no confirmed device status."""
+    api = AsyncMock()
+    coordinator = DeslocCoordinator(hass, entry, api)
+    assert coordinator.data is None
+    with pytest.raises(HomeAssistantError, match="status is unavailable"):
+        await coordinator.async_set_locked(True)
+    api.async_switch_lock.assert_not_called()
+    await coordinator.async_shutdown()

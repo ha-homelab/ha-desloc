@@ -1,9 +1,11 @@
 """No physical commands: command and cloud responses are synthetic."""
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import device_registry as dr
 
+from custom_components.desloc.account import DeslocAccount
 from custom_components.desloc.api import Device, DeslocConnectionError, DeslocCommandTimeout
 from custom_components.desloc.coordinator import DeslocCoordinator
 
@@ -80,3 +82,25 @@ async def test_unavailable_status_blocks_command_without_api_call(hass, entry, r
         await coordinator.async_set_locked(True)
     api.async_switch_lock.assert_not_called()
     await coordinator.async_shutdown()
+
+
+async def test_command_confirmation_bypasses_shared_account_snapshot(hass, entry, row):
+    dr.async_setup(hass)
+    await dr.async_load(hass)
+    original = Device.from_json(row)
+    fresh = Device.from_json(dict(row, doorState=1, doorStateUpdateTime=original.door_state_updated_ms + 1000))
+    api = Mock(
+        raise_if_blocked=Mock(),
+        async_devices=AsyncMock(side_effect=[[original], [fresh]]),
+        async_switch_lock=AsyncMock(return_value="synthetic-command"),
+        async_command_complete=AsyncMock(return_value=True),
+    )
+    account = DeslocAccount(api)
+    coordinator = DeslocCoordinator(hass, entry, api, account=account)
+    coordinator.async_set_updated_data((await account.async_devices())[0])
+    await coordinator.async_set_locked(False)
+    assert coordinator.is_locked is False
+    assert api.async_devices.await_count == 2
+    api.async_switch_lock.assert_awaited_once_with(123, unlock=True)
+    await coordinator.async_shutdown()
+    await account.async_close()

@@ -13,9 +13,10 @@ from homeassistant.helpers.selector import TextSelector, TextSelectorConfig, Tex
 
 from .api import (AccountCredentials, Credentials, DeslocAuthError, DeslocCaptchaRequired,
     DeslocClient, DeslocClockError, DeslocError, DeslocInvalidCode, DeslocVerificationRequired,
-    DeslocUserExists, validate_pin_user)
+    DeslocExistingUserPinUnconfirmed, DeslocUserExists, validate_pin_user)
 from .const import CONF_CREDENTIALS, CONF_DEVICE_ID, CONF_MAC, DOMAIN
 from .discovery import ValidatedDevice, async_reconcile_devices, is_valid_handoff
+from .coordinator import DeslocCommandInProgress, DeslocPinPreflightFailed, DeslocUnavailable
 
 PASSWORD = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
 ACCOUNT_SCHEMA = vol.Schema({vol.Required("username"): str, vol.Required("password"): PASSWORD})
@@ -181,8 +182,16 @@ class DeslocOptionsFlow(OptionsFlow):
                 self._submitted = True
                 try:
                     await coordinator.async_add_pin_user(user_input["name"], user_input["pin"])
+                except DeslocExistingUserPinUnconfirmed:
+                    return self.async_abort(reason="existing_user_pin_unconfirmed")
                 except DeslocUserExists:
                     return self.async_abort(reason="user_exists")
+                except DeslocCommandInProgress:
+                    return self.async_abort(reason="command_in_progress")
+                except DeslocUnavailable:
+                    return self.async_abort(reason="unavailable")
+                except DeslocPinPreflightFailed:
+                    return self.async_abort(reason="pin_preflight_failed")
                 except HomeAssistantError:
                     return self.async_abort(reason="pin_creation_uncertain")
                 # No user name, PIN, or operation details are persisted in HA options.

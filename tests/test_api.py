@@ -2,7 +2,8 @@ import aiohttp
 import pytest
 
 from custom_components.desloc.api import (
-    Credentials, DeslocAuthError, DeslocConnectionError, DeslocProtocolError, Device, DeslocCommandTimeout,
+    Credentials, DeslocAuthError, DeslocConnectionError, DeslocProtocolError,
+    DeslocRateLimitError, Device, DeslocCommandTimeout,
 )
 
 
@@ -33,7 +34,7 @@ async def test_auth_failure_not_retried(transport, http_status, business_status)
     session.post.assert_called_once()
 
 
-@pytest.mark.parametrize("status", [302, 404, 429, 500])
+@pytest.mark.parametrize("status", [302, 404, 500])
 async def test_http_failures(transport, status):
     api, session, response, context = transport
     response.status = status
@@ -70,6 +71,49 @@ async def test_non_json_body(transport):
     response.json.side_effect = ValueError("test-secret")
     with pytest.raises(DeslocProtocolError):
         await api.async_devices()
+
+
+async def test_wrong_content_type_is_protocol_error_without_replaying_command(transport):
+    api, session, response, _ = transport
+    response.json.side_effect = aiohttp.ContentTypeError(
+        request_info=None, history=(), message="private-server-body")
+    with pytest.raises(DeslocProtocolError, match="not JSON") as error:
+        await api.async_switch_lock(123, unlock=True)
+    assert "private-server-body" not in str(error.value)
+    session.post.assert_called_once()
+
+
+async def test_rate_limit_blocks_reads_and_writes_without_replay(transport):
+    api, session, response, _ = transport
+    response.status = 429
+    with pytest.raises(DeslocRateLimitError):
+        await api.async_devices()
+    for operation in (
+        api.async_devices(), api.async_switch_lock(123, unlock=True),
+        api.async_create_access_user(123, "Synthetic guest"),
+        api.async_add_pin(456, "Synthetic guest", "825194"),
+    ):
+        with pytest.raises(DeslocRateLimitError):
+            await operation
+    session.post.assert_called_once()
+    # Expiry permits a new read; it never schedules a delayed command.
+    api._rate_limited_until = 0
+    response.status = 200
+    assert await api.async_devices()
+    assert session.post.call_count == 2
+    assert all(call.args[0].endswith("/api/device/list") for call in session.post.call_args_list)
+
+
+async def test_rate_limited_command_is_not_retried_after_backoff(transport):
+    api, session, response, _ = transport
+    response.status = 429
+    with pytest.raises(DeslocRateLimitError):
+        await api.async_switch_lock(123, unlock=True)
+    api._rate_limited_until = 0
+    response.status = 200
+    await api.async_devices()
+    paths = [call.args[0] for call in session.post.call_args_list]
+    assert sum(path.endswith("remoteSwitchLock") for path in paths) == 1
 
 
 def test_unknown_states_stay_raw_and_battery_zero_is_valid(row):

@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import UpdateFailed
+from homeassistant.helpers import device_registry as dr
 
 from custom_components.desloc.api import Credentials, DeslocAuthError, DeslocConnectionError, Device
 from custom_components.desloc.config_flow import DeslocConfigFlow
@@ -12,6 +13,8 @@ from custom_components.desloc.sensor import DESCRIPTIONS, DeslocSensor
 
 
 async def test_coordinator_disappearing_device_and_sensor(hass, entry, row):
+    dr.async_setup(hass)
+    await dr.async_load(hass)
     api = AsyncMock()
     device = Device.from_json(row)
     api.async_devices.return_value = [device]
@@ -125,6 +128,35 @@ async def test_full_setup_entities_and_unload(hass, row):
         entry = hass.config_entries.async_entries("desloc")[0]
         original_entities = {state.entity_id for state in hass.states.async_all()
                              if state.domain in ("sensor", "lock")}
+        registry = dr.async_get(hass)
+        registered = registry.async_get_device_by_identifier(("desloc", entry.unique_id), entry.entry_id)
+        original_device_id = registered.id
+        registry.async_update_device(registered.id, name_by_user="My chosen door name")
+        row.update(deviceName="Renamed in DESLOC", model="D110 Plus", firmwareVersion="updated-firmware")
+        await entry.runtime_data.account.async_devices(force_refresh=True)
+        await entry.runtime_data.async_refresh()
+        updated = registry.async_get(original_device_id)
+        assert updated.name == "Renamed in DESLOC"
+        assert updated.model == "D110 Plus"
+        assert updated.sw_version == "updated-firmware"
+        assert updated.name_by_user == "My chosen door name"
+        assert updated.identifiers == {("desloc", entry.unique_id)}
+        assert {state.entity_id for state in hass.states.async_all()
+                if state.domain in ("sensor", "lock")} == original_entities
+        assert hass.states.async_all("lock")[0].attributes["model_validation"] == "experimental"
+        # Missing data and failed refreshes must not erase registry metadata.
+        with patch.object(entry.runtime_data.client, "async_devices", return_value=[]):
+            await entry.runtime_data.account.async_devices(force_refresh=True)
+            await entry.runtime_data.async_refresh()
+        assert registry.async_get(original_device_id) == updated
+        with patch.object(entry.runtime_data.client, "async_devices", side_effect=DeslocConnectionError("Offline")):
+            # A fresh read fails; the account discards its previous snapshot.
+            try:
+                await entry.runtime_data.account.async_devices(force_refresh=True)
+            except DeslocConnectionError:
+                pass
+            await entry.runtime_data.async_refresh()
+        assert registry.async_get(original_device_id) == updated
         # Exercise the real migration/reload path, including account dataclass
         # reconstruction and entity registry identity preservation.
         reconfigure = await hass.config_entries.flow.async_init("desloc", context={

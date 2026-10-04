@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.3.1b1 — 2026-10-04
+
+- Distinguish busy, unavailable, and failed preflight PIN requests from writes
+  whose completion is uncertain.
+- Explain when an existing user has no confirmed PIN record. Existing-user
+  checks never attach a PIN, retry creation, or delete a user automatically.
+- Share complete device-list snapshots and in-flight requests between locks
+  using the same saved session. Command confirmation requests fresh data.
+- Pause requests after HTTP 429 without replaying lock or PIN writes, and
+  classify non-JSON responses as protocol errors.
+- Refresh device names, models, and firmware in the HA device registry while
+  preserving identifiers and user-assigned names.
+
+This is a prerelease for opt-in testing. These changes are validated with
+synthetic tests; they do not add new physical-device compatibility claims.
+
 ## 0.3.0 — 2026-10-01
 
 - Add all account-returned locks automatically during setup/reconfiguration,

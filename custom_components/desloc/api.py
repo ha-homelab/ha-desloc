@@ -21,6 +21,7 @@ BASE_URL = "https://appadmin.desloc.com"
 LIST_PATH = "/api/device/list"
 LIST_REQUEST = {"groupId": 0, "size": 20}
 MAX_DEVICE_PAGES = 100
+RATE_LIMIT_SECONDS = 60
 
 
 class DeslocError(Exception):
@@ -55,12 +56,20 @@ class DeslocProtocolError(DeslocError):
     """The server returned an unsupported response."""
 
 
+class DeslocRateLimitError(DeslocError):
+    """The server asked this session to pause requests; no action is replayed."""
+
+
 class DeslocCommandTimeout(DeslocError):
     """The cloud no longer has a confirmed result for the command."""
 
 
 class DeslocUserExists(DeslocError):
     """A user with that name already exists; no write was attempted."""
+
+
+class DeslocExistingUserPinUnconfirmed(DeslocUserExists):
+    """An existing user has no confirmed PIN record with the same label."""
 
 
 def encrypt_vendor_text(value: str) -> str:
@@ -194,8 +203,18 @@ class DeslocClient:
         self._credentials = credentials if isinstance(credentials, Credentials) else None
         self._login_lock = asyncio.Lock()
         self._auth_blocked: DeslocAuthError | None = None
+        self._rate_limited_until = 0.0
+
+    def raise_if_blocked(self) -> None:
+        """Check before cached reads too: rejected sessions must stay rejected."""
+        if self._auth_blocked is not None:
+            raise self._auth_blocked
+        if time.monotonic() < self._rate_limited_until:
+            raise DeslocRateLimitError("DESLOC rate limit reached; wait before trying again")
 
     async def _raw_request(self, path: str, body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
+        if time.monotonic() < self._rate_limited_until:
+            raise DeslocRateLimitError("DESLOC rate limit reached; wait before trying again")
         try:
             async with self._session.post(
                 BASE_URL + path, headers=headers, json=body,
@@ -203,9 +222,14 @@ class DeslocClient:
             ) as response:
                 if response.status in (401, 403):
                     raise DeslocAuthError("DESLOC session was rejected")
+                if response.status == 429:
+                    self._rate_limited_until = time.monotonic() + RATE_LIMIT_SECONDS
+                    raise DeslocRateLimitError("DESLOC rate limit reached; wait before trying again")
                 if response.status != 200:
                     raise DeslocProtocolError(f"DESLOC HTTP status {response.status}")
                 payload = await response.json()
+        except aiohttp.ContentTypeError:
+            raise DeslocProtocolError("DESLOC response is not JSON") from None
         except (aiohttp.ClientError, TimeoutError):
             raise DeslocConnectionError("DESLOC request failed") from None
         except ValueError:

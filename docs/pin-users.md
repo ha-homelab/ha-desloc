@@ -64,6 +64,16 @@ it may still have reached the server or lock. Check the DESLOC app before
 starting another attempt. The integration never retries writes, changes an
 existing user, or deletes a partially created user automatically.
 
+The form distinguishes a busy lock, unavailable status, or a failed read before
+any write from an uncertain write result. When a matching user already exists,
+HA reads that user's details without changing them. If the installed PIN record
+with the user's label is not confirmed, the form directs you to inspect and
+manage that user in the DESLOC app. This can help after a partially completed
+attempt, but it does not prove that HA created the existing user. A confirmed
+record also does not compare the PIN you entered with the existing PIN. Finish
+or remove an incomplete user in the DESLOC app before starting a new HA attempt;
+HA never attaches a new PIN to an existing user automatically.
+
 The operation has a 60-second deadline and cannot overlap a lock/unlock command
 for the same entry. Read-only state polling continues normally. A successful
 cloud result establishes the reported installation, not physical keypad testing.

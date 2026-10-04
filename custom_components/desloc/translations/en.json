@@ -87,10 +87,13 @@
       "invalid_pin_user": "Enter a name of 1–24 characters and a PIN of 6–8 digits."
     },
     "abort": {
-      "unavailable": "The lock integration is unavailable. Restore its connection first.",
+      "unavailable": "The lock integration is unavailable. No changes were attempted. Restore its connection first.",
       "already_submitted": "This request was already submitted. Check DESLOC before starting another.",
-      "user_exists": "A user with this name already exists. No changes were made.",
-      "pin_creation_uncertain": "PIN creation was not confirmed. The user or PIN may already exist. Check the DESLOC app before trying again."
+      "user_exists": "A user with this name already exists. No changes were made, and the PIN you entered was not installed or compared with the existing PIN. Manage this user in the DESLOC app.",
+      "pin_creation_uncertain": "PIN creation was not confirmed. The user or PIN may already exist. Check the DESLOC app before trying again.",
+      "command_in_progress": "Another command is already in progress for this lock. No changes were attempted. Wait for it to finish before starting a new request.",
+      "pin_preflight_failed": "Could not check the existing users or PIN records. No changes were attempted. Restore the connection or reauthenticate if required, then check the DESLOC app before trying again.",
+      "existing_user_pin_unconfirmed": "A user with this name already exists, but an installed PIN record with its name was not confirmed. No changes were made. Check and manage this user in the DESLOC app before trying again; Home Assistant will not add a PIN to an existing user."
     }
   }
 }

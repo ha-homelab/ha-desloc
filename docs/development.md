@@ -5,6 +5,20 @@ parsing, `coordinator.py` handles polling and command confirmation, `config_flow
 handles setup/reauthentication, and entity modules expose state. Mimic is a
 development dependency only.
 
+`account.py` shares the transport and a complete device-list snapshot between
+loaded lock entries with identical saved session credentials, including the app
+installation ID and request headers. Normal polls reuse the snapshot for at most
+five seconds and share an in-flight paginated read. Lock command confirmation
+bypasses the cache and waits for a request started after confirmation polling
+begins; an older in-flight read cannot confirm the command. A cancelled waiter
+does not cancel other locks' shared read. Unloading the last entry, including
+failed setup, releases the session and any remaining request task.
+
+HTTP 429 pauses new requests from the shared session for 60 seconds. It never
+replays a lock command, user creation, or PIN write. A rejected authentication
+session remains blocked even when a successful device snapshot was cached.
+Changing saved credentials creates a separate session during reauthentication.
+
 ## Validation
 
 Use Linux and Python 3.14:

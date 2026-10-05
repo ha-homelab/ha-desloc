@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1rc1 — 2026-10-04
+
+Promote 0.3.1b1 to a release candidate with identical runtime code. The beta
+passed 152 synthetic tests; this candidate is intended for Home Assistant
+deployment validation. No runtime behavior or model-compatibility changes are
+introduced by this promotion.
+
 ## 0.3.1b1 — 2026-10-04
 
 - Distinguish busy, unavailable, and failed preflight PIN requests from writes

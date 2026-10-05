@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.1 — 2026-10-05
+
+- Promote the installed 0.3.1rc1 candidate to stable with unchanged runtime code.
+- Clarify PIN preflight failures and recovery when an existing user has no
+  confirmed PIN record; never retry or remove an access record automatically.
+- Share account polling between locks while requiring fresh command confirmation.
+- Back off after HTTP 429 without replaying writes, and sanitize protocol errors.
+- Refresh device registry metadata while preserving device identity and custom names.
+
+Validation: 152 automated integration tests. The release candidate was installed
+on Home Assistant 2026.9.1, loaded successfully, and completed cloud polling.
+Promotion does not claim a new physical lock/unlock or PIN test and does not
+change model compatibility.
+
 ## 0.3.1rc1 — 2026-10-04
 
 Promote 0.3.1b1 to a release candidate with identical runtime code. The beta

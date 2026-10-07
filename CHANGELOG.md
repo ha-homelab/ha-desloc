@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.2 — 2026-10-06
+
+- Display the stable integration as **DESLOC** in Home Assistant, HACS, and the
+  English/Russian setup titles, removing the old project-wide experimental label.
+- Align the current installation and publishing documentation with that name.
+- Keep model-specific compatibility labels and the documented cloud/API limits.
+
+This is a naming and documentation update. Authentication, polling, lock/PIN
+commands, entity IDs, and model compatibility are unchanged.
+
 ## 0.3.1 — 2026-10-05
 
 - Promote the installed 0.3.1rc1 candidate to stable with unchanged runtime code.

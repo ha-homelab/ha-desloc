@@ -3,7 +3,7 @@
 [![Tests](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml/badge.svg)](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-An **unofficial, experimental cloud integration** for locks linked to the
+An **unofficial cloud integration** for locks linked to the
 **DESLOC mobile app**. It automatically adds every lock returned by the account
 during setup. **C100 Plus is maintainer-tested; D110 Plus is community-reported
 working.** It provides lock/unlock controls, reported bolt state, battery
@@ -108,7 +108,7 @@ works without it.
 1. If needed, [install and configure HACS](https://www.hacs.xyz/docs/use/download/download/).
 2. Open **HACS → ⋮ → Custom repositories**.
 3. Enter `https://github.com/ha-homelab/ha-desloc` and choose **Integration**.
-4. Find **DESLOC (experimental)** in HACS and choose **Download**. Select the
+4. Find **DESLOC** in HACS and choose **Download**. Select the
    latest numbered release without a `b`/`rc` suffix, rather than `main` or a
    prerelease. Leave beta versions disabled for normal use.
 5. Restart Home Assistant, then open **Settings → Devices & services → Add

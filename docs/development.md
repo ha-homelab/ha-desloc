@@ -25,7 +25,7 @@ Use Linux and Python 3.14:
 
 ```sh
 uv venv --python 3.14 .venv-ha
-uv pip install --python .venv-ha/bin/python -r requirements-dev.txt
+uv pip install --python .venv-ha/bin/python --require-hashes -r requirements-dev.txt
 .venv-ha/bin/python -m pytest -q
 ```
 

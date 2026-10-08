@@ -95,6 +95,8 @@ not cause automatic command retries. See [protocol details](docs/protocol.md).
   C100 Plus is maintainer-tested and D110 Plus has a community success report;
   see [model compatibility](docs/compatibility.md) for details.
 - HTTPS access from Home Assistant to `appadmin.desloc.com`.
+  Keep the [verified HTTPS runtime profile](docs/security-design.md#supported-https-runtime-profile);
+  the documented local check reports the actual host TLS settings.
 - A captured app session, or your DESLOC account email/password and verification email access.
 
 ## Installation

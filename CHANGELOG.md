@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Document the vendor login digest's offline password-guessing risk, the limits
+  of its fixed AES wrapper, and credential/capture handling mitigations. This
+  clarifies the existing protocol; it does not change or fix vendor authentication.
 - Lock Python dependencies and verify downloaded archive SHA-256 hashes in CI and
   documented installation commands.
 - Update the isolated Home Assistant test runtime from 2026.9.1 to 2026.10.0,

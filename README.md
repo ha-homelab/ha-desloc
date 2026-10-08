@@ -250,3 +250,9 @@ pinned to `8cf998ac0b365806d8e522d34107cc504ecaa345`. The runtime uses Home
 Assistant's shared `aiohttp` session; no proxy, mimic, or open app is required
 after setup. Source and original project artwork are [MIT-licensed](LICENSE).
 DESLOC names and trademarks belong to their respective owners.
+
+## Project maintenance
+
+See [contribution and test requirements](CONTRIBUTING.md), the
+[security reporting policy](SECURITY.md), [security design](docs/security-design.md),
+and the [OpenSSF evidence and remaining criteria](docs/openssf-evidence.md).

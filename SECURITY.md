@@ -10,6 +10,14 @@ Remove the temporary capture profile/proxy after setup. If a session is exposed,
 use vendor account controls and contact DESLOC for revocation guidance; this
 project has not established a revocation API.
 
+The vendor's password-login protocol uses a fast SHA-256 digest with a fixed
+suffix. Anyone who obtains that digest can attempt offline password guessing;
+the protocol's public fixed AES key does not protect a captured login body.
+Use a strong, unique account password and retain verified HTTPS. The integration
+does not log the password/digest or save them in config entries. A compatible
+server-side protocol change is needed to remove this limitation. See the
+[authentication protocol and mitigations](docs/protocol.md#authentication).
+
 Report vulnerabilities through the
 [private vulnerability reporting form](https://github.com/ha-homelab/ha-desloc/security/advisories/new).
 Do not publish working tokens or authenticated unlock requests in issues.

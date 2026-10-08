@@ -28,6 +28,17 @@ stored credentials. The request still uses verified HTTPS without redirects.
 The digest is held only during interactive setup. HA saves the resulting session
 token and installation ID, not the password or digest.
 
+The fixed suffix does not prevent offline password guessing if an attacker
+obtains the digest. The public AES key and zero IV do not add secrecy to a
+captured login body; TLS is the transport protection. Use a strong, unique
+DESLOC account password, preserve certificate verification, and keep captures,
+temporary proxy CA material and session data private. The integration does not
+log the password/digest or retain them in saved entries. Changing this wire
+derivation requires a compatible vendor endpoint; replacing SHA-256 locally
+would break authentication. Importing an existing app session avoids deriving a
+password digest in this client, but does not repair the vendor's login protocol.
+See [security reporting and exposure response](../SECURITY.md).
+
 Business status `1103` means a new installation requires email verification.
 The app sends `POST /api/user/login/sendCode` with `userName`. A successful send
 returns `data.flag: 1`, with an interval/expiry. It then submits the login request

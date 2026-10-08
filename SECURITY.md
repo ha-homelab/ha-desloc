@@ -10,10 +10,9 @@ Remove the temporary capture profile/proxy after setup. If a session is exposed,
 use vendor account controls and contact DESLOC for revocation guidance; this
 project has not established a revocation API.
 
-Report vulnerabilities through GitHub's private vulnerability reporting when
-available. Otherwise contact the maintainer via their GitHub profile to arrange
-a private channel before sharing sensitive details. Do not publish working
-tokens or authenticated unlock requests in issues.
+Report vulnerabilities through the
+[private vulnerability reporting form](https://github.com/ha-homelab/ha-desloc/security/advisories/new).
+Do not publish working tokens or authenticated unlock requests in issues.
 
 Only the latest release receives fixes. Unknown session lifetime and changes to
 the undocumented cloud API remain experimental limitations.

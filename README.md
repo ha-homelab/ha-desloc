@@ -89,7 +89,8 @@ not cause automatic command retries. See [protocol details](docs/protocol.md).
 
 ## Requirements
 
-- Home Assistant **2026.9.1 or newer**; 2026.9.1 is the tested baseline.
+- Home Assistant **2026.9.1 or newer**; 2026.9.1 is the physical validation baseline; the current synthetic CI
+  runtime is 2026.10.0. Keep the installed HA instance updated independently.
 - Locks already paired with the DESLOC app, with working cloud control.
   C100 Plus is maintainer-tested and D110 Plus has a community success report;
   see [model compatibility](docs/compatibility.md) for details.

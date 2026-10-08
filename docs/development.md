@@ -21,11 +21,12 @@ Changing saved credentials creates a separate session during reauthentication.
 
 ## Validation
 
-Use Linux and Python 3.14:
+Use Linux and Python 3.14.2 or newer. The locked synthetic test runtime is
+Home Assistant 2026.10.0:
 
 ```sh
 uv venv --python 3.14 .venv-ha
-uv pip install --python .venv-ha/bin/python -r requirements-dev.txt
+uv pip install --python .venv-ha/bin/python --require-hashes -r requirements-dev.txt
 .venv-ha/bin/python -m pytest -q
 ```
 
@@ -33,9 +34,12 @@ Tests use synthetic data, never call DESLOC, and never move a physical lock. The
 include real Home Assistant flow/platform loading, invalid authentication,
 timeouts, stale reports, and ensuring failed commands are not retried.
 
-On macOS, assertions passed but Python crashed during finalization with 3.14.2
-and 3.14.7. This remains unresolved. Linux runs complete normally and are the
-runtime validation target.
+The current locked Home Assistant 2026.10.0 environment also completes all 152
+synthetic tests on macOS with Python 3.14.7. Earlier runs with Home Assistant
+2026.9.1 crashed during interpreter finalization on macOS; that outcome was not
+reproduced with the updated lock. Linux CI remains the required runtime target.
+Third-party `backoff` deprecation warnings about Python 3.16 remain visible; they
+do not affect the supported Python 3.14 test runtime.
 
 An optional helper tests in an existing HA container that already has pytest:
 

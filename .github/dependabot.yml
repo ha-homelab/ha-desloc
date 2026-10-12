@@ -4,3 +4,8 @@ updates:
     directory: /
     schedule:
       interval: daily
+    groups:
+      # CodeQL steps share configuration and must use the same action release.
+      codeql:
+        patterns:
+          - "github/codeql-action/*"

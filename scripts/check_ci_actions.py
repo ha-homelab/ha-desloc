@@ -5,7 +5,7 @@ import re
 import yaml
 from yaml.nodes import MappingNode, ScalarNode, SequenceNode
 
-USES = re.compile(r"^\s*(?:-\s*)?uses:\s*['\"]?(github/codeql-action/(?:init|autobuild|analyze|upload-sarif))@([^\s'\"]+)['\"]?\s*(?:#\s*(.*))?$")
+USES = re.compile(r"^\s*(?:-\s*)?uses:\s*['\"]?((?i:github/codeql-action)/(?:init|autobuild|analyze|upload-sarif))@([^\s'\"]+)['\"]?\s*(?:#\s*(.*))?$")
 
 
 def mapping(node):
@@ -47,7 +47,7 @@ def validate(sources):
     for filename, source in sources.items():
         lines = source.splitlines()
         for step, reference in step_references(source):
-            if not reference.value.startswith("github/codeql-action/"):
+            if not reference.value.lower().startswith("github/codeql-action/"):
                 continue
             number = reference.start_mark.line + 1
             line = lines[number - 1]

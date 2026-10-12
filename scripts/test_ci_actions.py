@@ -60,6 +60,15 @@ class CodeQLUpdateTests(unittest.TestCase):
         """Like Renovate, read the full version token before explanation."""
         validate({"ci.yml": self.workflow(self.line("init", version="v4.38.3 security scanner"))})
 
+    def test_repository_names_are_case_insensitive(self):
+        """GitHub owner/repository casing must not bypass the pin check."""
+        valid = self.line("init").replace("github/codeql-action", "GitHub/CodeQL-Action")
+        validate({"ci.yml": self.workflow(valid)})
+        for pin in ("v4", "b" * 40):
+            with self.subTest(pin=pin), self.assertRaises(ValueError):
+                extra = f"- uses: GitHub/CodeQL-Action/analyze@{pin} # v4.38.3"
+                validate({"ci.yml": self.workflow(self.line("init") + "\n" + extra)})
+
 
 if __name__ == "__main__":
     unittest.main()

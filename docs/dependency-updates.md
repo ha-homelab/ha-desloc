@@ -12,9 +12,19 @@ enabled. Old standalone Actions PRs should be closed once a grouped PR supersede
 them.
 
 All CodeQL steps, including SARIF uploads, must use the same immutable SHA and
-full release comment. `python3 scripts/check_ci_actions.py` checks this in CI.
-Run its regression cases with
-`python3 -m unittest discover -s scripts -p 'test_ci_actions.py'`.
+full release comment. Use block-form CodeQL steps: the guard parses executable
+YAML steps and rejects compact flow mappings that Renovate cannot reliably
+update with their release comments. Comments and shell examples are ignored.
+A complete version token may be followed by explanatory text.
+
+To run the same validation locally:
+
+```sh
+python3 -m venv .venv-ci
+.venv-ci/bin/python -m pip install --require-hashes -r scripts/requirements-ci.txt
+.venv-ci/bin/python -m unittest discover -s scripts -p 'test_ci_actions.py'
+.venv-ci/bin/python scripts/check_ci_actions.py
+```
 
 CodeRabbit autofix requests use the `californiantiramisu` automation account,
 which needs repository Write access. A posted command alone is not proof of

@@ -50,8 +50,12 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Install workflow validation dependencies
+        run: |
+          python3 -m venv .venv-ci
+          .venv-ci/bin/python -m pip install --disable-pip-version-check --require-hashes -r scripts/requirements-ci.txt
       - name: Check CodeQL action compatibility before scanning
-        run: python3 scripts/check_ci_actions.py
+        run: .venv-ci/bin/python scripts/check_ci_actions.py
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL

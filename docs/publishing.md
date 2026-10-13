@@ -36,3 +36,12 @@ quality and documentation requirements.
 Consult the official [contribution documentation](https://developers.home-assistant.io/docs/creating_integration_file_structure/)
 and [integration quality scale](https://developers.home-assistant.io/docs/integration_quality_scale/).
 The current project remains an independently distributed custom integration.
+
+## Versioned source releases
+
+The shared [release strategy](../RELEASING.md) and
+[packaging runbook](release-packaging.md) define beta/RC artifacts, manifest
+versions, receipts and acceptance. This lifecycle does not submit the integration
+to HACS/Core or certify a physical lock. The established HACS source-download
+mode remains unchanged; use the published `ha-desloc.zip` for exact new candidate
+acceptance, since GitHub source archives retain the committed base metadata.

@@ -1,5 +1,7 @@
 # DESLOC for Home Assistant
 
+[![Fuzzing: RC only](https://img.shields.io/badge/Fuzzing-RC%20only-blue)](docs/fuzzing.md)
+
 [![Tests](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml/badge.svg)](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -125,7 +127,8 @@ existing entry and entity IDs are retained; you do not need to add it again.
 ### Manual installation
 
 1. Open [Releases](https://github.com/ha-homelab/ha-desloc/releases/latest) and
-   download the latest stable release's **Source code (zip)**. Extract it on your
+   download the latest stable release's **ha-desloc.zip** and **SHA256SUMS**. Verify
+   the checksum and extract the ZIP on your
    computer.
 2. Locate your HA configuration directory, the one containing
    `configuration.yaml`. On HA OS this is `/config`; for Container installations
@@ -259,3 +262,18 @@ DESLOC names and trademarks belong to their respective owners.
 See [contribution and test requirements](CONTRIBUTING.md), the
 [security reporting policy](SECURITY.md), [security design](docs/security-design.md),
 and the [OpenSSF evidence and remaining criteria](docs/openssf-evidence.md).
+
+## Release-candidate fuzzing
+
+The actual cloud-device response parser receives synthetic device records and checks normalized identifiers, battery/RSSI ranges and tri-state lock status. No login, PIN generation, encryption operation or lock command is called.
+
+[RC-only fuzzing policy, local reproduction and failure handling](docs/fuzzing.md).
+
+### Testing new release candidates
+
+Install the published `ha-desloc.zip` manually when testing a new beta or RC.
+The checked archive contains its frozen candidate metadata; GitHub's automatic
+source archives and HACS's existing source-download path retain the committed
+base version. HACS stable installation remains unchanged. See
+[release packaging and acceptance](docs/release-packaging.md) for exact artifact
+checks, version identities and rollback.

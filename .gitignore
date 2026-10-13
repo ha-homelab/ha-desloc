@@ -12,3 +12,17 @@ dist/
 .DS_Store
 
 .venv-ci/
+
+# Isolated RC fuzz runtime and local diagnostic inputs
+.fuzz-venv/
+crash-*
+timeout-*
+oom-*
+
+# Local release plans and receipted payloads
+.release-plan.json
+.release-inputs.json
+release-dist/
+release-assets/
+.release-download/
+.release-evidence/

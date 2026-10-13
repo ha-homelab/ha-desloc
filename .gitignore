@@ -12,3 +12,9 @@ dist/
 .DS_Store
 
 .venv-ci/
+
+# Isolated RC fuzz runtime and local diagnostic inputs
+.fuzz-venv/
+crash-*
+timeout-*
+oom-*

@@ -1,5 +1,7 @@
 # DESLOC for Home Assistant
 
+[![Fuzzing: RC only](https://img.shields.io/badge/Fuzzing-RC%20only-blue)](docs/fuzzing.md)
+
 [![Tests](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml/badge.svg)](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -259,3 +261,9 @@ DESLOC names and trademarks belong to their respective owners.
 See [contribution and test requirements](CONTRIBUTING.md), the
 [security reporting policy](SECURITY.md), [security design](docs/security-design.md),
 and the [OpenSSF evidence and remaining criteria](docs/openssf-evidence.md).
+
+## Release-candidate fuzzing
+
+The actual cloud-device response parser receives synthetic device records and checks normalized identifiers, battery/RSSI ranges and tri-state lock status. No login, PIN generation, encryption operation or lock command is called.
+
+[RC-only fuzzing policy, local reproduction and failure handling](docs/fuzzing.md).

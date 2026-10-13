@@ -18,3 +18,11 @@ dist/
 crash-*
 timeout-*
 oom-*
+
+# Local release plans and receipted payloads
+.release-plan.json
+.release-inputs.json
+release-dist/
+release-assets/
+.release-download/
+.release-evidence/

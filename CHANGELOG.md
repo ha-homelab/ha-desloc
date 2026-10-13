@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## [0.3.3]
+
+### Changed
 
 - Document the vendor login digest's offline password-guessing risk, the limits
   of its fixed AES wrapper, and credential/capture handling mitigations. This
@@ -13,6 +15,19 @@
   and the related upstream advisories. This changes the synthetic test environment;
   it does not install or upgrade Home Assistant on a user's device. Maintain an
   independently updated, supported Home Assistant installation.
+
+### Added
+
+- Frozen beta/nightly/RC release plans and checksum-bound package receipts.
+- Verification of the existing manual-install ZIP layout and embedded candidate version.
+
+### Upgrade
+
+HACS installation remains unchanged. Test exact candidate builds by installing `ha-desloc.zip` manually with its existing `custom_components/desloc` directory. Back up the existing integration directory and Home Assistant configuration, replace the integration files and restart Home Assistant. Preserve the prior accepted ZIP for rollback. The committed manifest uses the numeric base; install the published release asset to obtain its exact candidate metadata.
+
+### Security
+
+Existing Home Assistant tests, HACS/Hassfest checks and code/dependency checks remain required. Release receipts bind the package identity to the source and workflow. Automated validation does not establish cloud account permissions, physical lock operation or safe installation-specific automation behavior.
 
 ## 0.3.2 — 2026-10-06
 

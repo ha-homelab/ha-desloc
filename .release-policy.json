@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "repository": "ha-homelab/ha-desloc",
+  "visibility": "public",
+  "mode": "release",
+  "default_branch": "main",
+  "version_file": "version",
+  "validation_workflows": [
+    "ci.yml",
+    "validate.yml",
+    "codeql.yml",
+    "dependency-review.yml"
+  ],
+  "artifact_pattern": "release-assets*",
+  "local_checks": [
+    "python3 -m unittest discover -s scripts -p 'test_ci_actions.py'",
+    "python3 scripts/check_ci_actions.py",
+    "python3 -m pytest -q"
+  ],
+  "single_entry_ci": true,
+  "release_notes": "CHANGELOG.md",
+  "container_assets": {},
+  "notes": [
+    "The existing Home Assistant pytest suite, HACS and Hassfest validators remain required. These do not prove physical DESLOC lock behavior or cloud account acceptance.",
+    "ha-desloc.zip preserves the published custom_components/desloc layout. Install this receipted asset manually to test the exact beta/RC overlay; existing HACS/source-archive installation retains committed base metadata.",
+    "The committed base is 0.3.3; the old v0.3.3b1 prerelease is preserved and does not qualify as a versioned RC. New beta/RC tags use the shared SemVer channel format."
+  ],
+  "versioning": {
+    "schema": 1,
+    "promotion": "promote-bytes",
+    "files": [
+      {
+        "path": "version",
+        "format": "text",
+        "value": "package"
+      },
+      {
+        "path": "custom_components/desloc/manifest.json",
+        "format": "json",
+        "field": "version",
+        "value": "package",
+        "ecosystem": "pep440"
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "ha-desloc.zip",
+        "format": "zip-json",
+        "member": "custom_components/desloc/manifest.json",
+        "field": "version",
+        "value": "package",
+        "ecosystem": "pep440"
+      }
+    ],
+    "toolkit_revision": "35d84867c34262567801c44a0e4ec9aa5159326e"
+  }
+}

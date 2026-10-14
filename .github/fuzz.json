@@ -29,7 +29,21 @@
         "-max_len=4096"
       ],
       "seconds": 60,
-      "corpus": "fuzz/corpus/device"
+      "corpus": "fuzz/corpus/device",
+      "instrumentation": [
+        {
+          "module": "custom_components.desloc.api",
+          "functions": [
+            "Device.from_json"
+          ]
+        }
+      ]
     }
+  ],
+  "preflight-paths": [
+    ".github/requirements-fuzz.in",
+    "custom_components",
+    "fuzz",
+    "requirements-dev.txt"
   ]
 }

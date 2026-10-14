@@ -52,6 +52,20 @@ python3.12 -m venv .fuzz-venv
 .fuzz-venv/bin/python fuzz/fuzz_device.py -max_len=4096 fuzz/corpus/device -max_total_time=60 -timeout=10 -rss_limit_mb=2048
 ```
 
+The ordinary PR quality gate also installs this lock in a clean Python 3.12
+Linux environment and runs `pip check`. This validates the dependency closure,
+including Python-version markers, without running a mutation campaign.
+
+Regenerate the lock for the actual RC runtime rather than the developer's Python
+version (the main Home Assistant test suite uses a newer Python):
+
+```sh
+uv pip compile .github/requirements-fuzz.in --python-version 3.12 --python-platform x86_64-unknown-linux-gnu --only-binary :all: --generate-hashes --no-header --no-annotate --output-file .github/requirements-fuzz.txt
+```
+
+The existing output pins are retained unless an input requires a change or an
+explicit upgrade is requested. Review all version and hash changes before commit.
+
 The first target command replays the committed corpus; the second runs mutations.
 Use a copied corpus for local campaigns if you do not want libFuzzer to add seeds
 to the working tree. The pinned Atheris wheel is Linux x86-64 specific. A local

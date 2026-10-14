@@ -34,3 +34,24 @@ jobs:
           cache-dependency-path: requirements-dev.txt
       - run: python -m pip install --require-hashes -r requirements-dev.txt
       - run: python -m pytest -q
+
+  fuzz-lock:
+    name: Fuzz lock (Python 3.12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Validate the RC fuzz dependency closure
+        run: |
+          python -m venv .fuzz-venv
+          .fuzz-venv/bin/python -m pip install --disable-pip-version-check --require-hashes --only-binary=:all: -r .github/requirements-fuzz.txt
+          .fuzz-venv/bin/python -m pip check

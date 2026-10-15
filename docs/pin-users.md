@@ -6,6 +6,11 @@ captured from a real Wi-Fi operation in the DESLOC iOS app with Bluetooth
 disabled. Creation through the HA form and the resulting PIN at the physical
 keypad were confirmed by the lock owner on Home Assistant 2026.9.1.
 
+A D110 Plus owner [reported working PIN functionality on October 1, 2026](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18706123).
+That report does not describe the individual HA creation or keypad test steps
+or provide software/firmware versions. See [model compatibility](compatibility.md)
+for the distinction between community reports and maintainer validation.
+
 ## Home Assistant form
 
 ![Empty Add a permanent PIN user form with user name, new PIN, and repeat PIN fields](images/pin-user-form.jpg)

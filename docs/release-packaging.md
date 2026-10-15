@@ -4,9 +4,9 @@ The release payload remains `ha-desloc.zip`, containing only tracked files under
 
 ## Version plan and package identity
 
-The committed `version` file and `custom_components/desloc/manifest.json` use base `0.3.3`. This replaces the source's former `0.3.3b1` development marker; the published old prerelease and its assets are preserved. Every new release run reserves a full version and source/policy-bound plan before building. The adapter checks that plan and applies only declared fields.
+The committed `version` file and `custom_components/desloc/manifest.json` use the same numeric base version, prepared together before a new release series. The historical `0.3.3b1` development marker was replaced by this numeric-base scheme; the published old prerelease and its assets are preserved. Every new release run reserves a full version and source/policy-bound plan before building. The adapter checks that plan and applies only declared fields.
 
-For beta 7, the full tag is `v0.3.3-beta.7`, the text version is `0.3.3-beta.7`, and the packaged Home Assistant manifest uses PEP 440 `0.3.3b7`. Nightlies use a PEP 440 development version derived from the frozen run/attempt. Under the explicit `promote-bytes` profile, RC 7 has tag `v0.3.3-rc.7` but already embeds `0.3.3`. Stable can then copy accepted RC bytes without changing the integration or its manifest. The release manifest retains the exact RC origin and source revision.
+Using the historical base `0.3.3` as an example, beta 7 would have full tag `v0.3.3-beta.7`, text version `0.3.3-beta.7`, and PEP 440 manifest version `0.3.3b7`; this example does not identify the current release. Nightlies use a PEP 440 development version derived from the frozen run/attempt. Under the explicit `promote-bytes` profile, RC 7 for that base would have tag `v0.3.3-rc.7` but already embed `0.3.3`. Stable can then copy accepted RC bytes without changing the integration or its manifest. The release manifest retains the exact RC origin and source revision.
 
 The source branch and GitHub's automatic source archives keep the numeric base. Candidate metadata is a build overlay, never an automatically committed version bump. Use `prepare-version --dry-run` or `prepare-version --pr` from clean default-branch HEAD to prepare the next base across both owned files. An already prepared, unreleased base is retained; major/minor changes require explicit intent. The dedicated allocation state must not be reset or reused after a failed run.
 
@@ -22,7 +22,7 @@ The current HACS implementation obtains repository metadata separately from appl
 
 The release-build workflow downloads the allocator's immutable plan, runs `version_plan.py sync`, builds the ZIP, checks checksums and stages it into `release-assets/package`. `stage_release_assets.py` reads the ZIP's actual manifest version and creates `release-inputs-package.json` covering the exact payload sizes and hashes. The publisher requires that receipt and the declared package metadata. A changed manifest, missing receipt, modified ZIP or incomplete inventory blocks publication.
 
-Reproduce in a disposable checkout of the release manifest's exact source SHA, restoring its `version_plan` object as `.release-plan.json`:
+Reproduce in a disposable checkout of the release manifest's exact source SHA, restoring its `version_plan` object as `.release-plan.json`. The following example uses historical base `0.3.3` and channel `beta`; substitute the actual saved base and channel:
 
 ```sh
 python3 scripts/version_plan.py sync --plan .release-plan.json

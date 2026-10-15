@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.5] - Unreleased
+
+### Changed
+
+- Update the CodeRabbit reusable workflow revisions while preserving the validated release fuzz configuration.
+- Record the additional D110 Plus community report that PIN functionality works, with the reported scope distinguished from maintainer validation.
+- Make release packaging guidance follow the committed base version instead of a stale release number.
+
+### Upgrade
+
+This preview prepares the next beta for opt-in testing. Follow the existing installation procedure and retain the previous accepted package for rollback. Install the published `ha-desloc.zip` to test the exact beta metadata; HACS source downloads retain the committed numeric base version. Application behavior and configuration are unchanged.
+
+### Security
+
+These changes update workflow references and documentation. They do not claim a new security fix or additional physical-device validation. Existing quality, security and package checks remain required before publication.
+
 ## [0.3.4] - 2026-10-14
 
 ### Changed

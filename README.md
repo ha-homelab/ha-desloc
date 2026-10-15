@@ -14,7 +14,8 @@ percentage, and Wi-Fi signal in Home Assistant.
 This project is independent of DESLOC, Home Assistant, and HACS. It does not
 provide local/offline or Bluetooth control. A D110 Plus owner
 [reported that it works perfectly](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18702050).
-That report does not list individual features tested, including PIN creation;
+A second owner [reported that PIN functionality also works](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18706123).
+Neither report lists complete test steps or software/firmware versions;
 see [model compatibility](docs/compatibility.md) for the evidence and scope.
 Models without maintainer validation still carry an **experimental** runtime
 label. Discovery alone does not establish compatibility. TTLock/Tuya accounts
@@ -203,22 +204,25 @@ In version 0.3.0 or newer, open **Settings → Devices & services → DESLOC** a
 user with permanent access to the physical lock. The
 integration waits for command completion and checks the installed PIN record;
 it does not save the PIN in HA. The PIN is added only to that entry's lock. This
-workflow is physically verified on C100 Plus; other models are experimental.
+workflow is physically verified on C100 Plus. A D110 Plus owner also reported
+working PIN functionality, without detailing HA creation or keypad test steps;
+other models retain their experimental runtime status.
 See [PIN setup and failure handling](docs/pin-users.md).
 
 ## Community model testing
 
-**D110 Plus has a community success report.** On October 1, 2026,
+**D110 Plus has community success reports, including PIN functionality.** On October 1, 2026,
 [Marty-McFly73 reported successful use](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18702050)
-with their D110 Plus. The report is general; individual feature results and
-software/firmware versions were not provided. The
-[compatibility notes](docs/compatibility.md) distinguish this report from the
+with their D110 Plus, and [razorbross15-sudo reported that it works including PIN functionality](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18706123).
+The second report does not describe the individual HA creation or keypad test
+steps. Neither report provides software/firmware versions. The
+[compatibility notes](docs/compatibility.md) distinguish these reports from the
 feature-by-feature C100 Plus validation.
 
 Every lock entity exposes `model_validation: tested` for C100 Plus and
 `model_validation: experimental` for other model names. These labels record
 maintainer validation, not certification by the vendor. D110 Plus retains its
-experimental runtime label while its community report is recorded in the docs.
+experimental runtime label while its community reports are recorded in the docs.
 Unknown state codes remain
 unknown, and a command must receive a fresh matching report to be confirmed.
 

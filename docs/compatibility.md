@@ -22,14 +22,17 @@ after being invited to try the integration:
 
 > Amazing! Thank you again for this. So far so good with my D110 plus. Works perfectly!
 
-This is a positive real-owner compatibility report for D110 Plus. The comment
-does not identify which individual features were tested. In particular, it does
-not separately confirm PIN creation or keypad use, both lock command
-directions, or each sensor. Firmware, region, Home Assistant version, and exact
-installed integration version were not provided.
+On the same date, **razorbross15-sudo** added a
+[second success report](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18706123),
+explicitly stating that D110 Plus works including PIN functionality.
 
-The report is recorded here without changing command handling or promoting
-untested features. The current integration still exposes
+These are positive owner reports for D110 Plus, including PIN functionality.
+They do not describe the individual HA user-creation or keypad test steps, both
+lock command directions, or each sensor. Firmware, region, Home Assistant
+version, and exact installed integration version were not provided.
+
+The reports are recorded here without changing command handling or extending
+maintainer validation. The current integration still exposes
 `model_validation: experimental` for D110 Plus; `tested` identifies the model
 validated directly by the maintainer. These labels are not vendor certification.
 

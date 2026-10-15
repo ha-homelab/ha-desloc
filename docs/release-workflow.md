@@ -118,7 +118,7 @@ and PyPI publication use verified stable assets as a separate explicit operation
 
 - The existing Home Assistant pytest suite, HACS and Hassfest validators remain required. These do not prove physical DESLOC lock behavior or cloud account acceptance.
 - ha-desloc.zip preserves the published custom_components/desloc layout. Install this receipted asset manually to test the exact beta/RC overlay; existing HACS/source-archive installation retains committed base metadata.
-- The committed base is 0.3.3; the old v0.3.3b1 prerelease is preserved and does not qualify as a versioned RC. New beta/RC tags use the shared SemVer channel format.
+- The committed base is declared in version and synchronized with the integration manifest; the old v0.3.3b1 prerelease is preserved and does not qualify as a versioned RC. New beta/RC tags use the shared SemVer channel format.
 
 For public repositories, merge and verify the workflows before enabling the
 additive Terraform **CI gate** ruleset. Where release/deployment workflows use

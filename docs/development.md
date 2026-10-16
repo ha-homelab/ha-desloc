@@ -49,8 +49,9 @@ Tests use synthetic data, never call DESLOC, and never move a physical lock. The
 include real Home Assistant flow/platform loading, invalid authentication,
 timeouts, stale reports, and ensuring failed commands are not retried.
 
-The current locked Home Assistant 2026.10.0 environment also completes all 152
-synthetic tests on macOS with Python 3.14.7. Earlier runs with Home Assistant
+An earlier snapshot of the locked Home Assistant 2026.10.0 environment completed
+152 synthetic tests on macOS with Python 3.14.7. The subsequent v0.4.0 release
+validation completed 180 tests in Linux CI; see the [release results](release-results.md). Earlier runs with Home Assistant
 2026.9.1 crashed during interpreter finalization on macOS; that outcome was not
 reproduced with the updated lock. Linux CI remains the required runtime target.
 Third-party `backoff` deprecation warnings about Python 3.16 remain visible; they

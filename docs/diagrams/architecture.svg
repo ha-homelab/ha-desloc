@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1030" viewBox="0 0 720 1030" role="img" aria-labelledby="title description">
+<title id="title">How DESLOC reaches your dashboard</title>
+<desc id="description">The dashboard uses Home Assistant entities. Per-lock coordinators share account reads. Only the integration contacts the DESLOC cloud over HTTPS; the cloud communicates with the physical lock. No direct local or Bluetooth control is provided.</desc>
+<defs><linearGradient id="wash" x2="1" y2="1"><stop stop-color="#f3f7ff"/><stop offset="1" stop-color="#f5fbf8"/></linearGradient>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7789a0"/></marker></defs>
+<rect width="720" height="1030" rx="24" fill="url(#wash)"/>
+<g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif">
+<rect x="32" y="29" width="42" height="5" rx="2" fill="#007f7a" stroke="none"/>
+<text x="86" y="37" font-size="13" font-weight="700" fill="#007f7a" text-anchor="start" letter-spacing="1.5">ARCHITECTURE</text>
+<text x="32" y="87" font-size="31" font-weight="750" fill="#14263d" text-anchor="start" letter-spacing="0">How DESLOC reaches your dashboard</text>
+<text x="32" y="121" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">One account, separate lock entities, shared cloud reads.</text>
+<rect x="32" y="151" width="656" height="298" rx="18" fill="#eaf0ff" stroke="none"/>
+<text x="56" y="184" font-size="14" font-weight="700" fill="#245edb" text-anchor="start" letter-spacing="1">HOME ASSISTANT</text>
+<rect x="56" y="201" width="608" height="86" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="56" y="220" width="5" height="48" rx="2" fill="#245edb" stroke="none"/>
+<text x="80" y="235" font-size="22" font-weight="700" fill="#245edb" text-anchor="start" letter-spacing="0">Dashboard and automations</text>
+<text x="80" y="265" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Lock state, battery and Wi-Fi entities</text>
+<path d="M 360 290 V 317" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="56" y="326" width="608" height="105" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="56" y="345" width="5" height="67" rx="2" fill="#007f7a" stroke="none"/>
+<text x="80" y="360" font-size="22" font-weight="700" fill="#007f7a" text-anchor="start" letter-spacing="0">DESLOC integration</text>
+<text x="80" y="390" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">One entry and coordinator per discovered lock</text>
+<text x="80" y="416" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Shared account transport and short-lived reads</text>
+<path d="M 360 451 V 503" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="384" y="481" font-size="17" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Verified HTTPS</text>
+<rect x="48" y="514" width="624" height="101" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="48" y="533" width="5" height="63" rx="2" fill="#7145b7" stroke="none"/>
+<text x="72" y="548" font-size="22" font-weight="700" fill="#7145b7" text-anchor="start" letter-spacing="0">DESLOC cloud</text>
+<text x="72" y="578" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Authentication, device lists and command results</text>
+<path d="M 360 618 V 680" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="384" y="646" font-size="17" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Vendor-managed</text>
+<text x="384" y="670" font-size="17" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">connection</text>
+<rect x="48" y="692" width="624" height="101" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="48" y="711" width="5" height="63" rx="2" fill="#237447" stroke="none"/>
+<text x="72" y="726" font-size="22" font-weight="700" fill="#237447" text-anchor="start" letter-spacing="0">Physical lock</text>
+<text x="72" y="756" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">The cloud delivers the request and reports state.</text>
+<rect x="48" y="833" width="624" height="121" rx="18" fill="#fff3de" stroke="none"/>
+<text x="72" y="867" font-size="21" font-weight="700" fill="#a35b05" text-anchor="start" letter-spacing="0">Read the boundary correctly</text>
+<text x="72" y="898" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">The card receives HA entities, never DESLOC credentials.</text>
+<text x="72" y="925" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Cloud-reported bolt state is not a door-open sensor.</text>
+<text x="32" y="982" font-size="16" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">No local/offline or Bluetooth control is implemented.</text>
+</g>
+</svg>

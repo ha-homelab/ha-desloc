@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1090" viewBox="0 0 720 1090" role="img" aria-labelledby="title description">
+<title id="title">A command, end to end</title>
+<desc id="description">A lock or unlock request is submitted once. The integration polls its command result and reads device state. A newer matching report confirms the reported state. A timeout or unconfirmed result is surfaced to the user without replaying the physical command. The total deadline is 45 seconds.</desc>
+<defs><linearGradient id="wash" x2="1" y2="1"><stop stop-color="#f3f7ff"/><stop offset="1" stop-color="#f5fbf8"/></linearGradient>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7789a0"/></marker></defs>
+<rect width="720" height="1090" rx="24" fill="url(#wash)"/>
+<g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif">
+<rect x="32" y="29" width="42" height="5" rx="2" fill="#007f7a" stroke="none"/>
+<text x="86" y="37" font-size="13" font-weight="700" fill="#007f7a" text-anchor="start" letter-spacing="1.5">COMMAND LIFECYCLE</text>
+<text x="32" y="87" font-size="31" font-weight="750" fill="#14263d" text-anchor="start" letter-spacing="0">A command, end to end</text>
+<text x="32" y="121" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Send once. Read progress. Confirm a newer report.</text>
+<rect x="48" y="156" width="624" height="98" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="48" y="175" width="5" height="60" rx="2" fill="#245edb" stroke="none"/>
+<text x="72" y="190" font-size="22" font-weight="700" fill="#245edb" text-anchor="start" letter-spacing="0">01  Request a lock action</text>
+<text x="72" y="220" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Home Assistant selects the lock and target state.</text>
+<path d="M 360 257 V 286" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="48" y="296" width="624" height="98" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="48" y="315" width="5" height="60" rx="2" fill="#7145b7" stroke="none"/>
+<text x="72" y="330" font-size="22" font-weight="700" fill="#7145b7" text-anchor="start" letter-spacing="0">02  Send the command once</text>
+<text x="72" y="360" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Cloud acceptance returns a command identifier.</text>
+<path d="M 360 397 V 426" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="48" y="436" width="624" height="98" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="48" y="455" width="5" height="60" rx="2" fill="#007f7a" stroke="none"/>
+<text x="72" y="470" font-size="22" font-weight="700" fill="#007f7a" text-anchor="start" letter-spacing="0">03  Read progress and fresh state</text>
+<text x="72" y="500" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Poll the result, then refresh the device report.</text>
+<path d="M 360 537 V 566" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="48" y="576" width="624" height="98" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="48" y="595" width="5" height="60" rx="2" fill="#245edb" stroke="none"/>
+<text x="72" y="610" font-size="22" font-weight="700" fill="#245edb" text-anchor="start" letter-spacing="0">04  Check the reported outcome</text>
+<text x="72" y="640" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Require the target state and a newer timestamp.</text>
+<path d="M 360 677 V 712 H 194 V 743" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 360 712 H 526 V 743" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="754" width="308" height="142" rx="18" fill="#eaf5eb" stroke="none"/>
+<rect x="372" y="754" width="308" height="142" rx="18" fill="#fff3de" stroke="none"/>
+<text x="64" y="791" font-size="22" font-weight="700" fill="#237447" text-anchor="start" letter-spacing="0">Confirmed report</text>
+<text x="64" y="827" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Show reported</text>
+<text x="64" y="855" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">locked / unlocked state.</text>
+<text x="396" y="791" font-size="22" font-weight="700" fill="#a35b05" text-anchor="start" letter-spacing="0">Not confirmed</text>
+<text x="396" y="827" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Surface an error or</text>
+<text x="396" y="855" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">unknown state; inspect lock.</text>
+<rect x="48" y="932" width="624" height="91" rx="16" fill="#fff" stroke="#dbe4ee"/>
+<text x="72" y="966" font-size="23" font-weight="700" fill="#14263d" text-anchor="start" letter-spacing="0">45 s total deadline</text>
+<text x="72" y="997" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">No automatic command retry; one operation per entry.</text>
+<text x="32" y="1042" font-size="16" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Confirmation describes cloud telemetry, not physical observation.</text>
+</g>
+</svg>

@@ -74,29 +74,27 @@ Other limitations:
 
 ## Architecture
 
-Setup authenticates with DESLOC and adds every returned lock:
+Setup authenticates with DESLOC and adds every returned lock, each with its own
+entry and coordinator. Coordinators using the same account session share device
+list reads. Normal polling runs once per minute per configured lock.
 
-```mermaid
-flowchart TB
-    Auth["Email login<br/>or captured app session"]
-    Auth --> Setup["Home Assistant setup"]
-    Setup --> Discover["DESLOC cloud<br/>Authenticate and list locks"]
-    Discover --> Entries["All discovered locks<br/>One HA entry per lock"]
-```
+[![Architecture: HA entities, shared account reads, DESLOC cloud, and the physical lock](docs/diagrams/architecture.svg)](docs/diagrams/architecture.svg)
 
-After setup, each lock has its own coordinator:
+Each physical command is sent **once**, with result polling and a requirement for
+a newer matching state report. Timeouts do not cause automatic command retries.
+The [visual process guide](docs/how-it-works.md) explains the path from app
+captures to the integration, discovery, commands, and PIN creation. See also the
+[command lifecycle diagram](docs/diagrams/command-lifecycle.svg) and
+[protocol details](docs/protocol.md).
 
-```mermaid
-flowchart TB
-    Entities["HA lock and sensors"]
-    Entities --> Coordinator["Coordinator<br/>for this lock"]
-    Coordinator <-->|HTTPS| Cloud["DESLOC cloud"]
-    Cloud <-->|Vendor connection| Lock["Physical lock"]
-```
+## Release results
 
-Normal polling runs once per minute per configured lock. Each physical command is sent **once**, with
-result polling and a requirement for a newer matching state report. Timeouts do
-not cause automatic command retries. See [protocol details](docs/protocol.md).
+[![v0.4.0: 180 passing tests, 24 language packs, 9,823,752 fuzz executions, and six unchanged release files](docs/diagrams/release-results.svg)](docs/diagrams/release-results.svg)
+
+This **15 October 2026** snapshot describes v0.4.0, not live `main` status.
+Read the [results, sources, and release process](docs/release-results.md) for
+the evidence behind each count. Synthetic checks do not establish physical
+operation or compatibility with every discovered model.
 
 ## Requirements
 

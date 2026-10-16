@@ -29,7 +29,7 @@ fall on 16 October in UTC. Chart values and source links are also available in
 
 The source revision was
 [`82350a2`](https://github.com/ha-homelab/ha-desloc/commit/82350a2b4029d28dc3d2bcf8ad180c301113dc40).
-The companion [card results](https://github.com/ha-homelab/ha-desloc-card/blob/main/docs/release-results.md)
+The companion [card results](https://github.com/ha-homelab/ha-desloc-card/blob/2029dcd0f3077c2c0ccce43c2ee8129152a27329/docs/release-results.md)
 cover frontend tests and browser checks separately.
 
 ## How a change becomes a stable release

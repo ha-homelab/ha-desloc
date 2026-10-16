@@ -21,6 +21,21 @@ Changing saved credentials creates a separate session during reauthentication.
 
 ## Validation
 
+The CI source-warning check uses hash-locked Ruff 0.16.5 and checks all maintained
+Python files, including tests and release helpers, with `--select F --ignore-noqa`.
+Pyflakes error and warning findings must be resolved before merging; the command
+exits nonzero for any finding and does not accept inline suppression comments.
+Run it in an isolated environment:
+
+```sh
+python3 -m venv .venv-ci
+.venv-ci/bin/python -m pip install --require-hashes -r scripts/requirements-lint.txt
+.venv-ci/bin/python -m ruff check --select F --ignore-noqa .
+```
+
+This is a source-warning baseline. Third-party deprecations and security-analysis
+findings are tracked separately and are not declared resolved by a clean Ruff run.
+
 Use Linux and Python 3.14.2 or newer. The locked synthetic test runtime is
 Home Assistant 2026.10.0:
 

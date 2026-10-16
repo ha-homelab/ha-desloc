@@ -56,3 +56,19 @@ There is still no backup maintainer or one-week access-recovery arrangement.
 Record each completed analysis with its source SHA, commands/tool versions,
 result and material limitations. Add the repository's actual badge only after
 its own public assessment is saved and verified.
+
+## Source warnings and credential scan (2026-10-16)
+
+Ruff 0.16.5 reports no Pyflakes findings for maintained Python source, tests and
+release helpers with `ruff check --select F --ignore-noqa .`; the same check is
+required in CI with hashed installation artifacts. This does not resolve the
+vendor protocol weakness or upstream deprecation warnings.
+
+A full-history Gitleaks 8.30.1 scan after unshallowing the repository inspected
+52 commits (about 1.88 MB) using its default rules and `git --log-opts=--all`.
+The one finding was manually reviewed: `tests/test_pin_users.py:42` in commit
+`18f2df7259a00c4a0ade29efa1621c18f288fd2c` is the expected encrypted output
+for the public synthetic test PIN, synthetic guest and mocked HTTP response.
+It is not an account password or token. No private credential was identified;
+no detector, path or commit was excluded to obtain that conclusion. This
+bounded scan is not a guarantee that arbitrary secrets are detectable.

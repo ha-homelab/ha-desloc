@@ -1,5 +1,6 @@
 # DESLOC for Home Assistant
 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15591/badge)](https://www.bestpractices.dev/projects/15591)
 [![Fuzzing: RC only](https://img.shields.io/badge/Fuzzing-RC%20only-blue)](docs/fuzzing.md)
 
 [![Tests](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml/badge.svg)](https://github.com/ha-homelab/ha-desloc/actions/workflows/ci.yml)

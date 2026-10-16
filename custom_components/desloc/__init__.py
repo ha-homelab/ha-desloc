@@ -7,7 +7,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .account import async_release_account, get_account
 from .api import Credentials
-from .const import CONF_CREDENTIALS
+from .const import CONF_CREDENTIALS, DOMAIN
 from .coordinator import DeslocCoordinator
 
 PLATFORMS = [Platform.LOCK, Platform.SENSOR]
@@ -19,7 +19,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: DeslocConfigEntry) -> bo
     if "password_hash" in saved or "token" not in saved:
         # Version 0.2.0 retained a digest and signed in during every reload.
         # Do not run that login during upgrade: it can evict the phone app.
-        raise ConfigEntryAuthFailed("Sign in again or import the app session to save a reusable DESLOC token")
+        raise ConfigEntryAuthFailed("Sign in again or import the app session to save a reusable DESLOC token",
+            translation_domain=DOMAIN, translation_key="session_required")
     credentials = Credentials(**saved)
     account = get_account(hass, async_get_clientsession(hass), credentials)
     # HA also invokes these callbacks after a failed or cancelled setup.

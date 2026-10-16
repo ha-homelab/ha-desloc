@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "Obnovit relaci DESLOC",
+        "description": "Zachyťte novou relaci pro stejný zámek a zadejte ji níže.",
+        "data": {
+          "token": "Autorizační token aplikace",
+          "app_device_id": "ID zařízení aplikace",
+          "app_version": "Verze aplikace",
+          "sys_type": "Typ systému"
+        }
+      },
+      "session": {
+        "title": "Relace aplikace DESLOC",
+        "description": "Zadejte aktuální relaci DESLOC. Všechny zámky účtu se přidají automaticky. C100 Plus otestoval vývojář; D110 Plus potvrdila komunita. Ostatní modely jsou experimentální. Vypršená nebo odvolaná relace vyžaduje nové přihlášení.",
+        "data": {
+          "token": "Autorizační token aplikace",
+          "app_device_id": "ID zařízení aplikace",
+          "app_version": "Verze aplikace",
+          "sys_type": "Typ systému"
+        }
+      },
+      "user": {
+        "title": "Nastavit DESLOC",
+        "menu_options": {
+          "account": "Přihlásit se e-mailem a heslem",
+          "session": "Použít zachycenou relaci aplikace"
+        }
+      },
+      "account": {
+        "title": "Účet DESLOC",
+        "description": "Přihlášení může odhlásit telefonní aplikaci z tohoto účtu. Chcete-li její relaci zachovat, importujte ji. Home Assistant ukládá token, nikoli heslo, a po odvolání se automaticky nepřihlašuje. Přidají se všechny zámky účtu. C100 Plus otestoval vývojář; D110 Plus potvrdila komunita. Ostatní modely jsou experimentální.",
+        "data": {
+          "username": "E-mail",
+          "password": "Heslo"
+        }
+      },
+      "verification": {
+        "title": "Ověřit tuto instalaci",
+        "description": "Zadejte kód, který DESLOC zaslal na e-mail účtu. Kód se použije jednou a neukládá se.",
+        "data": {
+          "code": "Ověřovací kód z e-mailu"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Zkontrolujte pole relace.",
+      "invalid_auth": "DESLOC odmítl přihlašovací údaje. Zkontrolujte účet nebo zachyťte novou relaci.",
+      "cannot_connect": "Seznam zařízení DESLOC nelze načíst.",
+      "no_devices": "Účet nevrátil žádné zámky.",
+      "device_mismatch": "Tato relace neobsahuje nastavený zámek.",
+      "invalid_account": "Zadejte e-mail a heslo DESLOC.",
+      "invalid_code": "Ověřovací kód je neplatný nebo vypršel.",
+      "cannot_send_code": "DESLOC nemohl odeslat kód. Před novým nastavením počkejte.",
+      "captcha_required": "Dokončete bezpečnostní ověření v aplikaci DESLOC a zkuste to znovu. Lze také použít zachycenou relaci.",
+      "clock_error": "Synchronizujte hodiny hostitele Home Assistant a zkuste to znovu."
+    },
+    "abort": {
+      "already_configured": "Tento zámek je již nastaven.",
+      "reauth_successful": "Relace obnovena.",
+      "reconfigure_successful": "Ověření aktualizováno.",
+      "device_mismatch": "Tento účet neobsahuje nastavený zámek.",
+      "no_devices": "Účet nevrátil žádné zámky.",
+      "reauth_required": "Spusťte přihlášení znovu.",
+      "devices_added": "Všechny nalezené zámky byly přidány. Zobrazíte je otevřením DESLOC v části Zařízení a služby.",
+      "devices_updated": "Relace byla aktualizována pro všechny nalezené zámky. Nevznikly duplicitní záznamy.",
+      "invalid_discovery": "Zámek nelze přidat. Spusťte nastavení DESLOC znovu.",
+      "already_in_progress": "Tento zámek se již nastavuje."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Přidat uživatele s trvalým PIN",
+        "description": "Vytvořte běžného uživatele tohoto zámku a nastavte trvalý PIN přes Wi-Fi. Použijte jedinečné jméno a 6–8 číslic. Odesláním udělíte přístup k zámku. PIN se v Home Assistant neukládá. Při nejistém výsledku před opakováním zkontrolujte DESLOC.",
+        "data": {
+          "name": "Jméno uživatele",
+          "pin": "Nový PIN",
+          "pin_confirm": "Zopakovat PIN"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "Kódy PIN se neshodují.",
+      "invalid_pin_user": "Zadejte jméno o 1–24 znacích a PIN o 6–8 číslicích."
+    },
+    "abort": {
+      "unavailable": "Integrace zámku není dostupná. Nebyl proveden žádný pokus o změnu. Nejprve obnovte připojení.",
+      "already_submitted": "Tento požadavek již byl odeslán. Před dalším zkontrolujte DESLOC.",
+      "user_exists": "Uživatel s tímto jménem již existuje. Nic se nezměnilo; zadaný PIN nebyl nastaven ani porovnán se stávajícím. Spravujte uživatele v aplikaci DESLOC.",
+      "pin_creation_uncertain": "Vytvoření PIN nebylo potvrzeno. Uživatel nebo PIN již mohou existovat. Před opakováním zkontrolujte DESLOC.",
+      "command_in_progress": "Pro tento zámek již probíhá jiný příkaz. Nebyl proveden žádný pokus o změnu. Před novým požadavkem počkejte na dokončení.",
+      "pin_preflight_failed": "Stávající uživatele nebo záznamy PIN nelze ověřit. Nebyl proveden žádný pokus o změnu. Obnovte připojení nebo se podle potřeby znovu přihlaste a před opakováním zkontrolujte DESLOC.",
+      "existing_user_pin_unconfirmed": "Uživatel s tímto jménem již existuje, ale nastavený PIN s jeho jménem nebyl potvrzen. Nic se nezměnilo. Před opakováním uživatele zkontrolujte a spravujte v DESLOC; Home Assistant stávajícím uživatelům PIN nepřidává."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Baterie"
+      },
+      "rssi": {
+        "name": "Signál Wi-Fi"
+      },
+      "door_state": {
+        "name": "Kód stavu dveří"
+      },
+      "online_status": {
+        "name": "Kód stavu připojení"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Pro tento zámek již probíhá jiný příkaz. Nebyl proveden žádný pokus o změnu. Před novým požadavkem počkejte na dokončení."
+    },
+    "unavailable": {
+      "message": "Integrace zámku není dostupná. Nebyl proveden žádný pokus o změnu. Nejprve obnovte připojení."
+    },
+    "pin_preflight_failed": {
+      "message": "Stávající uživatele nebo záznamy PIN nelze ověřit. Nebyl proveden žádný pokus o změnu. Obnovte připojení nebo se podle potřeby znovu přihlaste a před opakováním zkontrolujte DESLOC."
+    },
+    "pin_creation_uncertain": {
+      "message": "Vytvoření PIN nebylo potvrzeno. Uživatel nebo PIN již mohou existovat. Před opakováním zkontrolujte DESLOC."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC potvrdil příkaz, ale nový stav zámku není potvrzen. Před opakováním zkontrolujte zámek."
+    },
+    "auth_required": {
+      "message": "Ověření DESLOC vyžaduje pozornost. Znovu se přihlaste v Home Assistant."
+    },
+    "command_failed": {
+      "message": "Příkaz DESLOC selhal. Výsledek může být nejistý. Před opakováním zkontrolujte zámek."
+    },
+    "command_timeout": {
+      "message": "Vypršel časový limit potvrzení příkazu DESLOC. Před opakováním zkontrolujte zámek."
+    },
+    "session_required": {
+      "message": "Znovu se přihlaste nebo importujte relaci aplikace a uložte opakovaně použitelný token DESLOC."
+    }
+  }
+}

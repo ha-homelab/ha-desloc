@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "Renouveler la session DESLOC",
+        "description": "Capturez une nouvelle session pour la même serrure et saisissez-la ci-dessous.",
+        "data": {
+          "token": "Jeton d’autorisation de l’application",
+          "app_device_id": "Identifiant d’appareil de l’application",
+          "app_version": "Version de l’application",
+          "sys_type": "Type de système"
+        }
+      },
+      "session": {
+        "title": "Session de l’application DESLOC",
+        "description": "Saisissez la session DESLOC actuelle. Toutes les serrures du compte sont ajoutées automatiquement. C100 Plus est testé par le développeur ; D110 Plus est confirmé par la communauté. Les autres modèles sont expérimentaux. Une session expirée ou révoquée nécessite une nouvelle authentification.",
+        "data": {
+          "token": "Jeton d’autorisation de l’application",
+          "app_device_id": "Identifiant d’appareil de l’application",
+          "app_version": "Version de l’application",
+          "sys_type": "Type de système"
+        }
+      },
+      "user": {
+        "title": "Configurer DESLOC",
+        "menu_options": {
+          "account": "Se connecter avec un courriel et un mot de passe",
+          "session": "Utiliser une session capturée de l’application"
+        }
+      },
+      "account": {
+        "title": "Compte DESLOC",
+        "description": "La connexion peut déconnecter l’application du téléphone de ce compte. Pour conserver sa session, importez-la. Home Assistant enregistre le jeton, pas le mot de passe, et ne se reconnecte pas automatiquement après révocation. Toutes les serrures sont ajoutées. C100 Plus est testé par le développeur ; D110 Plus est confirmé par la communauté. Les autres modèles sont expérimentaux.",
+        "data": {
+          "username": "Courriel",
+          "password": "Mot de passe"
+        }
+      },
+      "verification": {
+        "title": "Vérifier cette installation",
+        "description": "Saisissez le code envoyé par DESLOC au courriel du compte. Il sert une seule fois et n’est pas enregistré.",
+        "data": {
+          "code": "Code de vérification par courriel"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Vérifiez les champs de la session.",
+      "invalid_auth": "DESLOC a refusé ces identifiants. Vérifiez le compte ou capturez une nouvelle session.",
+      "cannot_connect": "Impossible de lire la liste des appareils DESLOC.",
+      "no_devices": "Le compte n’a renvoyé aucune serrure.",
+      "device_mismatch": "Cette session ne contient pas la serrure configurée.",
+      "invalid_account": "Saisissez votre courriel et votre mot de passe DESLOC.",
+      "invalid_code": "Le code de vérification est invalide ou expiré.",
+      "cannot_send_code": "DESLOC n’a pas pu envoyer de code. Patientez avant de recommencer la configuration.",
+      "captcha_required": "Terminez la vérification de sécurité dans DESLOC, puis réessayez. Vous pouvez aussi utiliser une session capturée.",
+      "clock_error": "Synchronisez l’horloge de l’hôte Home Assistant, puis réessayez."
+    },
+    "abort": {
+      "already_configured": "Cette serrure est déjà configurée.",
+      "reauth_successful": "Session renouvelée.",
+      "reconfigure_successful": "Authentification mise à jour.",
+      "device_mismatch": "Ce compte ne contient pas la serrure configurée.",
+      "no_devices": "Le compte n’a renvoyé aucune serrure.",
+      "reauth_required": "Recommencez l’authentification.",
+      "devices_added": "Toutes les serrures détectées ont été ajoutées. Ouvrez DESLOC dans Appareils et services pour les voir.",
+      "devices_updated": "La session a été mise à jour pour toutes les serrures détectées. Aucun doublon n’a été créé.",
+      "invalid_discovery": "Impossible d’ajouter la serrure. Recommencez la configuration de DESLOC.",
+      "already_in_progress": "Cette serrure est déjà en cours de configuration."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Ajouter un utilisateur avec un PIN permanent",
+        "description": "Créez un utilisateur ordinaire pour cette serrure et installez un PIN permanent par Wi-Fi. Utilisez un nom unique et 6–8 chiffres. L’envoi donne accès à la serrure. Le PIN n’est pas enregistré dans Home Assistant. Si le résultat est incertain, vérifiez DESLOC avant de réessayer.",
+        "data": {
+          "name": "Nom d’utilisateur",
+          "pin": "Nouveau PIN",
+          "pin_confirm": "Répéter le PIN"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "Les PIN ne correspondent pas.",
+      "invalid_pin_user": "Saisissez un nom de 1–24 caractères et un PIN de 6–8 chiffres."
+    },
+    "abort": {
+      "unavailable": "L’intégration de la serrure est indisponible. Aucune modification n’a été tentée. Rétablissez d’abord la connexion.",
+      "already_submitted": "Cette demande a déjà été envoyée. Vérifiez DESLOC avant d’en lancer une autre.",
+      "user_exists": "Un utilisateur porte déjà ce nom. Aucune modification n’a été faite ; le PIN saisi n’a été ni installé ni comparé au PIN existant. Gérez cet utilisateur dans DESLOC.",
+      "pin_creation_uncertain": "La création du PIN n’a pas été confirmée. L’utilisateur ou le PIN existe peut-être déjà. Vérifiez DESLOC avant de réessayer.",
+      "command_in_progress": "Une autre commande est en cours pour cette serrure. Aucune modification n’a été tentée. Attendez sa fin avant une nouvelle demande.",
+      "pin_preflight_failed": "Impossible de vérifier les utilisateurs ou les enregistrements de PIN existants. Aucune modification n’a été tentée. Rétablissez la connexion ou authentifiez-vous à nouveau si nécessaire, puis vérifiez DESLOC avant de réessayer.",
+      "existing_user_pin_unconfirmed": "Un utilisateur porte déjà ce nom, mais aucun PIN installé à son nom n’a été confirmé. Aucune modification n’a été faite. Vérifiez et gérez cet utilisateur dans DESLOC avant de réessayer ; Home Assistant n’ajoute pas de PIN à un utilisateur existant."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Batterie"
+      },
+      "rssi": {
+        "name": "Signal Wi-Fi"
+      },
+      "door_state": {
+        "name": "Code d’état de la porte"
+      },
+      "online_status": {
+        "name": "Code d’état de connexion"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Une autre commande est en cours pour cette serrure. Aucune modification n’a été tentée. Attendez sa fin avant une nouvelle demande."
+    },
+    "unavailable": {
+      "message": "L’intégration de la serrure est indisponible. Aucune modification n’a été tentée. Rétablissez d’abord la connexion."
+    },
+    "pin_preflight_failed": {
+      "message": "Impossible de vérifier les utilisateurs ou les enregistrements de PIN existants. Aucune modification n’a été tentée. Rétablissez la connexion ou authentifiez-vous à nouveau si nécessaire, puis vérifiez DESLOC avant de réessayer."
+    },
+    "pin_creation_uncertain": {
+      "message": "La création du PIN n’a pas été confirmée. L’utilisateur ou le PIN existe peut-être déjà. Vérifiez DESLOC avant de réessayer."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC a accusé réception de la commande, mais le nouvel état de la serrure n’est pas confirmé. Vérifiez la serrure avant de réessayer."
+    },
+    "auth_required": {
+      "message": "L’authentification DESLOC requiert votre attention. Authentifiez-vous à nouveau dans Home Assistant."
+    },
+    "command_failed": {
+      "message": "La commande DESLOC a échoué. Son résultat peut être incertain. Vérifiez la serrure avant de réessayer."
+    },
+    "command_timeout": {
+      "message": "Le délai de confirmation de la commande DESLOC est dépassé. Vérifiez la serrure avant de réessayer."
+    },
+    "session_required": {
+      "message": "Reconnectez-vous ou importez la session de l’application pour enregistrer un jeton DESLOC réutilisable."
+    }
+  }
+}

@@ -14,7 +14,7 @@
       },
       "session": {
         "title": "DESLOC app session",
-        "description": "Enter the current session from the DESLOC app. All locks returned by the account are added automatically. C100 Plus is tested; other models are marked experimental. Reauthentication is required if the session expires or is revoked.",
+        "description": "Enter the current DESLOC app session. All account locks are added automatically. C100 Plus is maintainer-tested; D110 Plus has community confirmation. Other models are experimental. An expired or revoked session requires reauthentication.",
         "data": {
           "token": "App authorization token",
           "app_device_id": "App device ID",
@@ -31,7 +31,7 @@
       },
       "account": {
         "title": "DESLOC account",
-        "description": "Signing in here can sign the DESLOC phone app out of the same account. To keep the app session, use the captured-session option. HA saves the resulting session token, not your password. A revoked session requires reauthentication; HA will not log in automatically. All locks returned by the account are added automatically. C100 Plus is tested; other models are marked experimental.",
+        "description": "Signing in can sign the phone app out of this account. To keep its session, import the app session instead. Home Assistant saves the session token, not your password, and will not log in automatically after revocation. All account locks are added. C100 Plus is maintainer-tested; D110 Plus has community confirmation. Other models are experimental.",
         "data": {
           "username": "Email",
           "password": "Password"
@@ -94,6 +94,51 @@
       "command_in_progress": "Another command is already in progress for this lock. No changes were attempted. Wait for it to finish before starting a new request.",
       "pin_preflight_failed": "Could not check the existing users or PIN records. No changes were attempted. Restore the connection or reauthenticate if required, then check the DESLOC app before trying again.",
       "existing_user_pin_unconfirmed": "A user with this name already exists, but an installed PIN record with its name was not confirmed. No changes were made. Check and manage this user in the DESLOC app before trying again; Home Assistant will not add a PIN to an existing user."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Battery"
+      },
+      "rssi": {
+        "name": "Wi-Fi signal"
+      },
+      "door_state": {
+        "name": "Door state code"
+      },
+      "online_status": {
+        "name": "Online status code"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Another command is already in progress for this lock. No changes were attempted. Wait for it to finish before starting a new request."
+    },
+    "unavailable": {
+      "message": "The lock integration is unavailable. No changes were attempted. Restore its connection first."
+    },
+    "pin_preflight_failed": {
+      "message": "Could not check the existing users or PIN records. No changes were attempted. Restore the connection or reauthenticate if required, then check the DESLOC app before trying again."
+    },
+    "pin_creation_uncertain": {
+      "message": "PIN creation was not confirmed. The user or PIN may already exist. Check the DESLOC app before trying again."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC acknowledged the command, but the new lock state is not confirmed. Check the lock before retrying."
+    },
+    "auth_required": {
+      "message": "DESLOC authentication requires attention. Reauthenticate in Home Assistant."
+    },
+    "command_failed": {
+      "message": "The DESLOC command failed. Its result may be uncertain. Check the lock before retrying."
+    },
+    "command_timeout": {
+      "message": "DESLOC command confirmation timed out. Check the lock before retrying."
+    },
+    "session_required": {
+      "message": "Sign in again or import the app session to save a reusable DESLOC token."
     }
   }
 }

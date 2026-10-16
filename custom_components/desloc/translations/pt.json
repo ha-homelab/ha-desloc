@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "Renovar sessão DESLOC",
+        "description": "Capture uma nova sessão para a mesma fechadura e introduza-a abaixo.",
+        "data": {
+          "token": "Token de autorização da aplicação",
+          "app_device_id": "ID de dispositivo da aplicação",
+          "app_version": "Versão da aplicação",
+          "sys_type": "Tipo de sistema"
+        }
+      },
+      "session": {
+        "title": "Sessão da aplicação DESLOC",
+        "description": "Introduza a sessão DESLOC atual. Todas as fechaduras da conta são adicionadas automaticamente. C100 Plus foi testado pelo programador; D110 Plus foi confirmado pela comunidade. Os outros modelos são experimentais. Uma sessão expirada ou revogada exige nova autenticação.",
+        "data": {
+          "token": "Token de autorização da aplicação",
+          "app_device_id": "ID de dispositivo da aplicação",
+          "app_version": "Versão da aplicação",
+          "sys_type": "Tipo de sistema"
+        }
+      },
+      "user": {
+        "title": "Configurar DESLOC",
+        "menu_options": {
+          "account": "Iniciar sessão com email e palavra-passe",
+          "session": "Usar uma sessão capturada da aplicação"
+        }
+      },
+      "account": {
+        "title": "Conta DESLOC",
+        "description": "Iniciar sessão pode terminar a sessão desta conta no telemóvel. Para a manter, importe a sessão da aplicação. Home Assistant guarda o token, não a palavra-passe, e não inicia sessão automaticamente após revogação. São adicionadas todas as fechaduras. C100 Plus foi testado pelo programador; D110 Plus foi confirmado pela comunidade. Os outros modelos são experimentais.",
+        "data": {
+          "username": "Correio eletrónico",
+          "password": "Palavra-passe"
+        }
+      },
+      "verification": {
+        "title": "Verificar esta instalação",
+        "description": "Introduza o código enviado pela DESLOC para o email da conta. É usado uma vez e não é guardado.",
+        "data": {
+          "code": "Código de verificação por email"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Verifique os campos da sessão.",
+      "invalid_auth": "DESLOC rejeitou as credenciais. Verifique a conta ou capture uma nova sessão.",
+      "cannot_connect": "Não foi possível ler a lista de dispositivos DESLOC.",
+      "no_devices": "A conta não devolveu fechaduras.",
+      "device_mismatch": "Esta sessão não contém a fechadura configurada.",
+      "invalid_account": "Introduza o email e a palavra-passe DESLOC.",
+      "invalid_code": "O código de verificação é inválido ou expirou.",
+      "cannot_send_code": "DESLOC não conseguiu enviar um código. Aguarde antes de reiniciar a configuração.",
+      "captcha_required": "Conclua a verificação de segurança na aplicação DESLOC e tente novamente. Também pode usar uma sessão capturada.",
+      "clock_error": "Sincronize o relógio do servidor Home Assistant e tente novamente."
+    },
+    "abort": {
+      "already_configured": "Esta fechadura já está configurada.",
+      "reauth_successful": "Sessão renovada.",
+      "reconfigure_successful": "Autenticação atualizada.",
+      "device_mismatch": "Esta conta não contém a fechadura configurada.",
+      "no_devices": "A conta não devolveu fechaduras.",
+      "reauth_required": "Reinicie a autenticação.",
+      "devices_added": "Todas as fechaduras encontradas foram adicionadas. Abra DESLOC em Dispositivos e serviços para as ver.",
+      "devices_updated": "A sessão foi atualizada para todas as fechaduras encontradas. Não foram criadas entradas duplicadas.",
+      "invalid_discovery": "Não foi possível adicionar a fechadura. Reinicie a configuração DESLOC.",
+      "already_in_progress": "Esta fechadura já está a ser configurada."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Adicionar utilizador com PIN permanente",
+        "description": "Crie um utilizador normal nesta fechadura e instale um PIN permanente por Wi-Fi. Use um nome único e 6–8 algarismos. O envio concede acesso à fechadura. O PIN não é guardado no Home Assistant. Se o resultado for incerto, verifique DESLOC antes de tentar novamente.",
+        "data": {
+          "name": "Nome do utilizador",
+          "pin": "Novo PIN",
+          "pin_confirm": "Repetir PIN"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "Os PIN não coincidem.",
+      "invalid_pin_user": "Introduza um nome com 1–24 caracteres e um PIN com 6–8 algarismos."
+    },
+    "abort": {
+      "unavailable": "A integração da fechadura está indisponível. Não foram tentadas alterações. Restabeleça primeiro a ligação.",
+      "already_submitted": "Este pedido já foi enviado. Verifique DESLOC antes de iniciar outro.",
+      "user_exists": "Já existe um utilizador com este nome. Não foram feitas alterações; o PIN introduzido não foi instalado nem comparado com o existente. Gira o utilizador na aplicação DESLOC.",
+      "pin_creation_uncertain": "A criação do PIN não foi confirmada. O utilizador ou o PIN podem já existir. Verifique DESLOC antes de tentar novamente.",
+      "command_in_progress": "Já está em curso outro comando para esta fechadura. Não foram tentadas alterações. Aguarde que termine antes de iniciar outro pedido.",
+      "pin_preflight_failed": "Não foi possível verificar os utilizadores ou registos PIN existentes. Não foram tentadas alterações. Restabeleça a ligação ou autentique-se novamente se necessário, e verifique DESLOC antes de repetir.",
+      "existing_user_pin_unconfirmed": "Já existe um utilizador com este nome, mas não foi confirmado um PIN instalado em seu nome. Não foram feitas alterações. Verifique e gira o utilizador em DESLOC antes de repetir; Home Assistant não adiciona PIN a utilizadores existentes."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Bateria"
+      },
+      "rssi": {
+        "name": "Sinal Wi-Fi"
+      },
+      "door_state": {
+        "name": "Código do estado da porta"
+      },
+      "online_status": {
+        "name": "Código do estado da ligação"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Já está em curso outro comando para esta fechadura. Não foram tentadas alterações. Aguarde que termine antes de iniciar outro pedido."
+    },
+    "unavailable": {
+      "message": "A integração da fechadura está indisponível. Não foram tentadas alterações. Restabeleça primeiro a ligação."
+    },
+    "pin_preflight_failed": {
+      "message": "Não foi possível verificar os utilizadores ou registos PIN existentes. Não foram tentadas alterações. Restabeleça a ligação ou autentique-se novamente se necessário, e verifique DESLOC antes de repetir."
+    },
+    "pin_creation_uncertain": {
+      "message": "A criação do PIN não foi confirmada. O utilizador ou o PIN podem já existir. Verifique DESLOC antes de tentar novamente."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC confirmou o comando, mas o novo estado da fechadura não está confirmado. Verifique a fechadura antes de repetir."
+    },
+    "auth_required": {
+      "message": "A autenticação DESLOC requer atenção. Autentique-se novamente no Home Assistant."
+    },
+    "command_failed": {
+      "message": "O comando DESLOC falhou. O resultado pode ser incerto. Verifique a fechadura antes de repetir."
+    },
+    "command_timeout": {
+      "message": "O tempo de confirmação do comando DESLOC esgotou-se. Verifique a fechadura antes de repetir."
+    },
+    "session_required": {
+      "message": "Inicie sessão novamente ou importe a sessão da aplicação para guardar um token DESLOC reutilizável."
+    }
+  }
+}

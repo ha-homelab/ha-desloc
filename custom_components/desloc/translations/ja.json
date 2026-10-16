@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "DESLOCセッションを更新",
+        "description": "同じ錠の新しいセッションを取得して、以下に入力してください。",
+        "data": {
+          "token": "アプリの認証トークン",
+          "app_device_id": "アプリのデバイスID",
+          "app_version": "アプリのバージョン",
+          "sys_type": "システムの種類"
+        }
+      },
+      "session": {
+        "title": "DESLOCアプリのセッション",
+        "description": "現在のDESLOCセッションを入力してください。アカウントのすべての錠を自動で追加します。C100 Plusは開発者が検証し、D110 Plusはコミュニティが動作を確認しています。他のモデルは実験的対応です。期限切れや取り消されたセッションは再認証が必要です。",
+        "data": {
+          "token": "アプリの認証トークン",
+          "app_device_id": "アプリのデバイスID",
+          "app_version": "アプリのバージョン",
+          "sys_type": "システムの種類"
+        }
+      },
+      "user": {
+        "title": "DESLOCを設定",
+        "menu_options": {
+          "account": "メールアドレスとパスワードでログイン",
+          "session": "取得済みのアプリセッションを使用"
+        }
+      },
+      "account": {
+        "title": "DESLOCアカウント",
+        "description": "ログインすると、同じアカウントの電話アプリがログアウトする場合があります。セッションを維持するには、アプリのセッションをインポートしてください。Home Assistantはパスワードではなくトークンを保存し、取り消し後は自動ログインしません。アカウントのすべての錠を追加します。C100 Plusは開発者が検証し、D110 Plusはコミュニティが確認しています。他のモデルは実験的対応です。",
+        "data": {
+          "username": "メールアドレス",
+          "password": "パスワード"
+        }
+      },
+      "verification": {
+        "title": "このインストールを確認",
+        "description": "DESLOCがアカウントのメールアドレスに送信したコードを入力してください。コードは一度だけ使用し、保存しません。",
+        "data": {
+          "code": "メール確認コード"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "セッションの入力欄を確認してください。",
+      "invalid_auth": "DESLOCが認証情報を拒否しました。アカウントを確認するか、新しいセッションを取得してください。",
+      "cannot_connect": "DESLOCのデバイス一覧を読み取れませんでした。",
+      "no_devices": "このアカウントから錠が返されませんでした。",
+      "device_mismatch": "このセッションには設定済みの錠が含まれていません。",
+      "invalid_account": "DESLOCのメールアドレスとパスワードを入力してください。",
+      "invalid_code": "確認コードが無効か期限切れです。",
+      "cannot_send_code": "DESLOCがコードを送信できませんでした。しばらく待ってから設定をやり直してください。",
+      "captcha_required": "DESLOCアプリでセキュリティ確認を完了して再試行してください。取得済みセッションによる設定も可能です。",
+      "clock_error": "Home Assistantホストの時計を同期して再試行してください。"
+    },
+    "abort": {
+      "already_configured": "この錠は設定済みです。",
+      "reauth_successful": "セッションを更新しました。",
+      "reconfigure_successful": "認証を更新しました。",
+      "device_mismatch": "このアカウントには設定済みの錠が含まれていません。",
+      "no_devices": "このアカウントから錠が返されませんでした。",
+      "reauth_required": "認証を最初からやり直してください。",
+      "devices_added": "検出した錠をすべて追加しました。「デバイスとサービス」でDESLOCを開いて確認してください。",
+      "devices_updated": "検出したすべての錠のセッションを更新しました。重複エントリは作成していません。",
+      "invalid_discovery": "錠を追加できませんでした。DESLOCの設定をやり直してください。",
+      "already_in_progress": "この錠はすでに設定処理中です。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "永続PINのユーザーを追加",
+        "description": "この錠に一般ユーザーを作成し、Wi-Fi経由で永続PINを登録します。一意の名前と6–8桁の数字を使用してください。送信すると錠へのアクセス権が作成されます。Home AssistantはPINを保存しません。結果が不確かな場合は再試行前にDESLOCを確認してください。",
+        "data": {
+          "name": "ユーザー名",
+          "pin": "新しいPIN",
+          "pin_confirm": "PINを再入力"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "PINが一致しません。",
+      "invalid_pin_user": "1–24文字の名前と6–8桁のPINを入力してください。"
+    },
+    "abort": {
+      "unavailable": "錠のインテグレーションを利用できません。変更は試みていません。まず接続を復旧してください。",
+      "already_submitted": "このリクエストは送信済みです。新しいリクエストの前にDESLOCを確認してください。",
+      "user_exists": "同じ名前のユーザーがすでに存在します。変更は行っていません。入力したPINは登録せず、既存のPINとの比較もしていません。DESLOCアプリでユーザーを管理してください。",
+      "pin_creation_uncertain": "PINの作成を確認できませんでした。ユーザーまたはPINがすでに存在する可能性があります。再試行前にDESLOCアプリを確認してください。",
+      "command_in_progress": "この錠では別のコマンドを実行中です。変更は試みていません。完了してから新しいリクエストを開始してください。",
+      "pin_preflight_failed": "既存のユーザーまたはPIN記録を確認できませんでした。変更は試みていません。接続を復旧するか必要に応じて再認証し、再試行前にDESLOCアプリを確認してください。",
+      "existing_user_pin_unconfirmed": "同じ名前のユーザーが存在しますが、その名前で登録済みのPIN記録は確認できませんでした。変更は行っていません。再試行前にDESLOCでユーザーを確認・管理してください。Home Assistantは既存ユーザーにPINを追加しません。"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "バッテリー"
+      },
+      "rssi": {
+        "name": "Wi-Fi信号"
+      },
+      "door_state": {
+        "name": "ドア状態コード"
+      },
+      "online_status": {
+        "name": "接続状態コード"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "この錠では別のコマンドを実行中です。変更は試みていません。完了してから新しいリクエストを開始してください。"
+    },
+    "unavailable": {
+      "message": "錠のインテグレーションを利用できません。変更は試みていません。まず接続を復旧してください。"
+    },
+    "pin_preflight_failed": {
+      "message": "既存のユーザーまたはPIN記録を確認できませんでした。変更は試みていません。接続を復旧するか必要に応じて再認証し、再試行前にDESLOCアプリを確認してください。"
+    },
+    "pin_creation_uncertain": {
+      "message": "PINの作成を確認できませんでした。ユーザーまたはPINがすでに存在する可能性があります。再試行前にDESLOCアプリを確認してください。"
+    },
+    "command_unconfirmed": {
+      "message": "DESLOCがコマンドを受け付けましたが、新しい錠の状態は未確認です。再試行前に錠を確認してください。"
+    },
+    "auth_required": {
+      "message": "DESLOCの認証に対応が必要です。Home Assistantで再認証してください。"
+    },
+    "command_failed": {
+      "message": "DESLOCコマンドが失敗しました。結果が不確かな可能性があります。再試行前に錠を確認してください。"
+    },
+    "command_timeout": {
+      "message": "DESLOCコマンドの確認がタイムアウトしました。再試行前に錠を確認してください。"
+    },
+    "session_required": {
+      "message": "再ログインするかアプリのセッションをインポートし、再利用可能なDESLOCトークンを保存してください。"
+    }
+  }
+}

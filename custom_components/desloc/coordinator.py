@@ -57,9 +57,11 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
     async def async_set_locked(self, locked: bool) -> None:
         """Follow the app's command/result protocol without replaying actions."""
         if self._command_lock.locked():
-            raise DeslocCommandInProgress("A DESLOC command is already in progress")
+            raise DeslocCommandInProgress("A DESLOC command is already in progress",
+                translation_domain=DOMAIN, translation_key="command_in_progress")
         if not self.last_update_success or self.data is None:
-            raise DeslocUnavailable("DESLOC status is unavailable")
+            raise DeslocUnavailable("DESLOC status is unavailable",
+                translation_domain=DOMAIN, translation_key="unavailable")
         async with self._command_lock:
             self._state_must_be_newer_than = self.data.door_state_updated_ms or 0
             self.pending_target = locked
@@ -75,14 +77,17 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
                         if self.is_locked is locked:
                             return
                         await asyncio.sleep(2)
-                    raise HomeAssistantError("DESLOC acknowledged the command but the new lock state is not confirmed")
+                    raise HomeAssistantError("DESLOC acknowledged the command but the new lock state is not confirmed",
+                        translation_domain=DOMAIN, translation_key="command_unconfirmed")
             except DeslocAuthError:
                 self.entry.async_start_reauth(self.hass)
-                raise HomeAssistantError("DESLOC authentication requires attention; reauthenticate in Home Assistant") from None
+                raise HomeAssistantError("DESLOC authentication requires attention; reauthenticate in Home Assistant",
+                    translation_domain=DOMAIN, translation_key="auth_required") from None
             except DeslocError as err:
-                raise HomeAssistantError(str(err)) from None
+                raise HomeAssistantError(str(err), translation_domain=DOMAIN, translation_key="command_failed") from None
             except TimeoutError:
-                raise HomeAssistantError("DESLOC command confirmation timed out; check the lock before retrying") from None
+                raise HomeAssistantError("DESLOC command confirmation timed out; check the lock before retrying",
+                    translation_domain=DOMAIN, translation_key="command_timeout") from None
             finally:
                 self.pending_target = None
                 self.async_update_listeners()
@@ -94,7 +99,8 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
             else:
                 devices = await self.account.async_devices(force_refresh=self.pending_target is not None)
         except DeslocAuthError:
-            raise ConfigEntryAuthFailed("DESLOC authentication requires attention; reauthenticate in Home Assistant") from None
+            raise ConfigEntryAuthFailed("DESLOC authentication requires attention; reauthenticate in Home Assistant",
+                translation_domain=DOMAIN, translation_key="auth_required") from None
         except DeslocError as err:
             raise UpdateFailed(str(err)) from None
         device = next((device for device in devices if device.mac == self.mac), None)
@@ -115,9 +121,11 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
         validate_pin_user(name, pin)
         name = name.strip()
         if self._command_lock.locked():
-            raise DeslocCommandInProgress("A DESLOC command is already in progress")
+            raise DeslocCommandInProgress("A DESLOC command is already in progress",
+                translation_domain=DOMAIN, translation_key="command_in_progress")
         if not self.last_update_success or self.data is None:
-            raise DeslocUnavailable("DESLOC status is unavailable")
+            raise DeslocUnavailable("DESLOC status is unavailable",
+                translation_domain=DOMAIN, translation_key="unavailable")
         async with self._command_lock:
             write_attempted = False
             try:
@@ -141,17 +149,22 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
                         if await self.client.async_pin_present(access_id, device_id, name):
                             return
                         await asyncio.sleep(2)
-                    raise HomeAssistantError("PIN installation is unconfirmed; check the DESLOC app")
+                    raise HomeAssistantError("PIN installation is unconfirmed; check the DESLOC app",
+                        translation_domain=DOMAIN, translation_key="pin_creation_uncertain")
             except DeslocUserExists:
                 raise
             except DeslocAuthError:
                 self.entry.async_start_reauth(self.hass)
                 if not write_attempted:
-                    raise DeslocPinPreflightFailed("Authentication failed before any changes were attempted") from None
-                raise HomeAssistantError("Authentication failed; check the DESLOC app before retrying") from None
+                    raise DeslocPinPreflightFailed("Authentication failed before any changes were attempted",
+                        translation_domain=DOMAIN, translation_key="pin_preflight_failed") from None
+                raise HomeAssistantError("Authentication failed; check the DESLOC app before retrying",
+                    translation_domain=DOMAIN, translation_key="pin_creation_uncertain") from None
             except (DeslocError, TimeoutError):
                 if not write_attempted:
-                    raise DeslocPinPreflightFailed("Could not check existing users; no changes were attempted") from None
+                    raise DeslocPinPreflightFailed("Could not check existing users; no changes were attempted",
+                        translation_domain=DOMAIN, translation_key="pin_preflight_failed") from None
                 # Creation may have succeeded before PIN installation failed.
                 # Neither retry nor delete a possibly created user automatically.
-                raise HomeAssistantError("PIN creation is uncertain; check the DESLOC app before retrying") from None
+                raise HomeAssistantError("PIN creation is uncertain; check the DESLOC app before retrying",
+                    translation_domain=DOMAIN, translation_key="pin_creation_uncertain") from None

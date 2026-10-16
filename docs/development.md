@@ -21,6 +21,21 @@ Changing saved credentials creates a separate session during reauthentication.
 
 ## Validation
 
+The CI source-warning check uses hash-locked Ruff 0.16.5 and checks all maintained
+Python files, including tests and release helpers, with `--select F --ignore-noqa`.
+Pyflakes error and warning findings must be resolved before merging; the command
+exits nonzero for any finding and does not accept inline suppression comments.
+Run it in an isolated environment:
+
+```sh
+python3 -m venv .venv-ci
+.venv-ci/bin/python -m pip install --require-hashes -r scripts/requirements-lint.txt
+.venv-ci/bin/python -m ruff check --select F --ignore-noqa .
+```
+
+This is a source-warning baseline. Third-party deprecations and security-analysis
+findings are tracked separately and are not declared resolved by a clean Ruff run.
+
 Use Linux and Python 3.14.2 or newer. The locked synthetic test runtime is
 Home Assistant 2026.10.0:
 
@@ -34,8 +49,9 @@ Tests use synthetic data, never call DESLOC, and never move a physical lock. The
 include real Home Assistant flow/platform loading, invalid authentication,
 timeouts, stale reports, and ensuring failed commands are not retried.
 
-The current locked Home Assistant 2026.10.0 environment also completes all 152
-synthetic tests on macOS with Python 3.14.7. Earlier runs with Home Assistant
+An earlier snapshot of the locked Home Assistant 2026.10.0 environment completed
+152 synthetic tests on macOS with Python 3.14.7. The subsequent v0.4.0 release
+validation completed 180 tests in Linux CI; see the [release results](release-results.md). Earlier runs with Home Assistant
 2026.9.1 crashed during interpreter finalization on macOS; that outcome was not
 reproduced with the updated lock. Linux CI remains the required runtime target.
 Third-party `backoff` deprecation warnings about Python 3.16 remain visible; they

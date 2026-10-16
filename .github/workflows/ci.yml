@@ -23,6 +23,10 @@ jobs:
         run: |
           python3 -m venv .venv-ci
           .venv-ci/bin/python -m pip install --disable-pip-version-check --require-hashes -r scripts/requirements-ci.txt
+      - name: Check maintained Python source warnings
+        run: |
+          .venv-ci/bin/python -m pip install --disable-pip-version-check --require-hashes -r scripts/requirements-lint.txt
+          .venv-ci/bin/python -m ruff check --select F --ignore-noqa .
       - name: Check atomic CodeQL updates
         run: |
           .venv-ci/bin/python -m unittest discover -s scripts -p 'test_ci_actions.py'

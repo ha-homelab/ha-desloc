@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.4.0] - Unreleased
+## [0.4.0] - 2026-10-16
 
 ### Added
 
@@ -19,7 +19,7 @@
 
 ### Upgrade
 
-This minor release candidate includes the previous 0.3.5 beta work and adds
+This minor release includes the previous 0.3.5 beta work and adds
 localization. Use the existing installation procedure. Existing configuration,
 entity IDs, unique IDs, automations, and user-assigned names are preserved.
 Sensor default names follow Home Assistant's system language. The PIN form,

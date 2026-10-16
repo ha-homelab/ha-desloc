@@ -11,6 +11,10 @@ Do not commit private captures, account sessions, CA material, identifiers, or
 household configuration. Use synthetic fixtures. Read [SECURITY.md](SECURITY.md)
 before reporting vulnerabilities.
 
+See [governance](GOVERNANCE.md), the [Code of Conduct](CODE_OF_CONDUCT.md), and the
+[maintenance roadmap](ROADMAP.md) for project roles, private conduct reporting,
+decision-making and current priorities.
+
 ## Test and security review policy
 
 Behavior changes require automated regression coverage, or a documented reason

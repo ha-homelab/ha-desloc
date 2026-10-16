@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "更新 DESLOC 会话",
+        "description": "请获取同一把锁的新会话，并在下方输入。",
+        "data": {
+          "token": "应用授权令牌",
+          "app_device_id": "应用设备 ID",
+          "app_version": "应用版本",
+          "sys_type": "系统类型"
+        }
+      },
+      "session": {
+        "title": "DESLOC 应用会话",
+        "description": "输入当前 DESLOC 会话。账户中的所有锁都会自动添加。C100 Plus 已由开发者测试，D110 Plus 已获社区确认。其他型号为实验性支持。会话过期或被撤销后需要重新认证。",
+        "data": {
+          "token": "应用授权令牌",
+          "app_device_id": "应用设备 ID",
+          "app_version": "应用版本",
+          "sys_type": "系统类型"
+        }
+      },
+      "user": {
+        "title": "设置 DESLOC",
+        "menu_options": {
+          "account": "使用邮箱和密码登录",
+          "session": "使用已捕获的应用会话"
+        }
+      },
+      "account": {
+        "title": "DESLOC 账户",
+        "description": "登录可能会使手机应用中的同一账户退出。要保留其会话，请导入应用会话。Home Assistant 保存会话令牌而非密码，且不会在会话撤销后自动登录。将添加账户中的所有锁。C100 Plus 已由开发者测试，D110 Plus 已获社区确认。其他型号为实验性支持。",
+        "data": {
+          "username": "电子邮箱",
+          "password": "密码"
+        }
+      },
+      "verification": {
+        "title": "验证此安装",
+        "description": "输入 DESLOC 发送到账户邮箱的验证码。该码仅使用一次，不会保存。",
+        "data": {
+          "code": "邮箱验证码"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "请检查会话字段。",
+      "invalid_auth": "DESLOC 拒绝了这些凭据。请检查账户或获取新会话。",
+      "cannot_connect": "无法读取 DESLOC 设备列表。",
+      "no_devices": "此账户未返回任何锁。",
+      "device_mismatch": "此会话不包含已配置的锁。",
+      "invalid_account": "输入 DESLOC 邮箱和密码。",
+      "invalid_code": "验证码无效或已过期。",
+      "cannot_send_code": "DESLOC 无法发送验证码。请稍等后再重新设置。",
+      "captcha_required": "请在 DESLOC 应用中完成安全验证后重试。也可使用已捕获的会话进行设置。",
+      "clock_error": "请同步 Home Assistant 主机时钟后重试。"
+    },
+    "abort": {
+      "already_configured": "此锁已配置。",
+      "reauth_successful": "会话已更新。",
+      "reconfigure_successful": "认证已更新。",
+      "device_mismatch": "此账户不包含已配置的锁。",
+      "no_devices": "此账户未返回任何锁。",
+      "reauth_required": "请重新开始认证。",
+      "devices_added": "已添加所有发现的锁。请在“设备与服务”中打开 DESLOC 查看。",
+      "devices_updated": "已更新所有发现的锁的会话。未创建重复条目。",
+      "invalid_discovery": "无法添加此锁。请重新设置 DESLOC。",
+      "already_in_progress": "此锁正在配置中。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "添加永久 PIN 用户",
+        "description": "为此锁创建普通用户，并通过 Wi-Fi 安装永久 PIN。请使用唯一名称和 6–8 位数字。提交即授予开锁权限。PIN 不会保存在 Home Assistant 中。如果结果不确定，请在重试前检查 DESLOC。",
+        "data": {
+          "name": "用户名称",
+          "pin": "新 PIN",
+          "pin_confirm": "再次输入 PIN"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "两次输入的 PIN 不一致。",
+      "invalid_pin_user": "请输入 1–24 个字符的名称和 6–8 位数字的 PIN。"
+    },
+    "abort": {
+      "unavailable": "锁集成不可用。未尝试进行任何更改。请先恢复连接。",
+      "already_submitted": "此请求已提交。开始新请求前请检查 DESLOC。",
+      "user_exists": "同名用户已存在。未进行更改，输入的 PIN 未安装，也未与现有 PIN 比较。请在 DESLOC 应用中管理此用户。",
+      "pin_creation_uncertain": "PIN 创建未获确认。用户或 PIN 可能已存在。请在重试前检查 DESLOC 应用。",
+      "command_in_progress": "此锁已有其他命令正在执行。未尝试进行更改。请等待完成后再发起新请求。",
+      "pin_preflight_failed": "无法检查现有用户或 PIN 记录。未尝试进行更改。请恢复连接，或在需要时重新认证，然后在重试前检查 DESLOC 应用。",
+      "existing_user_pin_unconfirmed": "同名用户已存在，但未确认有以其名称安装的 PIN 记录。未进行更改。请在重试前于 DESLOC 应用中检查和管理此用户；Home Assistant 不会为现有用户添加 PIN。"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "电池电量"
+      },
+      "rssi": {
+        "name": "Wi-Fi 信号"
+      },
+      "door_state": {
+        "name": "门状态代码"
+      },
+      "online_status": {
+        "name": "连接状态代码"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "此锁已有其他命令正在执行。未尝试进行更改。请等待完成后再发起新请求。"
+    },
+    "unavailable": {
+      "message": "锁集成不可用。未尝试进行任何更改。请先恢复连接。"
+    },
+    "pin_preflight_failed": {
+      "message": "无法检查现有用户或 PIN 记录。未尝试进行更改。请恢复连接，或在需要时重新认证，然后在重试前检查 DESLOC 应用。"
+    },
+    "pin_creation_uncertain": {
+      "message": "PIN 创建未获确认。用户或 PIN 可能已存在。请在重试前检查 DESLOC 应用。"
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC 已确认接收命令，但新锁状态尚未确认。重试前请检查锁。"
+    },
+    "auth_required": {
+      "message": "DESLOC 认证需要处理。请在 Home Assistant 中重新认证。"
+    },
+    "command_failed": {
+      "message": "DESLOC 命令失败，结果可能不确定。重试前请检查锁。"
+    },
+    "command_timeout": {
+      "message": "等待 DESLOC 命令确认超时。重试前请检查锁。"
+    },
+    "session_required": {
+      "message": "请重新登录或导入应用会话，以保存可重复使用的 DESLOC 令牌。"
+    }
+  }
+}

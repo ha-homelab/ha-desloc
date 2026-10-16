@@ -10,14 +10,14 @@ from . import DeslocConfigEntry
 from .entity import DeslocEntity
 
 DESCRIPTIONS = (
-    SensorEntityDescription(key="battery", name="Battery", device_class=SensorDeviceClass.BATTERY,
+    SensorEntityDescription(key="battery", translation_key="battery", name="Battery", device_class=SensorDeviceClass.BATTERY,
                             native_unit_of_measurement=PERCENTAGE, state_class=SensorStateClass.MEASUREMENT),
-    SensorEntityDescription(key="rssi", name="Wi-Fi signal", device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+    SensorEntityDescription(key="rssi", translation_key="rssi", name="Wi-Fi signal", device_class=SensorDeviceClass.SIGNAL_STRENGTH,
                             native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
                             state_class=SensorStateClass.MEASUREMENT, entity_category=EntityCategory.DIAGNOSTIC),
-    SensorEntityDescription(key="door_state", name="Door state code", entity_category=EntityCategory.DIAGNOSTIC,
+    SensorEntityDescription(key="door_state", translation_key="door_state", name="Door state code", entity_category=EntityCategory.DIAGNOSTIC,
                             entity_registry_enabled_default=False),
-    SensorEntityDescription(key="online_status", name="Online status code", entity_category=EntityCategory.DIAGNOSTIC,
+    SensorEntityDescription(key="online_status", translation_key="online_status", name="Online status code", entity_category=EntityCategory.DIAGNOSTIC,
                             entity_registry_enabled_default=False),
 )
 

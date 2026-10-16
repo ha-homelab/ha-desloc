@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "Odnów sesję DESLOC",
+        "description": "Przechwyć nową sesję dla tego samego zamka i wprowadź ją poniżej.",
+        "data": {
+          "token": "Token autoryzacji aplikacji",
+          "app_device_id": "Identyfikator urządzenia aplikacji",
+          "app_version": "Wersja aplikacji",
+          "sys_type": "Typ systemu"
+        }
+      },
+      "session": {
+        "title": "Sesja aplikacji DESLOC",
+        "description": "Wprowadź bieżącą sesję DESLOC. Wszystkie zamki konta są dodawane automatycznie. C100 Plus przetestował twórca; działanie D110 Plus potwierdziła społeczność. Pozostałe modele są eksperymentalne. Wygasła lub unieważniona sesja wymaga ponownego logowania.",
+        "data": {
+          "token": "Token autoryzacji aplikacji",
+          "app_device_id": "Identyfikator urządzenia aplikacji",
+          "app_version": "Wersja aplikacji",
+          "sys_type": "Typ systemu"
+        }
+      },
+      "user": {
+        "title": "Skonfiguruj DESLOC",
+        "menu_options": {
+          "account": "Zaloguj się adresem e-mail i hasłem",
+          "session": "Użyj przechwyconej sesji aplikacji"
+        }
+      },
+      "account": {
+        "title": "Konto DESLOC",
+        "description": "Logowanie może wylogować aplikację telefonu z tego konta. Aby zachować jej sesję, zaimportuj ją. Home Assistant zapisuje token, nie hasło, i nie loguje się automatycznie po unieważnieniu sesji. Dodawane są wszystkie zamki. C100 Plus przetestował twórca; działanie D110 Plus potwierdziła społeczność. Pozostałe modele są eksperymentalne.",
+        "data": {
+          "username": "Adres e-mail",
+          "password": "Hasło"
+        }
+      },
+      "verification": {
+        "title": "Zweryfikuj tę instalację",
+        "description": "Wprowadź kod wysłany przez DESLOC na e-mail konta. Kod jest jednorazowy i nie jest zapisywany.",
+        "data": {
+          "code": "Kod weryfikacyjny z e-maila"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Sprawdź pola sesji.",
+      "invalid_auth": "DESLOC odrzucił dane logowania. Sprawdź konto lub przechwyć nową sesję.",
+      "cannot_connect": "Nie udało się odczytać listy urządzeń DESLOC.",
+      "no_devices": "Konto nie zwróciło żadnych zamków.",
+      "device_mismatch": "Ta sesja nie zawiera skonfigurowanego zamka.",
+      "invalid_account": "Wprowadź e-mail i hasło DESLOC.",
+      "invalid_code": "Kod weryfikacyjny jest nieprawidłowy lub wygasł.",
+      "cannot_send_code": "DESLOC nie mógł wysłać kodu. Poczekaj przed ponowną konfiguracją.",
+      "captcha_required": "Wykonaj weryfikację bezpieczeństwa w aplikacji DESLOC i spróbuj ponownie. Możesz też użyć przechwyconej sesji.",
+      "clock_error": "Zsynchronizuj zegar hosta Home Assistant i spróbuj ponownie."
+    },
+    "abort": {
+      "already_configured": "Ten zamek jest już skonfigurowany.",
+      "reauth_successful": "Sesja odnowiona.",
+      "reconfigure_successful": "Uwierzytelnianie zaktualizowane.",
+      "device_mismatch": "To konto nie zawiera skonfigurowanego zamka.",
+      "no_devices": "Konto nie zwróciło żadnych zamków.",
+      "reauth_required": "Rozpocznij uwierzytelnianie ponownie.",
+      "devices_added": "Dodano wszystkie wykryte zamki. Otwórz DESLOC w sekcji Urządzenia i usługi, aby je zobaczyć.",
+      "devices_updated": "Zaktualizowano sesję wszystkich wykrytych zamków. Nie utworzono duplikatów wpisów.",
+      "invalid_discovery": "Nie udało się dodać zamka. Rozpocznij konfigurację DESLOC ponownie.",
+      "already_in_progress": "Konfiguracja tego zamka już trwa."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dodaj użytkownika ze stałym kodem PIN",
+        "description": "Utwórz zwykłego użytkownika zamka i zainstaluj stały PIN przez Wi-Fi. Użyj unikalnej nazwy i 6–8 cyfr. Wysłanie formularza nadaje dostęp do zamka. PIN nie jest zapisywany w Home Assistant. Jeśli wynik jest niepewny, sprawdź DESLOC przed ponowną próbą.",
+        "data": {
+          "name": "Nazwa użytkownika",
+          "pin": "Nowy PIN",
+          "pin_confirm": "Powtórz PIN"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "Kody PIN nie są zgodne.",
+      "invalid_pin_user": "Wprowadź nazwę o długości 1–24 znaków i PIN złożony z 6–8 cyfr."
+    },
+    "abort": {
+      "unavailable": "Integracja zamka jest niedostępna. Nie próbowano wprowadzać zmian. Najpierw przywróć połączenie.",
+      "already_submitted": "To żądanie już wysłano. Sprawdź DESLOC przed rozpoczęciem kolejnego.",
+      "user_exists": "Użytkownik o tej nazwie już istnieje. Nie wprowadzono zmian; podany PIN nie został zainstalowany ani porównany z istniejącym. Zarządzaj użytkownikiem w aplikacji DESLOC.",
+      "pin_creation_uncertain": "Utworzenie PIN nie zostało potwierdzone. Użytkownik lub PIN mogą już istnieć. Sprawdź DESLOC przed ponowną próbą.",
+      "command_in_progress": "Dla tego zamka trwa już inne polecenie. Nie próbowano wprowadzać zmian. Poczekaj na zakończenie przed nowym żądaniem.",
+      "pin_preflight_failed": "Nie udało się sprawdzić istniejących użytkowników lub wpisów PIN. Nie próbowano wprowadzać zmian. Przywróć połączenie lub zaloguj się ponownie, jeśli potrzeba, a następnie sprawdź DESLOC przed kolejną próbą.",
+      "existing_user_pin_unconfirmed": "Użytkownik o tej nazwie już istnieje, ale nie potwierdzono zainstalowanego PIN z jego nazwą. Nie wprowadzono zmian. Sprawdź użytkownika i zarządzaj nim w DESLOC przed ponowną próbą; Home Assistant nie dodaje PIN istniejącym użytkownikom."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Bateria"
+      },
+      "rssi": {
+        "name": "Sygnał Wi-Fi"
+      },
+      "door_state": {
+        "name": "Kod stanu drzwi"
+      },
+      "online_status": {
+        "name": "Kod stanu połączenia"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Dla tego zamka trwa już inne polecenie. Nie próbowano wprowadzać zmian. Poczekaj na zakończenie przed nowym żądaniem."
+    },
+    "unavailable": {
+      "message": "Integracja zamka jest niedostępna. Nie próbowano wprowadzać zmian. Najpierw przywróć połączenie."
+    },
+    "pin_preflight_failed": {
+      "message": "Nie udało się sprawdzić istniejących użytkowników lub wpisów PIN. Nie próbowano wprowadzać zmian. Przywróć połączenie lub zaloguj się ponownie, jeśli potrzeba, a następnie sprawdź DESLOC przed kolejną próbą."
+    },
+    "pin_creation_uncertain": {
+      "message": "Utworzenie PIN nie zostało potwierdzone. Użytkownik lub PIN mogą już istnieć. Sprawdź DESLOC przed ponowną próbą."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC potwierdził polecenie, ale nowy stan zamka nie jest potwierdzony. Sprawdź zamek przed ponowną próbą."
+    },
+    "auth_required": {
+      "message": "Uwierzytelnianie DESLOC wymaga uwagi. Zaloguj się ponownie w Home Assistant."
+    },
+    "command_failed": {
+      "message": "Polecenie DESLOC nie powiodło się. Wynik może być niepewny. Sprawdź zamek przed ponowną próbą."
+    },
+    "command_timeout": {
+      "message": "Upłynął czas oczekiwania na potwierdzenie polecenia DESLOC. Sprawdź zamek przed ponowną próbą."
+    },
+    "session_required": {
+      "message": "Zaloguj się ponownie lub zaimportuj sesję aplikacji, aby zapisać token DESLOC do ponownego użycia."
+    }
+  }
+}

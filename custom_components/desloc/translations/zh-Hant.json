@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "更新 DESLOC 工作階段",
+        "description": "請擷取同一把鎖的新工作階段，並在下方輸入。",
+        "data": {
+          "token": "應用程式授權權杖",
+          "app_device_id": "應用程式裝置 ID",
+          "app_version": "應用程式版本",
+          "sys_type": "系統類型"
+        }
+      },
+      "session": {
+        "title": "DESLOC 應用程式工作階段",
+        "description": "輸入目前的 DESLOC 工作階段。帳戶中的所有鎖都會自動加入。C100 Plus 已由開發者測試，D110 Plus 已獲社群確認。其他型號為實驗性支援。工作階段過期或遭撤銷後需要重新驗證。",
+        "data": {
+          "token": "應用程式授權權杖",
+          "app_device_id": "應用程式裝置 ID",
+          "app_version": "應用程式版本",
+          "sys_type": "系統類型"
+        }
+      },
+      "user": {
+        "title": "設定 DESLOC",
+        "menu_options": {
+          "account": "使用電子郵件和密碼登入",
+          "session": "使用已擷取的應用程式工作階段"
+        }
+      },
+      "account": {
+        "title": "DESLOC 帳戶",
+        "description": "登入可能會使手機應用程式中的同一帳戶登出。若要保留其工作階段，請匯入應用程式工作階段。Home Assistant 儲存權杖而非密碼，且不會在工作階段撤銷後自動登入。將加入帳戶中的所有鎖。C100 Plus 已由開發者測試，D110 Plus 已獲社群確認。其他型號為實驗性支援。",
+        "data": {
+          "username": "電子郵件",
+          "password": "密碼"
+        }
+      },
+      "verification": {
+        "title": "驗證此安裝",
+        "description": "輸入 DESLOC 寄到帳戶電子郵件的驗證碼。此碼僅使用一次，不會儲存。",
+        "data": {
+          "code": "電子郵件驗證碼"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "請檢查工作階段欄位。",
+      "invalid_auth": "DESLOC 拒絕了這些憑證。請檢查帳戶或擷取新的工作階段。",
+      "cannot_connect": "無法讀取 DESLOC 裝置清單。",
+      "no_devices": "此帳戶未傳回任何鎖。",
+      "device_mismatch": "此工作階段不包含已設定的鎖。",
+      "invalid_account": "輸入 DESLOC 電子郵件和密碼。",
+      "invalid_code": "驗證碼無效或已過期。",
+      "cannot_send_code": "DESLOC 無法傳送驗證碼。請稍等後再重新設定。",
+      "captcha_required": "請在 DESLOC 應用程式中完成安全驗證後重試。也可使用已擷取的工作階段進行設定。",
+      "clock_error": "請同步 Home Assistant 主機時鐘後重試。"
+    },
+    "abort": {
+      "already_configured": "此鎖已設定。",
+      "reauth_successful": "工作階段已更新。",
+      "reconfigure_successful": "驗證已更新。",
+      "device_mismatch": "此帳戶不包含已設定的鎖。",
+      "no_devices": "此帳戶未傳回任何鎖。",
+      "reauth_required": "請重新開始驗證。",
+      "devices_added": "已加入所有找到的鎖。請在「裝置與服務」中開啟 DESLOC 查看。",
+      "devices_updated": "已更新所有找到的鎖的工作階段。未建立重複項目。",
+      "invalid_discovery": "無法加入此鎖。請重新設定 DESLOC。",
+      "already_in_progress": "此鎖正在設定中。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "新增永久 PIN 使用者",
+        "description": "為此鎖建立一般使用者，並透過 Wi-Fi 安裝永久 PIN。請使用唯一名稱和 6–8 位數字。送出即授予開鎖權限。PIN 不會儲存在 Home Assistant 中。如果結果不確定，請在重試前檢查 DESLOC。",
+        "data": {
+          "name": "使用者名稱",
+          "pin": "新 PIN",
+          "pin_confirm": "再次輸入 PIN"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "兩次輸入的 PIN 不一致。",
+      "invalid_pin_user": "請輸入 1–24 個字元的名稱和 6–8 位數字的 PIN。"
+    },
+    "abort": {
+      "unavailable": "鎖整合無法使用。未嘗試進行任何變更。請先恢復連線。",
+      "already_submitted": "此要求已送出。開始新要求前請檢查 DESLOC。",
+      "user_exists": "同名使用者已存在。未進行變更，輸入的 PIN 未安裝，也未與現有 PIN 比較。請在 DESLOC 應用程式中管理此使用者。",
+      "pin_creation_uncertain": "PIN 建立未獲確認。使用者或 PIN 可能已存在。請在重試前檢查 DESLOC 應用程式。",
+      "command_in_progress": "此鎖已有其他指令正在執行。未嘗試進行變更。請等待完成後再發起新要求。",
+      "pin_preflight_failed": "無法檢查現有使用者或 PIN 記錄。未嘗試進行變更。請恢復連線，或在需要時重新驗證，然後在重試前檢查 DESLOC 應用程式。",
+      "existing_user_pin_unconfirmed": "同名使用者已存在，但未確認有以其名稱安裝的 PIN 記錄。未進行變更。請在重試前於 DESLOC 應用程式中檢查和管理此使用者；Home Assistant 不會為現有使用者新增 PIN。"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "電池電量"
+      },
+      "rssi": {
+        "name": "Wi-Fi 訊號"
+      },
+      "door_state": {
+        "name": "門狀態代碼"
+      },
+      "online_status": {
+        "name": "連線狀態代碼"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "此鎖已有其他指令正在執行。未嘗試進行變更。請等待完成後再發起新要求。"
+    },
+    "unavailable": {
+      "message": "鎖整合無法使用。未嘗試進行任何變更。請先恢復連線。"
+    },
+    "pin_preflight_failed": {
+      "message": "無法檢查現有使用者或 PIN 記錄。未嘗試進行變更。請恢復連線，或在需要時重新驗證，然後在重試前檢查 DESLOC 應用程式。"
+    },
+    "pin_creation_uncertain": {
+      "message": "PIN 建立未獲確認。使用者或 PIN 可能已存在。請在重試前檢查 DESLOC 應用程式。"
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC 已確認收到指令，但新的鎖狀態尚未確認。重試前請檢查鎖。"
+    },
+    "auth_required": {
+      "message": "DESLOC 驗證需要處理。請在 Home Assistant 中重新驗證。"
+    },
+    "command_failed": {
+      "message": "DESLOC 指令失敗，結果可能不確定。重試前請檢查鎖。"
+    },
+    "command_timeout": {
+      "message": "等待 DESLOC 指令確認逾時。重試前請檢查鎖。"
+    },
+    "session_required": {
+      "message": "請重新登入或匯入應用程式工作階段，以儲存可重複使用的 DESLOC 權杖。"
+    }
+  }
+}

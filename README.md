@@ -31,6 +31,14 @@ discovered devices, and the PIN user form.
 [Watch the 30-second interface overview](docs/media/desloc-overview.mp4)
 (silent, English captions) · [Video transcript](docs/video.md)
 
+## Languages
+
+The integration includes **24 complete language packs** for setup, authentication,
+PIN-user forms, sensor names, and command errors. It uses Home Assistant’s native
+language selection and English fallback; no translation service is contacted.
+Existing entity IDs and custom names are preserved. Documentation and demo media
+remain in English. See [languages and translation contributions](docs/i18n.md).
+
 ## Status and limitations
 
 The protocol and both command directions were captured from a real C100 Plus

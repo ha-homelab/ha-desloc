@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "Gia hạn phiên DESLOC",
+        "description": "Ghi lại phiên mới cho cùng khóa rồi nhập bên dưới.",
+        "data": {
+          "token": "Mã thông báo ủy quyền ứng dụng",
+          "app_device_id": "ID thiết bị của ứng dụng",
+          "app_version": "Phiên bản ứng dụng",
+          "sys_type": "Loại hệ thống"
+        }
+      },
+      "session": {
+        "title": "Phiên ứng dụng DESLOC",
+        "description": "Nhập phiên DESLOC hiện tại. Mọi khóa trong tài khoản được thêm tự động. C100 Plus được nhà phát triển kiểm thử; D110 Plus được cộng đồng xác nhận. Các mẫu khác còn thử nghiệm. Phiên hết hạn hoặc bị thu hồi yêu cầu xác thực lại.",
+        "data": {
+          "token": "Mã thông báo ủy quyền ứng dụng",
+          "app_device_id": "ID thiết bị của ứng dụng",
+          "app_version": "Phiên bản ứng dụng",
+          "sys_type": "Loại hệ thống"
+        }
+      },
+      "user": {
+        "title": "Thiết lập DESLOC",
+        "menu_options": {
+          "account": "Đăng nhập bằng email và mật khẩu",
+          "session": "Dùng phiên ứng dụng đã ghi lại"
+        }
+      },
+      "account": {
+        "title": "Tài khoản DESLOC",
+        "description": "Đăng nhập có thể đăng xuất tài khoản này khỏi ứng dụng điện thoại. Để giữ phiên đó, hãy nhập phiên ứng dụng. Home Assistant lưu mã thông báo, không lưu mật khẩu, và không tự đăng nhập sau khi phiên bị thu hồi. Mọi khóa được thêm. C100 Plus được nhà phát triển kiểm thử; D110 Plus được cộng đồng xác nhận. Các mẫu khác còn thử nghiệm.",
+        "data": {
+          "username": "Thư điện tử",
+          "password": "Mật khẩu"
+        }
+      },
+      "verification": {
+        "title": "Xác minh bản cài đặt này",
+        "description": "Nhập mã DESLOC gửi tới email tài khoản. Mã chỉ dùng một lần và không được lưu.",
+        "data": {
+          "code": "Mã xác minh qua email"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Kiểm tra các trường phiên.",
+      "invalid_auth": "DESLOC từ chối thông tin đăng nhập. Kiểm tra tài khoản hoặc ghi lại phiên mới.",
+      "cannot_connect": "Không đọc được danh sách thiết bị DESLOC.",
+      "no_devices": "Tài khoản này không trả về khóa nào.",
+      "device_mismatch": "Phiên này không chứa khóa đã cấu hình.",
+      "invalid_account": "Nhập email và mật khẩu DESLOC.",
+      "invalid_code": "Mã xác minh không hợp lệ hoặc đã hết hạn.",
+      "cannot_send_code": "DESLOC không gửi được mã. Hãy đợi trước khi thiết lập lại.",
+      "captcha_required": "Hoàn tất kiểm tra bảo mật trong ứng dụng DESLOC rồi thử lại. Bạn cũng có thể thiết lập bằng phiên đã ghi lại.",
+      "clock_error": "Đồng bộ đồng hồ máy chủ Home Assistant rồi thử lại."
+    },
+    "abort": {
+      "already_configured": "Khóa này đã được cấu hình.",
+      "reauth_successful": "Đã gia hạn phiên.",
+      "reconfigure_successful": "Đã cập nhật xác thực.",
+      "device_mismatch": "Tài khoản này không chứa khóa đã cấu hình.",
+      "no_devices": "Tài khoản này không trả về khóa nào.",
+      "reauth_required": "Bắt đầu xác thực lại.",
+      "devices_added": "Đã thêm mọi khóa tìm thấy. Mở DESLOC trong Thiết bị và dịch vụ để xem.",
+      "devices_updated": "Đã cập nhật phiên cho mọi khóa tìm thấy. Không tạo mục trùng lặp.",
+      "invalid_discovery": "Không thêm được khóa. Hãy thiết lập DESLOC lại.",
+      "already_in_progress": "Khóa này đang được cấu hình."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Thêm người dùng có PIN cố định",
+        "description": "Tạo người dùng thông thường cho khóa này và cài PIN cố định qua Wi-Fi. Dùng tên duy nhất và 6–8 chữ số. Gửi biểu mẫu sẽ cấp quyền truy cập khóa. PIN không được lưu trong Home Assistant. Nếu kết quả không chắc chắn, hãy kiểm tra DESLOC trước khi thử lại.",
+        "data": {
+          "name": "Tên người dùng",
+          "pin": "PIN mới",
+          "pin_confirm": "Nhập lại PIN"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "Các PIN không khớp.",
+      "invalid_pin_user": "Nhập tên dài 1–24 ký tự và PIN gồm 6–8 chữ số."
+    },
+    "abort": {
+      "unavailable": "Tích hợp khóa không khả dụng. Chưa thử thay đổi gì. Hãy khôi phục kết nối trước.",
+      "already_submitted": "Yêu cầu này đã được gửi. Kiểm tra DESLOC trước khi bắt đầu yêu cầu khác.",
+      "user_exists": "Đã có người dùng với tên này. Không có thay đổi; PIN vừa nhập không được cài hoặc so sánh với PIN hiện có. Quản lý người dùng trong ứng dụng DESLOC.",
+      "pin_creation_uncertain": "Chưa xác nhận việc tạo PIN. Người dùng hoặc PIN có thể đã tồn tại. Kiểm tra DESLOC trước khi thử lại.",
+      "command_in_progress": "Một lệnh khác đang chạy cho khóa này. Chưa thử thay đổi gì. Đợi hoàn tất trước khi gửi yêu cầu mới.",
+      "pin_preflight_failed": "Không kiểm tra được người dùng hoặc bản ghi PIN hiện có. Chưa thử thay đổi gì. Khôi phục kết nối hoặc xác thực lại nếu cần, rồi kiểm tra DESLOC trước khi thử lại.",
+      "existing_user_pin_unconfirmed": "Đã có người dùng với tên này nhưng chưa xác nhận được bản ghi PIN đã cài mang tên đó. Không có thay đổi. Kiểm tra và quản lý người dùng trong DESLOC trước khi thử lại; Home Assistant không thêm PIN cho người dùng hiện có."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Pin nguồn"
+      },
+      "rssi": {
+        "name": "Tín hiệu Wi-Fi"
+      },
+      "door_state": {
+        "name": "Mã trạng thái cửa"
+      },
+      "online_status": {
+        "name": "Mã trạng thái kết nối"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Một lệnh khác đang chạy cho khóa này. Chưa thử thay đổi gì. Đợi hoàn tất trước khi gửi yêu cầu mới."
+    },
+    "unavailable": {
+      "message": "Tích hợp khóa không khả dụng. Chưa thử thay đổi gì. Hãy khôi phục kết nối trước."
+    },
+    "pin_preflight_failed": {
+      "message": "Không kiểm tra được người dùng hoặc bản ghi PIN hiện có. Chưa thử thay đổi gì. Khôi phục kết nối hoặc xác thực lại nếu cần, rồi kiểm tra DESLOC trước khi thử lại."
+    },
+    "pin_creation_uncertain": {
+      "message": "Chưa xác nhận việc tạo PIN. Người dùng hoặc PIN có thể đã tồn tại. Kiểm tra DESLOC trước khi thử lại."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC đã ghi nhận lệnh nhưng chưa xác nhận trạng thái khóa mới. Kiểm tra khóa trước khi thử lại."
+    },
+    "auth_required": {
+      "message": "Xác thực DESLOC cần được xử lý. Hãy xác thực lại trong Home Assistant."
+    },
+    "command_failed": {
+      "message": "Lệnh DESLOC thất bại. Kết quả có thể không chắc chắn. Kiểm tra khóa trước khi thử lại."
+    },
+    "command_timeout": {
+      "message": "Hết thời gian chờ xác nhận lệnh DESLOC. Kiểm tra khóa trước khi thử lại."
+    },
+    "session_required": {
+      "message": "Đăng nhập lại hoặc nhập phiên ứng dụng để lưu mã thông báo DESLOC có thể tái sử dụng."
+    }
+  }
+}

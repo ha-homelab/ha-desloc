@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "DESLOC-Sitzung erneuern",
+        "description": "Erfassen Sie eine neue Sitzung für dasselbe Schloss und geben Sie sie unten ein.",
+        "data": {
+          "token": "Autorisierungstoken der App",
+          "app_device_id": "Geräte-ID der App",
+          "app_version": "App-Version",
+          "sys_type": "Systemtyp"
+        }
+      },
+      "session": {
+        "title": "DESLOC-App-Sitzung",
+        "description": "Geben Sie die aktuelle DESLOC-App-Sitzung ein. Alle Kontoschlösser werden automatisch hinzugefügt. C100 Plus wurde vom Entwickler getestet; D110 Plus ist durch die Community bestätigt. Andere Modelle sind experimentell. Abgelaufene oder widerrufene Sitzungen erfordern eine erneute Anmeldung.",
+        "data": {
+          "token": "Autorisierungstoken der App",
+          "app_device_id": "Geräte-ID der App",
+          "app_version": "App-Version",
+          "sys_type": "Systemtyp"
+        }
+      },
+      "user": {
+        "title": "DESLOC einrichten",
+        "menu_options": {
+          "account": "Mit E-Mail und Passwort anmelden",
+          "session": "Eine erfasste App-Sitzung verwenden"
+        }
+      },
+      "account": {
+        "title": "DESLOC-Konto",
+        "description": "Die Anmeldung kann die Telefon-App von diesem Konto abmelden. Importieren Sie deren Sitzung, um sie beizubehalten. Home Assistant speichert das Sitzungstoken, nicht Ihr Passwort, und meldet sich nach einem Widerruf nicht automatisch an. Alle Kontoschlösser werden hinzugefügt. C100 Plus wurde vom Entwickler getestet; D110 Plus ist durch die Community bestätigt. Andere Modelle sind experimentell.",
+        "data": {
+          "username": "E-Mail",
+          "password": "Passwort"
+        }
+      },
+      "verification": {
+        "title": "Diese Installation bestätigen",
+        "description": "Geben Sie den Code ein, den DESLOC an Ihre Konto-E-Mail geschickt hat. Er wird einmal verwendet und nicht gespeichert.",
+        "data": {
+          "code": "E-Mail-Bestätigungscode"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Prüfen Sie die Sitzungsfelder.",
+      "invalid_auth": "DESLOC hat diese Zugangsdaten abgelehnt. Prüfen Sie das Konto oder erfassen Sie eine neue Sitzung.",
+      "cannot_connect": "Die DESLOC-Geräteliste konnte nicht gelesen werden.",
+      "no_devices": "Für dieses Konto wurden keine Schlösser zurückgegeben.",
+      "device_mismatch": "Diese Sitzung enthält das konfigurierte Schloss nicht.",
+      "invalid_account": "Geben Sie Ihre DESLOC-E-Mail und Ihr Passwort ein.",
+      "invalid_code": "Der Bestätigungscode ist ungültig oder abgelaufen.",
+      "cannot_send_code": "DESLOC konnte keinen Code senden. Warten Sie vor einer erneuten Einrichtung.",
+      "captcha_required": "Schließen Sie die Sicherheitsprüfung in der DESLOC-App ab und versuchen Sie es erneut. Die Einrichtung mit einer erfassten Sitzung ist ebenfalls möglich.",
+      "clock_error": "Synchronisieren Sie die Uhr des Home Assistant-Hosts und versuchen Sie es erneut."
+    },
+    "abort": {
+      "already_configured": "Dieses Schloss ist bereits konfiguriert.",
+      "reauth_successful": "Sitzung erneuert.",
+      "reconfigure_successful": "Anmeldung aktualisiert.",
+      "device_mismatch": "Dieses Konto enthält das konfigurierte Schloss nicht.",
+      "no_devices": "Für dieses Konto wurden keine Schlösser zurückgegeben.",
+      "reauth_required": "Starten Sie die Anmeldung erneut.",
+      "devices_added": "Alle gefundenen Schlösser wurden hinzugefügt. Öffnen Sie DESLOC unter Geräte & Dienste.",
+      "devices_updated": "Die Sitzung wurde für alle gefundenen Schlösser aktualisiert. Es wurden keine doppelten Einträge erstellt.",
+      "invalid_discovery": "Das Schloss konnte nicht hinzugefügt werden. Starten Sie die DESLOC-Einrichtung erneut.",
+      "already_in_progress": "Dieses Schloss wird bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Benutzer mit dauerhaftem PIN hinzufügen",
+        "description": "Erstellen Sie einen normalen Benutzer für dieses Schloss und installieren Sie einen dauerhaften PIN über Wi-Fi. Verwenden Sie einen eindeutigen Namen und 6–8 Ziffern. Das Absenden gewährt Zugang zum Schloss. Der PIN wird nicht in Home Assistant gespeichert. Prüfen Sie bei unklarem Ergebnis DESLOC vor einem erneuten Versuch.",
+        "data": {
+          "name": "Benutzername",
+          "pin": "Neuer PIN",
+          "pin_confirm": "PIN wiederholen"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "Die PINs stimmen nicht überein.",
+      "invalid_pin_user": "Geben Sie einen Namen mit 1–24 Zeichen und einen PIN mit 6–8 Ziffern ein."
+    },
+    "abort": {
+      "unavailable": "Die Schlossintegration ist nicht verfügbar. Es wurden keine Änderungen versucht. Stellen Sie zuerst die Verbindung wieder her.",
+      "already_submitted": "Diese Anfrage wurde bereits gesendet. Prüfen Sie DESLOC vor einer weiteren Anfrage.",
+      "user_exists": "Ein Benutzer mit diesem Namen existiert bereits. Es wurde nichts geändert. Der eingegebene PIN wurde weder installiert noch mit dem bestehenden verglichen. Verwalten Sie diesen Benutzer in der DESLOC-App.",
+      "pin_creation_uncertain": "Die PIN-Erstellung wurde nicht bestätigt. Benutzer oder PIN könnten bereits existieren. Prüfen Sie die DESLOC-App vor einem erneuten Versuch.",
+      "command_in_progress": "Für dieses Schloss läuft bereits ein anderer Befehl. Es wurden keine Änderungen versucht. Warten Sie auf dessen Abschluss, bevor Sie erneut anfragen.",
+      "pin_preflight_failed": "Bestehende Benutzer oder PIN-Einträge konnten nicht geprüft werden. Es wurden keine Änderungen versucht. Stellen Sie die Verbindung wieder her oder melden Sie sich bei Bedarf erneut an. Prüfen Sie dann die DESLOC-App vor einem erneuten Versuch.",
+      "existing_user_pin_unconfirmed": "Ein Benutzer mit diesem Namen existiert bereits, aber ein installierter PIN-Eintrag mit seinem Namen wurde nicht bestätigt. Es wurde nichts geändert. Prüfen und verwalten Sie den Benutzer vor einem erneuten Versuch in DESLOC; Home Assistant fügt bestehenden Benutzern keinen PIN hinzu."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Batterie"
+      },
+      "rssi": {
+        "name": "Wi-Fi-Signal"
+      },
+      "door_state": {
+        "name": "Türzustandscode"
+      },
+      "online_status": {
+        "name": "Verbindungsstatuscode"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Für dieses Schloss läuft bereits ein anderer Befehl. Es wurden keine Änderungen versucht. Warten Sie auf dessen Abschluss, bevor Sie erneut anfragen."
+    },
+    "unavailable": {
+      "message": "Die Schlossintegration ist nicht verfügbar. Es wurden keine Änderungen versucht. Stellen Sie zuerst die Verbindung wieder her."
+    },
+    "pin_preflight_failed": {
+      "message": "Bestehende Benutzer oder PIN-Einträge konnten nicht geprüft werden. Es wurden keine Änderungen versucht. Stellen Sie die Verbindung wieder her oder melden Sie sich bei Bedarf erneut an. Prüfen Sie dann die DESLOC-App vor einem erneuten Versuch."
+    },
+    "pin_creation_uncertain": {
+      "message": "Die PIN-Erstellung wurde nicht bestätigt. Benutzer oder PIN könnten bereits existieren. Prüfen Sie die DESLOC-App vor einem erneuten Versuch."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC hat den Befehl bestätigt, aber der neue Schlosszustand ist unbestätigt. Prüfen Sie das Schloss vor einem erneuten Versuch."
+    },
+    "auth_required": {
+      "message": "Die DESLOC-Anmeldung erfordert Ihre Aufmerksamkeit. Melden Sie sich in Home Assistant erneut an."
+    },
+    "command_failed": {
+      "message": "Der DESLOC-Befehl ist fehlgeschlagen. Das Ergebnis kann unklar sein. Prüfen Sie das Schloss vor einem erneuten Versuch."
+    },
+    "command_timeout": {
+      "message": "Die Bestätigung des DESLOC-Befehls hat das Zeitlimit überschritten. Prüfen Sie das Schloss vor einem erneuten Versuch."
+    },
+    "session_required": {
+      "message": "Melden Sie sich erneut an oder importieren Sie die App-Sitzung, um ein wiederverwendbares DESLOC-Token zu speichern."
+    }
+  }
+}

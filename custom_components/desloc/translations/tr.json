@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "DESLOC oturumunu yenile",
+        "description": "Aynı kilit için yeni bir oturum yakalayın ve aşağıya girin.",
+        "data": {
+          "token": "Uygulama yetkilendirme belirteci",
+          "app_device_id": "Uygulama cihaz kimliği",
+          "app_version": "Uygulama sürümü",
+          "sys_type": "Sistem türü"
+        }
+      },
+      "session": {
+        "title": "DESLOC uygulama oturumu",
+        "description": "Geçerli DESLOC oturumunu girin. Hesaptaki tüm kilitler otomatik eklenir. C100 Plus geliştirici tarafından test edilmiştir; D110 Plus topluluk tarafından doğrulanmıştır. Diğer modeller deneyseldir. Süresi dolan veya iptal edilen oturum yeniden kimlik doğrulama gerektirir.",
+        "data": {
+          "token": "Uygulama yetkilendirme belirteci",
+          "app_device_id": "Uygulama cihaz kimliği",
+          "app_version": "Uygulama sürümü",
+          "sys_type": "Sistem türü"
+        }
+      },
+      "user": {
+        "title": "DESLOC kurulumu",
+        "menu_options": {
+          "account": "E-posta ve parolayla giriş yap",
+          "session": "Yakalanan uygulama oturumunu kullan"
+        }
+      },
+      "account": {
+        "title": "DESLOC hesabı",
+        "description": "Giriş yapmak telefondaki uygulamanın bu hesaptan çıkmasına neden olabilir. Oturumu korumak için uygulama oturumunu içe aktarın. Home Assistant parolanızı değil oturum belirtecini kaydeder ve iptalden sonra otomatik giriş yapmaz. Hesaptaki tüm kilitler eklenir. C100 Plus geliştirici tarafından test edilmiştir; D110 Plus topluluk tarafından doğrulanmıştır. Diğer modeller deneyseldir.",
+        "data": {
+          "username": "E-posta",
+          "password": "Parola"
+        }
+      },
+      "verification": {
+        "title": "Bu kurulumu doğrula",
+        "description": "DESLOC’un hesap e-postanıza gönderdiği kodu girin. Kod bir kez kullanılır ve kaydedilmez.",
+        "data": {
+          "code": "E-posta doğrulama kodu"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Oturum alanlarını kontrol edin.",
+      "invalid_auth": "DESLOC bu giriş bilgilerini reddetti. Hesabı kontrol edin veya yeni bir oturum yakalayın.",
+      "cannot_connect": "DESLOC cihaz listesi okunamadı.",
+      "no_devices": "Bu hesap için hiçbir kilit döndürülmedi.",
+      "device_mismatch": "Bu oturum yapılandırılmış kilidi içermiyor.",
+      "invalid_account": "DESLOC e-posta ve parolanızı girin.",
+      "invalid_code": "Doğrulama kodu geçersiz veya süresi dolmuş.",
+      "cannot_send_code": "DESLOC kod gönderemedi. Kurulumu yeniden başlatmadan önce bekleyin.",
+      "captcha_required": "DESLOC uygulamasındaki güvenlik kontrolünü tamamlayıp yeniden deneyin. Yakalanan oturumla kurulum da kullanılabilir.",
+      "clock_error": "Home Assistant sunucusunun saatini eşitleyip yeniden deneyin."
+    },
+    "abort": {
+      "already_configured": "Bu kilit zaten yapılandırılmış.",
+      "reauth_successful": "Oturum yenilendi.",
+      "reconfigure_successful": "Kimlik doğrulama güncellendi.",
+      "device_mismatch": "Bu hesap yapılandırılmış kilidi içermiyor.",
+      "no_devices": "Bu hesap için hiçbir kilit döndürülmedi.",
+      "reauth_required": "Kimlik doğrulamayı yeniden başlatın.",
+      "devices_added": "Bulunan tüm kilitler eklendi. Görmek için Cihazlar ve hizmetler altındaki DESLOC’u açın.",
+      "devices_updated": "Bulunan tüm kilitlerin oturumu güncellendi. Yinelenen kayıt oluşturulmadı.",
+      "invalid_discovery": "Kilit eklenemedi. DESLOC kurulumunu yeniden başlatın.",
+      "already_in_progress": "Bu kilidin kurulumu zaten devam ediyor."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kalıcı PIN kullanıcısı ekle",
+        "description": "Bu kilitte normal bir kullanıcı oluşturun ve Wi-Fi üzerinden kalıcı PIN yükleyin. Benzersiz bir ad ve 6–8 rakam kullanın. Formun gönderilmesi kilide erişim sağlar. PIN Home Assistant’a kaydedilmez. Sonuç belirsizse yeniden denemeden önce DESLOC’u kontrol edin.",
+        "data": {
+          "name": "Kullanıcı adı",
+          "pin": "Yeni PIN",
+          "pin_confirm": "PIN’i tekrarla"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "PIN’ler eşleşmiyor.",
+      "invalid_pin_user": "1–24 karakterli bir ad ve 6–8 rakamlı PIN girin."
+    },
+    "abort": {
+      "unavailable": "Kilit entegrasyonu kullanılamıyor. Hiçbir değişiklik denenmedi. Önce bağlantıyı düzeltin.",
+      "already_submitted": "Bu istek zaten gönderildi. Yenisine başlamadan önce DESLOC’u kontrol edin.",
+      "user_exists": "Bu adda bir kullanıcı zaten var. Değişiklik yapılmadı; girilen PIN yüklenmedi veya mevcut PIN ile karşılaştırılmadı. Kullanıcıyı DESLOC uygulamasından yönetin.",
+      "pin_creation_uncertain": "PIN oluşturma doğrulanmadı. Kullanıcı veya PIN zaten var olabilir. Yeniden denemeden önce DESLOC’u kontrol edin.",
+      "command_in_progress": "Bu kilit için başka bir komut sürüyor. Hiçbir değişiklik denenmedi. Yeni istekten önce bitmesini bekleyin.",
+      "pin_preflight_failed": "Mevcut kullanıcılar veya PIN kayıtları kontrol edilemedi. Hiçbir değişiklik denenmedi. Bağlantıyı düzeltin veya gerekirse yeniden giriş yapın, ardından yeniden denemeden önce DESLOC’u kontrol edin.",
+      "existing_user_pin_unconfirmed": "Bu adda bir kullanıcı zaten var ancak adına yüklenmiş bir PIN kaydı doğrulanmadı. Değişiklik yapılmadı. Yeniden denemeden önce kullanıcıyı DESLOC’ta kontrol edip yönetin; Home Assistant mevcut kullanıcıya PIN eklemez."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Pil"
+      },
+      "rssi": {
+        "name": "Wi-Fi sinyali"
+      },
+      "door_state": {
+        "name": "Kapı durum kodu"
+      },
+      "online_status": {
+        "name": "Bağlantı durum kodu"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Bu kilit için başka bir komut sürüyor. Hiçbir değişiklik denenmedi. Yeni istekten önce bitmesini bekleyin."
+    },
+    "unavailable": {
+      "message": "Kilit entegrasyonu kullanılamıyor. Hiçbir değişiklik denenmedi. Önce bağlantıyı düzeltin."
+    },
+    "pin_preflight_failed": {
+      "message": "Mevcut kullanıcılar veya PIN kayıtları kontrol edilemedi. Hiçbir değişiklik denenmedi. Bağlantıyı düzeltin veya gerekirse yeniden giriş yapın, ardından yeniden denemeden önce DESLOC’u kontrol edin."
+    },
+    "pin_creation_uncertain": {
+      "message": "PIN oluşturma doğrulanmadı. Kullanıcı veya PIN zaten var olabilir. Yeniden denemeden önce DESLOC’u kontrol edin."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC komutu onayladı ancak yeni kilit durumu doğrulanmadı. Yeniden denemeden önce kilidi kontrol edin."
+    },
+    "auth_required": {
+      "message": "DESLOC kimlik doğrulaması ilgilenmenizi gerektiriyor. Home Assistant’ta yeniden giriş yapın."
+    },
+    "command_failed": {
+      "message": "DESLOC komutu başarısız oldu. Sonuç belirsiz olabilir. Yeniden denemeden önce kilidi kontrol edin."
+    },
+    "command_timeout": {
+      "message": "DESLOC komut onayı zaman aşımına uğradı. Yeniden denemeden önce kilidi kontrol edin."
+    },
+    "session_required": {
+      "message": "Yeniden kullanılabilir DESLOC belirtecini kaydetmek için tekrar giriş yapın veya uygulama oturumunu içe aktarın."
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "Perbarui sesi DESLOC",
+        "description": "Tangkap sesi baru untuk kunci yang sama lalu masukkan di bawah.",
+        "data": {
+          "token": "Token otorisasi aplikasi",
+          "app_device_id": "ID perangkat aplikasi",
+          "app_version": "Versi aplikasi",
+          "sys_type": "Jenis sistem"
+        }
+      },
+      "session": {
+        "title": "Sesi aplikasi DESLOC",
+        "description": "Masukkan sesi DESLOC saat ini. Semua kunci akun ditambahkan otomatis. C100 Plus diuji pengembang; D110 Plus dikonfirmasi komunitas. Model lain bersifat eksperimental. Sesi kedaluwarsa atau dicabut memerlukan autentikasi ulang.",
+        "data": {
+          "token": "Token otorisasi aplikasi",
+          "app_device_id": "ID perangkat aplikasi",
+          "app_version": "Versi aplikasi",
+          "sys_type": "Jenis sistem"
+        }
+      },
+      "user": {
+        "title": "Siapkan DESLOC",
+        "menu_options": {
+          "account": "Masuk dengan email dan kata sandi",
+          "session": "Gunakan sesi aplikasi yang ditangkap"
+        }
+      },
+      "account": {
+        "title": "Akun DESLOC",
+        "description": "Masuk dapat mengeluarkan aplikasi ponsel dari akun ini. Untuk mempertahankan sesinya, impor sesi aplikasi. Home Assistant menyimpan token, bukan kata sandi, dan tidak masuk otomatis setelah pencabutan. Semua kunci akun ditambahkan. C100 Plus diuji pengembang; D110 Plus dikonfirmasi komunitas. Model lain bersifat eksperimental.",
+        "data": {
+          "username": "Surel",
+          "password": "Kata sandi"
+        }
+      },
+      "verification": {
+        "title": "Verifikasi instalasi ini",
+        "description": "Masukkan kode yang dikirim DESLOC ke email akun. Kode digunakan sekali dan tidak disimpan.",
+        "data": {
+          "code": "Kode verifikasi email"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Periksa kolom sesi.",
+      "invalid_auth": "DESLOC menolak kredensial ini. Periksa akun atau tangkap sesi baru.",
+      "cannot_connect": "Daftar perangkat DESLOC tidak dapat dibaca.",
+      "no_devices": "Tidak ada kunci yang dikembalikan untuk akun ini.",
+      "device_mismatch": "Sesi ini tidak memuat kunci yang dikonfigurasi.",
+      "invalid_account": "Masukkan email dan kata sandi DESLOC.",
+      "invalid_code": "Kode verifikasi tidak valid atau kedaluwarsa.",
+      "cannot_send_code": "DESLOC tidak dapat mengirim kode. Tunggu sebelum memulai penyiapan lagi.",
+      "captcha_required": "Selesaikan pemeriksaan keamanan di aplikasi DESLOC lalu coba lagi. Penyiapan dengan sesi tangkapan juga tersedia.",
+      "clock_error": "Sinkronkan jam host Home Assistant lalu coba lagi."
+    },
+    "abort": {
+      "already_configured": "Kunci ini sudah dikonfigurasi.",
+      "reauth_successful": "Sesi diperbarui.",
+      "reconfigure_successful": "Autentikasi diperbarui.",
+      "device_mismatch": "Akun ini tidak memuat kunci yang dikonfigurasi.",
+      "no_devices": "Tidak ada kunci yang dikembalikan untuk akun ini.",
+      "reauth_required": "Mulai autentikasi lagi.",
+      "devices_added": "Semua kunci yang ditemukan telah ditambahkan. Buka DESLOC di Perangkat & layanan untuk melihatnya.",
+      "devices_updated": "Sesi semua kunci yang ditemukan telah diperbarui. Tidak ada entri duplikat yang dibuat.",
+      "invalid_discovery": "Kunci tidak dapat ditambahkan. Mulai penyiapan DESLOC lagi.",
+      "already_in_progress": "Kunci ini sedang dikonfigurasi."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Tambahkan pengguna dengan PIN permanen",
+        "description": "Buat pengguna biasa pada kunci ini dan pasang PIN permanen melalui Wi-Fi. Gunakan nama unik dan 6–8 digit. Mengirim formulir memberikan akses ke kunci. PIN tidak disimpan di Home Assistant. Jika hasil tidak pasti, periksa DESLOC sebelum mencoba lagi.",
+        "data": {
+          "name": "Nama pengguna",
+          "pin": "PIN baru",
+          "pin_confirm": "Ulangi PIN"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "PIN tidak cocok.",
+      "invalid_pin_user": "Masukkan nama sepanjang 1–24 karakter dan PIN 6–8 digit."
+    },
+    "abort": {
+      "unavailable": "Integrasi kunci tidak tersedia. Tidak ada perubahan yang dicoba. Pulihkan koneksi terlebih dahulu.",
+      "already_submitted": "Permintaan ini sudah dikirim. Periksa DESLOC sebelum memulai yang lain.",
+      "user_exists": "Pengguna dengan nama ini sudah ada. Tidak ada perubahan; PIN yang dimasukkan tidak dipasang atau dibandingkan dengan PIN yang ada. Kelola pengguna melalui aplikasi DESLOC.",
+      "pin_creation_uncertain": "Pembuatan PIN belum dikonfirmasi. Pengguna atau PIN mungkin sudah ada. Periksa DESLOC sebelum mencoba lagi.",
+      "command_in_progress": "Perintah lain sedang berjalan untuk kunci ini. Tidak ada perubahan yang dicoba. Tunggu hingga selesai sebelum permintaan baru.",
+      "pin_preflight_failed": "Pengguna atau catatan PIN yang ada tidak dapat diperiksa. Tidak ada perubahan yang dicoba. Pulihkan koneksi atau autentikasi ulang jika perlu, lalu periksa DESLOC sebelum mencoba lagi.",
+      "existing_user_pin_unconfirmed": "Pengguna dengan nama ini sudah ada, tetapi catatan PIN terpasang atas namanya belum dikonfirmasi. Tidak ada perubahan. Periksa dan kelola pengguna di DESLOC sebelum mencoba lagi; Home Assistant tidak menambahkan PIN ke pengguna yang sudah ada."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Baterai"
+      },
+      "rssi": {
+        "name": "Sinyal Wi-Fi"
+      },
+      "door_state": {
+        "name": "Kode status pintu"
+      },
+      "online_status": {
+        "name": "Kode status koneksi"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Perintah lain sedang berjalan untuk kunci ini. Tidak ada perubahan yang dicoba. Tunggu hingga selesai sebelum permintaan baru."
+    },
+    "unavailable": {
+      "message": "Integrasi kunci tidak tersedia. Tidak ada perubahan yang dicoba. Pulihkan koneksi terlebih dahulu."
+    },
+    "pin_preflight_failed": {
+      "message": "Pengguna atau catatan PIN yang ada tidak dapat diperiksa. Tidak ada perubahan yang dicoba. Pulihkan koneksi atau autentikasi ulang jika perlu, lalu periksa DESLOC sebelum mencoba lagi."
+    },
+    "pin_creation_uncertain": {
+      "message": "Pembuatan PIN belum dikonfirmasi. Pengguna atau PIN mungkin sudah ada. Periksa DESLOC sebelum mencoba lagi."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC mengakui perintah, tetapi status kunci baru belum dikonfirmasi. Periksa kunci sebelum mencoba lagi."
+    },
+    "auth_required": {
+      "message": "Autentikasi DESLOC memerlukan perhatian. Autentikasi ulang di Home Assistant."
+    },
+    "command_failed": {
+      "message": "Perintah DESLOC gagal. Hasilnya mungkin tidak pasti. Periksa kunci sebelum mencoba lagi."
+    },
+    "command_timeout": {
+      "message": "Konfirmasi perintah DESLOC kehabisan waktu. Periksa kunci sebelum mencoba lagi."
+    },
+    "session_required": {
+      "message": "Masuk lagi atau impor sesi aplikasi untuk menyimpan token DESLOC yang dapat digunakan kembali."
+    }
+  }
+}

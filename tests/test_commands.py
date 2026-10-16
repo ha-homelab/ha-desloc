@@ -38,8 +38,10 @@ async def test_failure_leaves_old_state_unknown_without_retry(hass, entry, row, 
     api.async_switch_lock.side_effect = failure
     coordinator = DeslocCoordinator(hass, entry, api)
     coordinator.async_set_updated_data(Device.from_json(row))
-    with pytest.raises(HomeAssistantError):
+    with pytest.raises(HomeAssistantError) as error:
         await coordinator.async_set_locked(False)
+    assert error.value.translation_domain == "desloc"
+    assert error.value.translation_key == "command_failed"
     api.async_switch_lock.assert_awaited_once_with(123, unlock=True)
     assert coordinator.is_locked is None
     assert coordinator.pending_target is None
@@ -56,8 +58,10 @@ async def test_acknowledgement_alone_does_not_confirm_bolt_state(hass, entry, ro
     coordinator.async_set_updated_data(Device.from_json(row))
     with patch.object(coordinator, "async_refresh", new=AsyncMock()), patch(
         "custom_components.desloc.coordinator.asyncio.sleep", new=AsyncMock()
-    ), pytest.raises(HomeAssistantError, match="not confirmed"):
+    ), pytest.raises(HomeAssistantError, match="not confirmed") as error:
         await coordinator.async_set_locked(True)
+    assert error.value.translation_domain == "desloc"
+    assert error.value.translation_key == "command_unconfirmed"
     api.async_switch_lock.assert_awaited_once()
     assert coordinator.is_locked is None
     await coordinator.async_shutdown()
@@ -68,8 +72,9 @@ async def test_busy_command_rejected(hass, entry, row):
     coordinator = DeslocCoordinator(hass, entry, api)
     coordinator.async_set_updated_data(Device.from_json(row))
     async with coordinator._command_lock:
-        with pytest.raises(HomeAssistantError, match="already in progress"):
+        with pytest.raises(HomeAssistantError, match="already in progress") as error:
             await coordinator.async_set_locked(False)
+    assert error.value.translation_key == "command_in_progress"
     api.async_switch_lock.assert_not_called()
     await coordinator.async_shutdown()
 
@@ -78,8 +83,9 @@ async def test_unavailable_status_blocks_command_without_api_call(hass, entry, r
     api = AsyncMock()
     coordinator = DeslocCoordinator(hass, entry, api)
     assert coordinator.data is None
-    with pytest.raises(HomeAssistantError, match="status is unavailable"):
+    with pytest.raises(HomeAssistantError, match="status is unavailable") as error:
         await coordinator.async_set_locked(True)
+    assert error.value.translation_key == "unavailable"
     api.async_switch_lock.assert_not_called()
     await coordinator.async_shutdown()
 

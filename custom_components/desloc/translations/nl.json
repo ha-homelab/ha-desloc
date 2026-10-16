@@ -1,0 +1,144 @@
+{
+  "title": "DESLOC",
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "DESLOC-sessie vernieuwen",
+        "description": "Leg een nieuwe sessie voor hetzelfde slot vast en voer deze hieronder in.",
+        "data": {
+          "token": "Autorisatietoken van de app",
+          "app_device_id": "Apparaat-ID van de app",
+          "app_version": "Appversie",
+          "sys_type": "Systeemtype"
+        }
+      },
+      "session": {
+        "title": "DESLOC-appsessie",
+        "description": "Voer de huidige DESLOC-appsessie in. Alle sloten van het account worden automatisch toegevoegd. C100 Plus is door de ontwikkelaar getest; D110 Plus is door de gemeenschap bevestigd. Andere modellen zijn experimenteel. Bij een verlopen of ingetrokken sessie moet u opnieuw inloggen.",
+        "data": {
+          "token": "Autorisatietoken van de app",
+          "app_device_id": "Apparaat-ID van de app",
+          "app_version": "Appversie",
+          "sys_type": "Systeemtype"
+        }
+      },
+      "user": {
+        "title": "DESLOC instellen",
+        "menu_options": {
+          "account": "Inloggen met e-mail en wachtwoord",
+          "session": "Een vastgelegde appsessie gebruiken"
+        }
+      },
+      "account": {
+        "title": "DESLOC-account",
+        "description": "Inloggen kan de telefoon-app afmelden van dit account. Importeer de appsessie om deze te behouden. Home Assistant bewaart het sessietoken, niet uw wachtwoord, en logt na intrekking niet automatisch in. Alle sloten worden toegevoegd. C100 Plus is door de ontwikkelaar getest; D110 Plus is door de gemeenschap bevestigd. Andere modellen zijn experimenteel.",
+        "data": {
+          "username": "E-mailadres",
+          "password": "Wachtwoord"
+        }
+      },
+      "verification": {
+        "title": "Deze installatie verifiëren",
+        "description": "Voer de code in die DESLOC naar het e-mailadres van uw account stuurde. De code wordt eenmaal gebruikt en niet bewaard.",
+        "data": {
+          "code": "E-mailverificatiecode"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "Controleer de sessievelden.",
+      "invalid_auth": "DESLOC heeft deze inloggegevens geweigerd. Controleer het account of leg een nieuwe sessie vast.",
+      "cannot_connect": "De DESLOC-apparatenlijst kon niet worden gelezen.",
+      "no_devices": "Het account heeft geen sloten teruggegeven.",
+      "device_mismatch": "Deze sessie bevat het ingestelde slot niet.",
+      "invalid_account": "Voer uw DESLOC-e-mailadres en wachtwoord in.",
+      "invalid_code": "De verificatiecode is ongeldig of verlopen.",
+      "cannot_send_code": "DESLOC kon geen code sturen. Wacht voordat u het instellen opnieuw begint.",
+      "captcha_required": "Voltooi de beveiligingscontrole in de DESLOC-app en probeer opnieuw. U kunt ook een vastgelegde sessie gebruiken.",
+      "clock_error": "Synchroniseer de klok van de Home Assistant-host en probeer opnieuw."
+    },
+    "abort": {
+      "already_configured": "Dit slot is al ingesteld.",
+      "reauth_successful": "Sessie vernieuwd.",
+      "reconfigure_successful": "Authenticatie bijgewerkt.",
+      "device_mismatch": "Dit account bevat het ingestelde slot niet.",
+      "no_devices": "Het account heeft geen sloten teruggegeven.",
+      "reauth_required": "Begin de authenticatie opnieuw.",
+      "devices_added": "Alle gevonden sloten zijn toegevoegd. Open DESLOC onder Apparaten en diensten om ze te bekijken.",
+      "devices_updated": "De sessie is bijgewerkt voor alle gevonden sloten. Er zijn geen dubbele items gemaakt.",
+      "invalid_discovery": "Het slot kon niet worden toegevoegd. Begin het instellen van DESLOC opnieuw.",
+      "already_in_progress": "Dit slot wordt al ingesteld."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Gebruiker met permanente PIN toevoegen",
+        "description": "Maak een gewone gebruiker voor dit slot en installeer een permanente PIN via Wi-Fi. Gebruik een unieke naam en 6–8 cijfers. Verzenden geeft toegang tot het slot. De PIN wordt niet in Home Assistant bewaard. Controleer bij een onzeker resultaat DESLOC voordat u opnieuw probeert.",
+        "data": {
+          "name": "Gebruikersnaam",
+          "pin": "Nieuwe PIN",
+          "pin_confirm": "PIN herhalen"
+        }
+      }
+    },
+    "error": {
+      "pin_mismatch": "De PIN-codes komen niet overeen.",
+      "invalid_pin_user": "Voer een naam van 1–24 tekens en een PIN van 6–8 cijfers in."
+    },
+    "abort": {
+      "unavailable": "De slotintegratie is niet beschikbaar. Er zijn geen wijzigingen geprobeerd. Herstel eerst de verbinding.",
+      "already_submitted": "Dit verzoek is al verzonden. Controleer DESLOC voordat u een nieuw verzoek start.",
+      "user_exists": "Er bestaat al een gebruiker met deze naam. Er is niets gewijzigd; de ingevoerde PIN is niet geïnstalleerd of met de bestaande vergeleken. Beheer deze gebruiker in de DESLOC-app.",
+      "pin_creation_uncertain": "Het maken van de PIN is niet bevestigd. De gebruiker of PIN kan al bestaan. Controleer DESLOC voordat u opnieuw probeert.",
+      "command_in_progress": "Er loopt al een andere opdracht voor dit slot. Er zijn geen wijzigingen geprobeerd. Wacht tot deze klaar is voordat u een nieuw verzoek start.",
+      "pin_preflight_failed": "Bestaande gebruikers of PIN-registraties konden niet worden gecontroleerd. Er zijn geen wijzigingen geprobeerd. Herstel de verbinding of log zo nodig opnieuw in en controleer DESLOC voordat u opnieuw probeert.",
+      "existing_user_pin_unconfirmed": "Er bestaat al een gebruiker met deze naam, maar een geïnstalleerde PIN op diens naam is niet bevestigd. Er is niets gewijzigd. Controleer en beheer de gebruiker in DESLOC voordat u opnieuw probeert; Home Assistant voegt geen PIN toe aan bestaande gebruikers."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Batterij"
+      },
+      "rssi": {
+        "name": "Wi-Fi-signaal"
+      },
+      "door_state": {
+        "name": "Deurstatuscode"
+      },
+      "online_status": {
+        "name": "Verbindingsstatuscode"
+      }
+    }
+  },
+  "exceptions": {
+    "command_in_progress": {
+      "message": "Er loopt al een andere opdracht voor dit slot. Er zijn geen wijzigingen geprobeerd. Wacht tot deze klaar is voordat u een nieuw verzoek start."
+    },
+    "unavailable": {
+      "message": "De slotintegratie is niet beschikbaar. Er zijn geen wijzigingen geprobeerd. Herstel eerst de verbinding."
+    },
+    "pin_preflight_failed": {
+      "message": "Bestaande gebruikers of PIN-registraties konden niet worden gecontroleerd. Er zijn geen wijzigingen geprobeerd. Herstel de verbinding of log zo nodig opnieuw in en controleer DESLOC voordat u opnieuw probeert."
+    },
+    "pin_creation_uncertain": {
+      "message": "Het maken van de PIN is niet bevestigd. De gebruiker of PIN kan al bestaan. Controleer DESLOC voordat u opnieuw probeert."
+    },
+    "command_unconfirmed": {
+      "message": "DESLOC heeft de opdracht bevestigd, maar de nieuwe slotstatus is niet bevestigd. Controleer het slot voordat u opnieuw probeert."
+    },
+    "auth_required": {
+      "message": "De DESLOC-authenticatie vereist aandacht. Log opnieuw in via Home Assistant."
+    },
+    "command_failed": {
+      "message": "De DESLOC-opdracht is mislukt. Het resultaat kan onzeker zijn. Controleer het slot voordat u opnieuw probeert."
+    },
+    "command_timeout": {
+      "message": "De bevestiging van de DESLOC-opdracht duurde te lang. Controleer het slot voordat u opnieuw probeert."
+    },
+    "session_required": {
+      "message": "Log opnieuw in of importeer de appsessie om een herbruikbaar DESLOC-token op te slaan."
+    }
+  }
+}

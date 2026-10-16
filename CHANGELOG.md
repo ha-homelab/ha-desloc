@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.4.0] - Unreleased
+
+### Added
+
+- Bundle 24 complete Home Assistant language packs for setup, authentication,
+  permanent PIN-user forms, sensor names, and translated command errors.
+- Verify every pack through the native Home Assistant translation loader in CI,
+  with key/placeholder parity and entity identity/custom-name preservation tests.
+- Document language selection, privacy, fallback behavior, and translation contributions.
+
+### Changed
+
+- Distinguish maintainer-tested C100 Plus and community-confirmed D110 Plus in
+  every translated setup description; other models remain experimental.
+- Attach Home Assistant translation metadata to command and authentication errors
+  while preserving their original English diagnostic messages.
+
+### Upgrade
+
+This minor release candidate includes the previous 0.3.5 beta work and adds
+localization. Use the existing installation procedure. Existing configuration,
+entity IDs, unique IDs, automations, and user-assigned names are preserved.
+Sensor default names follow Home Assistant's system language. The PIN form,
+command timing, uncertain-result handling, and session lifecycle are unchanged.
+The 0.3.5 beta cycle was not published as a stable release.
+
+### Security
+
+Translations are bundled locally and do not send text, credentials, or PINs to
+a translation service. Translated messages preserve the existing requirements
+to check uncertain command results and to reauthenticate revoked sessions.
+This release does not claim new physical-device testing or a security fix.
+
 ## [0.3.5] - Unreleased
 
 ### Changed

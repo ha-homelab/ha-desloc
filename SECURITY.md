@@ -30,6 +30,11 @@ the undocumented cloud API remain experimental limitations.
 Maintainers aim to acknowledge private reports within 14 days; follow up
 privately if there is no response. Triage confirmed issues by impact, prioritize
 critical defects, and coordinate remediation/disclosure with the reporter.
+Confirmed critical vulnerabilities in maintained project code are addressed
+immediately; other confirmed medium-or-higher vulnerabilities are targeted for
+remediation within 60 days of public disclosure. Document upstream limitations
+and practical mitigations when a compatible fix depends on the vendor; do not
+record an unresolved vulnerability as fixed merely because it is documented.
 Security changes must have release notes with affected versions and upgrade
 actions. Fixes target the current default branch and latest release, rather than
 unmaintained historical versions. These are project policies, not assertions

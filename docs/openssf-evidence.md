@@ -30,13 +30,28 @@ analyzed.
 
 CodeQL alert #10 (weak-sensitive-data-hashing) concerns the required vendor login transform. Keep it visible for protocol review; do not disguise it as a safe password KDF or mark cryptographic weaknesses resolved without evidence.
 
-The project maintainer must confirm secure-design/common-error knowledge for
-this project and supply the history of bug, enhancement and vulnerability
-reports across all channels. Confirm actual private-reporting availability and
-review/branch settings. Verify releases have meaningful change/security notes;
-measure test coverage and map static/dynamic analysis to every project-owned
-language. Review each cryptographic criterion individually. Do not transfer
-another repository's attestations, badge identifier or test results here.
+On 2026-10-16 the maintainer confirmed that the same secure-design/common-error
+knowledge and absence of outside-GitHub bug, enhancement and vulnerability
+reports over the preceding 12 months apply to this project. The current public
+GitHub issue inventory contains no non-PR reports, and private vulnerability
+reporting is enabled. These are dated observations, not promises about future
+reports. Do not transfer another project's test results or badge identifier.
+
+The current scanner inventory has five open entries: the vendor password-hash
+CodeQL warning and four Scorecard process recommendations. There are zero open
+Dependabot alerts; this does not prove every runtime or release-tool dependency
+is free from vulnerabilities. The password-transform warning remains open.
+
+Version 0.4.0 has published change notes and source-bound release provenance.
+Its release states that it does not establish new physical-device testing or a
+security fix. Complete runtime cryptographic qualification, dependency review,
+whole-source coverage and per-language analysis remain separate work. The
+existing RSA1024 rejection tests do not establish the exact RSA2048 minimum at
+every boundary; no new test result is asserted by this documentation update.
+
+[Governance](../GOVERNANCE.md), [conduct rules](../CODE_OF_CONDUCT.md), and the
+[roadmap](../ROADMAP.md) document current responsibilities and limitations.
+There is still no backup maintainer or one-week access-recovery arrangement.
 
 Record each completed analysis with its source SHA, commands/tool versions,
 result and material limitations. Add the repository's actual badge only after

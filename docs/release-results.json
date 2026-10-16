@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "snapshot_date_pacific": "2026-10-15",
+  "release": "v0.4.0",
+  "source_sha": "82350a2b4029d28dc3d2bcf8ad180c301113dc40",
+  "candidate": "v0.4.0-rc.1",
+  "release_url": "https://github.com/ha-homelab/ha-desloc/releases/tag/v0.4.0",
+  "rc_validation_url": "https://github.com/ha-homelab/ha-desloc/actions/runs/38833183210",
+  "stable_promotion_url": "https://github.com/ha-homelab/ha-desloc/actions/runs/38839556505",
+  "unit_tests_passed": 180,
+  "unit_tests_failed": 0,
+  "language_packs": 24,
+  "fuzz_report_url": "https://github.com/ha-homelab/ha-desloc/releases/download/v0.4.0/fuzz-report.json",
+  "fuzz_targets": [
+    {
+      "name": "device",
+      "engine": "atheris",
+      "seconds": 60,
+      "executions": 9823752,
+      "exit_code": 0
+    }
+  ],
+  "published_file_count": 6,
+  "stable_files_identical_to_rc": true,
+  "scope": "Static release evidence. Counts do not measure code coverage, physical lock operation, cloud availability or reliability."
+}

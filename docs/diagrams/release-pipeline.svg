@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1010" viewBox="0 0 720 1010" role="img" aria-labelledby="title description">
+<title id="title">From change to stable</title>
+<desc id="description">A reviewed change passes CI. A release candidate runs checks, packaging and isolated fuzzing. Maintainers verify the candidate and approve stable publication. Stable assets and the manifest are copied byte for byte from the accepted RC. A code or package change requires a new RC. Publication does not install Home Assistant updates.</desc>
+<defs><linearGradient id="wash" x2="1" y2="1"><stop stop-color="#f3f7ff"/><stop offset="1" stop-color="#f5fbf8"/></linearGradient>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7789a0"/></marker></defs>
+<rect width="720" height="1010" rx="24" fill="url(#wash)"/>
+<g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif">
+<rect x="32" y="29" width="42" height="5" rx="2" fill="#007f7a" stroke="none"/>
+<text x="86" y="37" font-size="13" font-weight="700" fill="#007f7a" text-anchor="start" letter-spacing="1.5">RELEASE PROCESS</text>
+<text x="32" y="87" font-size="31" font-weight="750" fill="#14263d" text-anchor="start" letter-spacing="0">From change to stable</text>
+<text x="32" y="121" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">A release candidate is verified before promotion.</text>
+<path d="M 69 227 V 321" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="69" cy="205" r="24" fill="#245edb" stroke="none" stroke-width="1"/>
+<text x="69" y="212" font-size="21" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="0">1</text>
+<rect x="112" y="157" width="576" height="104" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="112" y="176" width="5" height="66" rx="2" fill="#245edb" stroke="none"/>
+<text x="136" y="191" font-size="22" font-weight="700" fill="#245edb" text-anchor="start" letter-spacing="0">Review the change</text>
+<text x="136" y="221" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">A focused PR, required checks and resolved findings.</text>
+<path d="M 69 370 V 464" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="69" cy="348" r="24" fill="#7145b7" stroke="none" stroke-width="1"/>
+<text x="69" y="355" font-size="21" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="0">2</text>
+<rect x="112" y="300" width="576" height="104" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="112" y="319" width="5" height="66" rx="2" fill="#7145b7" stroke="none"/>
+<text x="136" y="334" font-size="22" font-weight="700" fill="#7145b7" text-anchor="start" letter-spacing="0">Build a release candidate</text>
+<text x="136" y="364" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Run CI, package assets and isolated fuzz campaigns.</text>
+<path d="M 69 513 V 607" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="69" cy="491" r="24" fill="#007f7a" stroke="none" stroke-width="1"/>
+<text x="69" y="498" font-size="21" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="0">3</text>
+<rect x="112" y="443" width="576" height="104" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="112" y="462" width="5" height="66" rx="2" fill="#007f7a" stroke="none"/>
+<text x="136" y="477" font-size="22" font-weight="700" fill="#007f7a" text-anchor="start" letter-spacing="0">Verify the candidate</text>
+<text x="136" y="507" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Inspect source, hashes, reports and target behavior.</text>
+<path d="M 69 656 V 750" fill="none" stroke="#7789a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="69" cy="634" r="24" fill="#a35b05" stroke="none" stroke-width="1"/>
+<text x="69" y="641" font-size="21" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="0">4</text>
+<rect x="112" y="586" width="576" height="104" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="112" y="605" width="5" height="66" rx="2" fill="#a35b05" stroke="none"/>
+<text x="136" y="620" font-size="22" font-weight="700" fill="#a35b05" text-anchor="start" letter-spacing="0">Approve stable publication</text>
+<text x="136" y="650" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Explicit maintainer approval in GitHub Actions.</text>
+<circle cx="69" cy="777" r="24" fill="#237447" stroke="none" stroke-width="1"/>
+<text x="69" y="784" font-size="21" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="0">5</text>
+<rect x="112" y="729" width="576" height="104" rx="18" fill="#fff" stroke="#dbe4ee"/>
+<rect x="112" y="748" width="5" height="66" rx="2" fill="#237447" stroke="none"/>
+<text x="136" y="763" font-size="22" font-weight="700" fill="#237447" text-anchor="start" letter-spacing="0">Promote the same bytes</text>
+<text x="136" y="793" font-size="19" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Copy accepted RC assets under the stable tag.</text>
+<rect x="32" y="902" width="656" height="72" rx="18" fill="#eaf0ff" stroke="none"/>
+<text x="54" y="932" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">A code/package change needs a new RC.</text>
+<text x="54" y="959" font-size="18" font-weight="400" fill="#43566f" text-anchor="start" letter-spacing="0">Publication and installation in HA are separate steps.</text>
+</g>
+</svg>

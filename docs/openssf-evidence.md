@@ -28,7 +28,14 @@ analyzed.
 
 ## Unresolved criteria and applicability
 
-CodeQL alert #10 (weak-sensitive-data-hashing) concerns the required vendor login transform. Keep it visible for protocol review; do not disguise it as a safe password KDF or mark cryptographic weaknesses resolved without evidence.
+[CodeQL alert #10](https://github.com/ha-homelab/ha-desloc/security/code-scanning/10)
+(weak-sensitive-data-hashing) was reviewed and dismissed as “won't fix” on
+2026-10-17 for explicit vendor-protocol compatibility. The required fast digest
+is a temporary outbound password-equivalent sent only through verified,
+fixed-origin TLS; the integration stores the returned session credentials,
+not a password-verifier database. Replacing the transform locally would break
+login. This disposition does not make the digest a safe password KDF or repair
+vendor-side password handling; the documented protocol limitations remain.
 
 On 2026-10-16 the maintainer confirmed that the same secure-design/common-error
 knowledge and absence of outside-GitHub bug, enhancement and vulnerability
@@ -37,10 +44,12 @@ GitHub issue inventory contains no non-PR reports, and private vulnerability
 reporting is enabled. These are dated observations, not promises about future
 reports. Do not transfer another project's test results or badge identifier.
 
-The current scanner inventory has five open entries: the vendor password-hash
-CodeQL warning and four Scorecard process recommendations. There are zero open
-Dependabot alerts; this does not prove every runtime or release-tool dependency
-is free from vulnerabilities. The password-transform warning remains open.
+The 2026-10-17 authenticated scanner inventory has no open CodeQL findings and
+four open Scorecard process recommendations. The deliberate RSA-2047 fixture
+in the actual-client TLS regression is separately marked as test use; the
+production client must reject it before sending HTTP. No analysis rule was
+disabled. An empty CodeQL inventory does not prove every runtime or release-tool
+dependency is free from vulnerabilities.
 
 Version 0.4.0 has published change notes and source-bound release provenance.
 Its release states that it does not establish new physical-device testing or a

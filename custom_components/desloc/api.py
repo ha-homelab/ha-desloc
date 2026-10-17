@@ -9,6 +9,7 @@ import asyncio
 from dataclasses import dataclass, field
 import hashlib
 import re
+import ssl
 import time
 from typing import Any
 from urllib.parse import quote
@@ -16,6 +17,8 @@ from urllib.parse import quote
 import aiohttp
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.padding import PKCS7
+
+from .tls import create_https_context
 
 BASE_URL = "https://appadmin.desloc.com"
 LIST_PATH = "/api/device/list"
@@ -199,6 +202,7 @@ class Device:
 class DeslocClient:
     def __init__(self, session: aiohttp.ClientSession, credentials: Credentials | AccountCredentials) -> None:
         self._session = session
+        self._tls_context: ssl.SSLContext | None = None
         self._account = credentials if isinstance(credentials, AccountCredentials) else None
         self._credentials = credentials if isinstance(credentials, Credentials) else None
         self._login_lock = asyncio.Lock()
@@ -216,9 +220,12 @@ class DeslocClient:
         if time.monotonic() < self._rate_limited_until:
             raise DeslocRateLimitError("DESLOC rate limit reached; wait before trying again")
         try:
+            if self._tls_context is None:
+                self._tls_context = await asyncio.to_thread(create_https_context)
             async with self._session.post(
                 BASE_URL + path, headers=headers, json=body,
                 timeout=aiohttp.ClientTimeout(total=15), allow_redirects=False,
+                ssl=self._tls_context,
             ) as response:
                 if response.status in (401, 403):
                     raise DeslocAuthError("DESLOC session was rejected")
@@ -230,7 +237,7 @@ class DeslocClient:
                 payload = await response.json()
         except aiohttp.ContentTypeError:
             raise DeslocProtocolError("DESLOC response is not JSON") from None
-        except (aiohttp.ClientError, TimeoutError):
+        except (aiohttp.ClientError, OSError, TimeoutError):
             raise DeslocConnectionError("DESLOC request failed") from None
         except ValueError:
             raise DeslocProtocolError("DESLOC response is not JSON") from None

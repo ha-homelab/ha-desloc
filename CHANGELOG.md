@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+### Security
+
+- Enforce exact certificate key floors after the normal verified HTTPS
+  handshake, including every intermediate and the trust anchor. OpenSSL
+  security level 2 alone can accept a 2047-bit RSA modulus. Requests now
+  reject that boundary before sending credentials while preserving the
+  Home Assistant session, CA selection, and stronger default TLS policy.
+- Add actual Home Assistant/aiohttp TLS 1.2 and 1.3 regressions for each
+  RSA-2047 chain position and RSA-2048 acceptance. No lock operation occurs.
+
+
 ## [0.4.0] - 2026-10-16
 
 ### Added

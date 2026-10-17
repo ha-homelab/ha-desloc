@@ -8,45 +8,41 @@ The integration can operate a physical lock. Protect Home Assistant config entri
 
 ## Supported HTTPS runtime profile
 
-The integration obtains Home Assistant's standard verified aiohttp session.
-Its supported TLS profile keeps CA and hostname verification enabled, minimum
-TLS 1.2 and OpenSSL security level 2 or higher. It does not install a custom
-trust manager, lower the host's cipher policy or disable certificate checks.
-Use a maintained Home Assistant/Python installation; custom session overrides
-or a vendor-weakened TLS runtime fall outside this profile.
+The integration keeps Home Assistant's shared aiohttp session and supplies an
+owned SSL context for each DESLOC client. Its trust bundle follows Home
+Assistant's `REQUESTS_CA_BUNDLE` override or certifi default. Context creation
+runs off the event loop; the shared session and its cached context are not
+mutated. The owned context retains normal CA/hostname verification, a minimum
+of TLS 1.2, OpenSSL security level 2 or higher, and any stronger default policy.
 
-The actual `DeslocClient._raw_request` path through `async_get_clientsession`
-was tested with Home Assistant 2026.10.0, CPython 3.14.7, aiohttp 3.14.4 and
-OpenSSL 3.6.4. Under TLS 1.2 and 1.3, synthetic trusted chains with RSA 1024-bit
-leaf, intermediate or root keys were rejected before HTTP headers/body or the
-session token reached the server. Strong RSA 2048-bit chains succeeded. Each
-fixture also completed a normally trusted, hostname-checked handshake with a
-separate test-only lower-security client. The test changed only the API origin
-and trust bundle to loopback fixtures; it blocked DNS discovery and made no
-vendor request or physical lock operation.
+After the ordinary verified handshake, the client checks **every certificate
+in the verified chain**, including the trust anchor, before HTTP data is sent.
+RSA moduli must have at least 2048 actual bits; EC keys at least 224 bits; DSA
+parameters at least 2048/224 bits. Ed25519 and Ed448 are accepted. Unknown key
+formats or a runtime without a verified-chain API fail closed. This extra
+check matters because OpenSSL security level 2 alone can accept RSA-2047.
 
-Inspect the context inside the **actual Home Assistant Python environment**:
+[The regression](../tests/test_tls.py) uses the actual `DeslocClient._raw_request`
+through `async_get_clientsession` under TLS 1.2 and 1.3. Trusted RSA-2047 leaf,
+intermediate and omitted-from-the-wire root certificates are rejected before
+HTTP headers, body or the synthetic session token reaches the server. Strong
+RSA-2048 chains succeed. Each fixture first succeeds with a separately verified,
+hostname-checked calibration client, priming the shared connection pool; the
+strict request cannot reuse that connection. DNS discovery is disabled and all
+requests are to numeric loopback. No vendor request or lock operation is part
+of the test. The suite also preserves an explicitly stronger TLS 1.3/security
+level 3 context and rejects a missing configured trust bundle.
 
-```sh
-python - <<'PYTHON'
-import ssl, sys
-from importlib.metadata import version
-from homeassistant.util.ssl import get_default_context
-context = get_default_context()
-print("Home Assistant", version("homeassistant"), "aiohttp", version("aiohttp"))
-print(sys.version, ssl.OPENSSL_VERSION, sep="\n")
-print("security_level", context.security_level, "minimum_tls", context.minimum_version.name)
-assert context.security_level >= 2
-assert context.minimum_version >= ssl.TLSVersion.TLSv1_2
-assert context.verify_mode == ssl.CERT_REQUIRED and context.check_hostname
-PYTHON
-```
-
-This local command checks settings without contacting DESLOC. It does not
-upgrade the host or certify a vendor service, a different interpreter or a
-published installation. TLS transport protection does not repair the vendor's
-fixed-suffix password transform or make its fixed AES wrapper secret; the
-protocol limitation below remains open.
+Run `python -m pytest -q tests/test_tls.py` in the hash-pinned Python 3.14
+[development environment](../CONTRIBUTING.md). The October 16 local run used
+Home Assistant 2026.10.0, aiohttp 3.14.4 and CPython 3.14.7. CI runs the same
+regression on Linux. A separate unauthenticated TLS handshake to
+`appadmin.desloc.com:443` on 2026-10-17 UTC succeeded with TLS 1.3 and a
+three-certificate RSA-2048 chain; it sent no HTTP request or credential.
+The result describes that endpoint at that time, not a permanent guarantee. A successful synthetic run does not certify a vendor
+service, a different interpreter, or every installation. TLS transport does
+not repair the vendor's fixed-suffix password transform or make its fixed AES
+wrapper secret; that protocol limitation remains explicitly documented.
 
 ## Source and operating documentation
 

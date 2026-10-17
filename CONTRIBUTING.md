@@ -24,6 +24,20 @@ checks enabled, resolve new warnings, and explain any remaining warning in the
 PR. Use the private process in SECURITY.md for vulnerabilities. Required checks
 and independent review must pass before merging; do not bypass protections.
 
+For the public `main` branch, the required `CI gate` aggregates the test suite,
+HACS/Hassfest validation, CodeQL, dependency review, and workflow and release
+contracts. The PR must be up to date with `main`, have at least one independent
+approval covering the latest push, and have no unresolved review threads.
+New commits invalidate stale approvals; administrators follow the same merge
+requirements.
+
+The existing shared CodeRabbit workflow requests code review. CodeRabbit can
+approve after it has reviewed the latest commit, its comments are resolved,
+and its pre-merge checks pass. Authors cannot force approval or resolve all
+CodeRabbit comments with `@coderabbitai approve` or `@coderabbitai resolve` on
+their own PRs. A green status or a `COMMENTED` review is not an approval.
+Trusted-author metadata alone is not grounds for approving a change.
+
 ## Reproducible Python dependencies
 
 The `.in` files declare direct dependencies. The corresponding `.txt` files pin

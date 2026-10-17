@@ -1,7 +1,9 @@
 # yaml-language-server: $schema=https://storage.googleapis.com/coderabbit_public_assets/schema.v2.json
 reviews:
   profile: quiet
-  request_changes_workflow: false
+  request_changes_workflow: true
+  allow_author_approval: false
   auto_review:
     enabled: true
+    auto_incremental_review: true
     drafts: true

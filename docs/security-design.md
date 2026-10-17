@@ -65,7 +65,11 @@ upstream service, hardware model or production deployment.
 
 ## Remaining security assessment
 
-CodeQL alert #10 (weak-sensitive-data-hashing) concerns the required vendor login transform. Keep it visible for protocol review; do not disguise it as a safe password KDF or mark cryptographic weaknesses resolved without evidence.
+The required outbound vendor login transform was reviewed under CodeQL alert #10
+and retained for protocol compatibility, with an explicit “won't fix” disposition.
+The [dated evidence record](openssf-evidence.md#unresolved-criteria-and-applicability)
+explains its password-equivalent role inside verified TLS. This is not a safe
+password-storage KDF or a repair of vendor-side cryptographic limitations.
 
 Report new issues through [SECURITY.md](../SECURITY.md). An OpenSSF assessment
 records evidence and applicability; it is not a guarantee that a system is safe.

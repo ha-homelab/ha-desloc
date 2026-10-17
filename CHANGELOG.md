@@ -1,17 +1,20 @@
 # Changelog
 
-## Unreleased
+## [0.4.1] - 2026-10-17
+
+### Changed
+
+- Enforce exact certificate-key strength after the verified HTTPS handshake, including intermediate certificates and the trust anchor.
+- Add real Home Assistant/aiohttp regressions for RSA-2047 rejection and RSA-2048 acceptance under TLS 1.2 and 1.3.
+- Correct the hassfest upstream branch, enforce Python warnings, and document the command flow, release checks and security assessment limits.
+
+### Upgrade
+
+Use the existing HACS or manual installation procedure and retain the previous package for rollback. Existing configuration, entity IDs and PIN workflows are preserved. No lock operation is performed by release validation.
 
 ### Security
 
-- Enforce exact certificate key floors after the normal verified HTTPS
-  handshake, including every intermediate and the trust anchor. OpenSSL
-  security level 2 alone can accept a 2047-bit RSA modulus. Requests now
-  reject that boundary before sending credentials while preserving the
-  Home Assistant session, CA selection, and stronger default TLS policy.
-- Add actual Home Assistant/aiohttp TLS 1.2 and 1.3 regressions for each
-  RSA-2047 chain position and RSA-2048 acceptance. No lock operation occurs.
-
+Credential-bearing requests reject certificate chains below the documented key-strength floor before sending credentials. System trust selection and stronger existing TLS defaults remain intact. Synthetic and loopback tests do not claim new physical lock acceptance.
 
 ## [0.4.0] - 2026-10-16
 

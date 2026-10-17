@@ -46,8 +46,10 @@ Version 0.4.0 has published change notes and source-bound release provenance.
 Its release states that it does not establish new physical-device testing or a
 security fix. Complete runtime cryptographic qualification, dependency review,
 whole-source coverage and per-language analysis remain separate work. The
-existing RSA1024 rejection tests do not establish the exact RSA2048 minimum at
-every boundary; no new test result is asserted by this documentation update.
+[actual-client TLS regression](../tests/test_tls.py) now checks exact RSA-2047
+rejection at the leaf, intermediate and trusted root and RSA-2048 acceptance
+under TLS 1.2 and 1.3. The [security profile](security-design.md) states its
+trust and runtime limits; it does not resolve the vendor protocol weakness.
 
 [Governance](../GOVERNANCE.md), [conduct rules](../CODE_OF_CONDUCT.md), and the
 [roadmap](../ROADMAP.md) document current responsibilities and limitations.

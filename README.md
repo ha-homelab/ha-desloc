@@ -22,7 +22,10 @@ Models without maintainer validation still carry an **experimental** runtime
 label. Discovery alone does not establish compatibility. TTLock/Tuya accounts
 are not supported by this integration.
 
-![Animated DESLOC walkthrough: authentication, discovered locks, dashboard card, visual editor, and empty PIN form](docs/media/desloc-overview.gif)
+[![DESLOC integration overview in perspective](docs/images/desloc-hero.png)](docs/images/integration-overview.jpg)
+
+Historical Home Assistant screenshot with integration **0.3.0**, presented in perspective.
+Click for the unchanged readable original. [Animated walkthrough](docs/media/desloc-overview.gif).
 
 The silent 30-second animation loops through real Home Assistant screenshots,
 including the optional [DESLOC Lock Card](https://github.com/ha-homelab/ha-desloc-card).
@@ -288,3 +291,9 @@ source archives and HACS's existing source-download path retain the committed
 base version. HACS stable installation remains unchanged. See
 [release packaging and acceptance](docs/release-packaging.md) for exact artifact
 checks, version identities and rollback.
+
+## Screenshot artwork
+
+Regenerate the perspective cover with `bash scripts/render-docs-hero.sh`
+(ImageMagick 7). It preserves the original screenshot and only adds a geometric
+projection and shadow. The linked flat image remains the readable reference.

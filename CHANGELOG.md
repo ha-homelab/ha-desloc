@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Replace the obsolete Scorecard CI container with the reviewed, checksum-pinned scanner. Keep the upstream SARIF reporting policy, GitHub Security upload and retained report artifacts.
 - Refresh pinned review, release-candidate fuzz and Home Assistant validation workflows. Application behavior and service interfaces are unchanged.
 
 ### Upgrade
@@ -11,6 +12,8 @@
 Update the integration through HACS or install the verified integration ZIP, then restart Home Assistant. Preserve integration settings and the previous package for rollback.
 
 ### Security
+
+The replaced CI image contained 25 high-severity dependency findings in the recorded scan. The scanner replacement changes CI tooling, not the distributed application runtime. OpenSSF REST publication remains disabled as before.
 
 Existing PIN handling, TLS checks and entity identifiers remain unchanged. Synthetic release checks do not operate a physical lock.
 

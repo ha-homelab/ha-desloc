@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.2] - 2026-10-18
+
+### Changed
+
+- Refresh pinned review, release-candidate fuzz and Home Assistant validation workflows. Application behavior and service interfaces are unchanged.
+
+### Upgrade
+
+Update the integration through HACS or install the verified integration ZIP, then restart Home Assistant. Preserve integration settings and the previous package for rollback.
+
+### Security
+
+Existing PIN handling, TLS checks and entity identifiers remain unchanged. Synthetic release checks do not operate a physical lock.
+
 ## [0.4.1] - 2026-10-17
 
 ### Changed

@@ -11,6 +11,10 @@
 
 The integration already includes its brand icons. HACS 2.x uses a legacy remote image URL for its update entity; installing this release alone does not replace that URL. Follow [the branding guide](docs/branding.md) to apply the optional customization. Lock controls, authentication, and entity identifiers are unchanged.
 
+### Security
+
+The optional `/local/desloc/icon.png` URL serves only the public project icon without authentication. Keep credentials, diagnostics, and configuration backups out of `www`. The integration runtime, session handling, TLS checks, and PIN handling are unchanged.
+
 ## [0.4.2] - 2026-10-18
 
 ### Changed

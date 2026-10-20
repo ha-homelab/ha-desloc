@@ -1,0 +1,10 @@
+# Optional picture override for the DESLOC update entity created by HACS 2.0.5.
+# Copy custom_components/desloc/brand/icon.png to www/desloc/icon.png first.
+# Replace the entity ID with your actual DESLOC update entity ID.
+# Merge into existing homeassistant/customize mappings; do not duplicate keys.
+# Or use as packages/desloc_branding.yaml with !include_dir_named packages.
+# See docs/branding.md for validation, reload, and removal instructions.
+homeassistant:
+  customize:
+    update.desloc_experimental_update:
+      entity_picture: /local/desloc/icon.png

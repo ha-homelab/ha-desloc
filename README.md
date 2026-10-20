@@ -256,6 +256,7 @@ works solely because it appears in HA.
 - [Protocol, command sequence, and state machine](docs/protocol.md)
 - [Create a permanent PIN user](docs/pin-users.md)
 - [Troubleshooting](docs/troubleshooting.md)
+- [Missing HACS update icon and optional local customization](docs/branding.md)
 - [Development and tests](docs/development.md)
 - [HACS and Core publication](docs/publishing.md)
 - [Contributing](CONTRIBUTING.md) and [security](SECURITY.md)

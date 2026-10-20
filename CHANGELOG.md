@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.3] - Unreleased
+
+### Added
+
+- Document an optional local-image customization for the missing DESLOC icon in the HACS 2.x update dialog, with a ready-to-copy Home Assistant package example.
+- Check that both bundled brand icons remain present and unchanged in the manual installation ZIP.
+
+### Upgrade
+
+The integration already includes its brand icons. HACS 2.x uses a legacy remote image URL for its update entity; installing this release alone does not replace that URL. Follow [the branding guide](docs/branding.md) to apply the optional customization. Lock controls, authentication, and entity identifiers are unchanged.
+
 ## [0.4.2] - 2026-10-18
 
 ### Changed

@@ -1,5 +1,13 @@
 # Troubleshooting
 
+## The DESLOC update dialog shows "icon not available"
+
+HACS 2.0.5 loads the update entity's picture from an external brands service,
+even though DESLOC includes local icon files. Use the optional
+[local update-entity picture customization](branding.md) to show the bundled
+icon. This requires a small Home Assistant configuration change; installing a
+DESLOC release alone does not apply it. The HACS catalog listing is separate.
+
 ## The phone app repeatedly returns to login
 
 Version 0.2.0 could automatically sign in after the phone had displaced HA's

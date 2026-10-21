@@ -42,8 +42,9 @@ for community testing; discovery does not establish full compatibility.
 
 Install the separate [DESLOC Lock Card](https://github.com/ha-homelab/ha-desloc-card)
 and select the lock and optional battery/Wi-Fi entities in its visual editor.
-Unlocking requires confirmation. Both repositories currently use the HACS custom
-repository installation path; they are not yet included in the default catalog.
+Unlocking requires confirmation. The integration is available by searching for
+**DESLOC** in the default HACS catalog. The separate card still uses the HACS
+custom repository installation path; its catalog submission remains pending.
 
 ![C100 Plus card with reported locked state, battery 68 percent, and Wi-Fi minus 44 dBm](images/lock-card-locked.jpg)
 

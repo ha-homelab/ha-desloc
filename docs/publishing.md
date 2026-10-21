@@ -1,29 +1,33 @@
 # HACS and Home Assistant Core
 
-## Custom repository
-
-The project uses `custom_components/desloc/`, root `hacs.json`, a versioned
-manifest, code owner, issue tracker, and local brand icon. Its public GitHub URL
-can be added as a HACS custom repository. This is separate from default catalog
-inclusion or endorsement. See the official
-[integration requirements](https://www.hacs.xyz/docs/publish/integration/) and
-[general requirements](https://www.hacs.xyz/docs/publish/start/).
-
 ## Default HACS catalog
 
-Before submitting, verify custom-repository installation, pass HACS validation
-and Hassfest without ignored errors, and publish a GitHub release after those
-checks. The owner or a major contributor can then submit a PR to `hacs/default`.
-Acceptance and timing belong to its maintainers; see
-[the submission process](https://www.hacs.xyz/docs/publish/include/).
+The [integration submission](https://github.com/hacs/default/pull/11471) was
+merged on October 20, 2026. Install the integration by searching for **DESLOC**
+in HACS; see the [installation guide](../README.md#installation).
+
+The separate dashboard card is not yet included in the default catalog. Its
+[submission](https://github.com/hacs/default/pull/11473) remains pending; install
+it through the [card's custom repository instructions](https://github.com/ha-homelab/ha-desloc-card#install-through-hacs).
+
+HACS validation and Hassfest must continue to pass without ignored errors.
+Catalog inclusion is distinct from Home Assistant Core inclusion or endorsement;
+see the official [submission process](https://www.hacs.xyz/docs/publish/include/).
 
 The unofficial cloud API, account-verification requirements, and model-specific
 testing limits must remain prominent.
 Independent concurrent authentication and broader testing would improve
 readiness for general users. The observed session-conflict limitation and
 interactive reauthentication requirement must be disclosed.
-The [integration submission](https://github.com/hacs/default/pull/11471) is
-awaiting review. No default-catalog acceptance is claimed.
+
+## Custom repository fallback
+
+The project uses `custom_components/desloc/`, root `hacs.json`, a versioned
+manifest, code owner, issue tracker, and local brand icon. Its public GitHub URL
+can still be added as a HACS custom repository if needed, but this is no longer
+the normal installation path for the integration. See the official
+[integration requirements](https://www.hacs.xyz/docs/publish/integration/) and
+[general requirements](https://www.hacs.xyz/docs/publish/start/).
 
 ## Home Assistant Core
 

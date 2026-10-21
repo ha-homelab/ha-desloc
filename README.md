@@ -114,22 +114,20 @@ operation or compatibility with every discovered model.
 
 ## Installation
 
-### HACS custom repository
+### HACS
 
-**Not yet published in the default HACS catalog.** Install it as a custom
-repository using the steps below. A submission or an open review request does
-not mean HACS has accepted the project. HACS is optional; manual installation
-works without it.
+DESLOC is available in the default HACS catalog. If needed,
+[install and configure HACS](https://www.hacs.xyz/docs/use/download/download/)
+first. HACS is optional; [manual installation](#manual-installation) works
+without it.
 
-1. If needed, [install and configure HACS](https://www.hacs.xyz/docs/use/download/download/).
-2. Open **HACS → ⋮ → Custom repositories**.
-3. Enter `https://github.com/ha-homelab/ha-desloc` and choose **Integration**.
-4. Find **DESLOC** in HACS and choose **Download**. Select the
-   latest numbered release without a `b`/`rc` suffix, rather than `main` or a
-   prerelease. Leave beta versions disabled for normal use.
-5. Restart Home Assistant, then open **Settings → Devices & services → Add
+1. Open **HACS** and search for **DESLOC**.
+2. Open **DESLOC**, choose **Download**, and select the latest stable release.
+   Leave beta versions disabled for normal use; do not select a beta, RC,
+   nightly, or `main` build.
+3. Restart Home Assistant, then open **Settings → Devices & services → Add
    integration → DESLOC**.
-6. Complete [configuration](#configuration) below. Every returned lock is added
+4. Complete [configuration](#configuration) below. Every returned lock is added
    automatically; there is no model filter or device chooser.
 
 For updates, download the newer stable version from HACS and restart HA. The
@@ -162,8 +160,11 @@ runtime dependencies. Do not copy this entire development repository into HA.
 ## Dashboard card
 
 The optional [DESLOC Lock Card](https://github.com/ha-homelab/ha-desloc-card) is
-distributed separately as a HACS **Dashboard** repository. It provides state,
-battery/RSSI, and lock controls with mandatory unlock confirmation.
+distributed separately and is not yet in the default HACS catalog. Add
+`https://github.com/ha-homelab/ha-desloc-card` under **HACS → ⋮ → Custom
+repositories** with type **Dashboard**, then follow the card's installation
+instructions. It provides state, battery/RSSI, and lock controls with mandatory
+unlock confirmation.
 
 ## Configuration
 

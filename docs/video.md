@@ -22,7 +22,16 @@ The actual UI screenshots still show the maintainer's C100 Plus; they do not
 depict a D110 Plus test. See the [compatibility notes](compatibility.md) for the
 scope of each model's validation.
 
-## Transcript
+## Current installation
+
+The integration was [accepted into the default HACS catalog](https://github.com/hacs/default/pull/11471)
+on October 20, 2026. Search for **DESLOC** in HACS to install it. The separate
+dashboard card still requires a HACS custom repository; its catalog submission
+remains pending. Follow the [current installation guide](../README.md#installation).
+The closing scene below retains the installation instructions from the capture
+date and should not be used as current installation guidance.
+
+## Transcript (October 1, 2026)
 
 1. **00:00–00:05 — Set up DESLOC.** Choose email sign-in or reuse an existing app
    session. A new sign-in can invalidate the phone app session.

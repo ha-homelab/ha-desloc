@@ -20,6 +20,24 @@ Independent concurrent authentication and broader testing would improve
 readiness for general users. The observed session-conflict limitation and
 interactive reauthentication requirement must be disclosed.
 
+## Public announcements
+
+Keep the existing announcements aligned with the installation and compatibility
+guides when catalog status changes. Edit the original posts so readers do not
+need to find a later correction:
+
+- [Original DESLOC feature request](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18700337).
+- [Duplicate feature request](https://github.com/home-assistant/feature-requests/discussions/2919#discussioncomment-18700338).
+- [Home Assistant Community project announcement](https://community.home-assistant.io/t/desloc-smart-locks-custom-integration-and-dashboard-card-model-compatibility-reports/1027056).
+- [D110 Plus hardware discussion](https://community.home-assistant.io/t/desloc-d110-plus-deadbolt/981452/2).
+
+Lead with searching for **DESLOC** in HACS for the integration. Keep the card's
+custom repository instructions separate until its own submission is accepted.
+Link to the latest stable release rather than recommending a dated version or a
+prerelease. Distinguish C100 Plus maintainer testing from D110 Plus and K120
+[community reports](compatibility.md); neither catalog inclusion nor automatic
+discovery establishes support for every model or feature.
+
 ## Custom repository fallback
 
 The project uses `custom_components/desloc/`, root `hacs.json`, a versioned

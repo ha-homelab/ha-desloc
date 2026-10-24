@@ -63,6 +63,12 @@ unknown. The integration does not automatically repeat the physical command.
 A matching report is cloud telemetry, not independent observation of the bolt
 or a sensor proving that the door is closed.
 
+Result expiry (`2104`) is classified as a command timeout. One read-only refresh
+can use the remaining command budget to recover fresh state; it never repeats
+the action or converts the failed acknowledgement into success. Diagnostics
+retain the last attempt's phase, outcome, and counters, while the state freshness
+flag explains any remaining `Unknown` state. See [troubleshooting](troubleshooting.md#command-timeout-or-unknown-state).
+
 ## Creating a permanent PIN user
 
 The integration's **Configure** form first validates input and reads existing

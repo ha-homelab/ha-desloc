@@ -6,14 +6,20 @@
 
 - Document an optional local-image customization for the missing DESLOC icon in the HACS 2.x update dialog, with a ready-to-copy Home Assistant package example.
 - Check that both bundled brand icons remain present and unchanged in the manual installation ZIP.
+- Add privacy-filtered command diagnostics and phase logging to explain missing acknowledgements and stale reported state.
+
+### Fixed
+
+- Classify DESLOC command-result expiry (`2104`) as a timeout and request one bounded, read-only state refresh within the original deadline. Commands are still sent once; cached state remains unconfirmed until a newer report arrives.
+- Keep the required state timestamp from moving backward across successive command attempts.
 
 ### Upgrade
 
-The integration already includes its brand icons. HACS 2.x uses a legacy remote image URL for its update entity; installing this release alone does not replace that URL. Follow [the branding guide](docs/branding.md) to apply the optional customization. Lock controls, authentication, and entity identifiers are unchanged.
+The integration already includes its brand icons. HACS 2.x uses a legacy remote image URL for its update entity; installing this release alone does not replace that URL. Follow [the branding guide](docs/branding.md) to apply the optional customization. Restart Home Assistant after updating the integration. Existing configuration, authentication, and entity identifiers are preserved.
 
 ### Security
 
-The optional `/local/desloc/icon.png` URL serves only the public project icon without authentication. Keep credentials, diagnostics, and configuration backups out of `www`. The integration runtime, session handling, TLS checks, and PIN handling are unchanged.
+The optional `/local/desloc/icon.png` URL serves only the public project icon without authentication. Keep credentials, diagnostics, and configuration backups out of `www`. Command logs omit identities, credentials, PINs, result IDs, and raw HTTP data. Session handling, TLS checks, and PIN handling are unchanged. No automatic command replay is introduced.
 
 ## [0.4.2] - 2026-10-18
 

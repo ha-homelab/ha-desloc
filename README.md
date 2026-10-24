@@ -248,9 +248,14 @@ For another model, report which features work: discovery, reported bolt state,
 battery/RSSI, lock/unlock, and PIN creation. Include model, firmware/app versions,
 HA version, and a description of any failure. Under **Settings → Devices &
 services → DESLOC**, the lock entry's menu offers **Download diagnostics**. The
-integration exports an allowlist of model/firmware, availability, and telemetry;
+integration exports an allowlist of model/firmware, availability, telemetry, and
+the latest command's phase/outcome and state freshness;
 it excludes credentials, PINs, names, MACs, device IDs, and raw responses. Review
 the downloaded file before posting it.
+
+If a command times out while battery and Wi-Fi readings remain visible, see
+[command uncertainty and diagnostic logging](docs/troubleshooting.md#command-timeout-or-unknown-state).
+Cached telemetry does not confirm the physical bolt position.
 
 We will fix models where this API can support them and document or exclude
 models whose protocol is incompatible. Please do not assume an untested model

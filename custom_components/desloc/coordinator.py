@@ -1,7 +1,9 @@
 """Share one cloud status request between the device entities."""
 import logging
 import asyncio
+import time
 from datetime import timedelta
+from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -10,8 +12,9 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .account import DeslocAccount
-from .api import (DeslocAuthError, DeslocClient, DeslocError,
-    DeslocExistingUserPinUnconfirmed, DeslocUserExists, Device, validate_pin_user)
+from .api import (DeslocAuthError, DeslocClient, DeslocClockError, DeslocCommandTimeout,
+    DeslocConnectionError, DeslocError, DeslocExistingUserPinUnconfirmed,
+    DeslocProtocolError, DeslocRateLimitError, DeslocUserExists, Device, validate_pin_user)
 from .const import CONF_MAC, DOMAIN, POLL_SECONDS
 
 LOGGER = logging.getLogger(__name__)
@@ -41,16 +44,45 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
         self.pending_target: bool | None = None
         self._command_lock = asyncio.Lock()
         self._state_must_be_newer_than: int | None = None
+        self._command_started: float | None = None
+        self._last_command: dict[str, Any] = self._new_command_diagnostics()
+
+    @staticmethod
+    def _new_command_diagnostics() -> dict[str, Any]:
+        """Fixed categories only: never retain request IDs, bodies or direction."""
+        return {
+            "phase": "idle", "outcome": "not_started", "elapsed_seconds": 0.0,
+            "result_poll_count": 0, "accepted": False, "acknowledged": False,
+            "post_expiry_refresh": "not_attempted", "error_kind": None,
+        }
+
+    @property
+    def awaiting_fresh_state(self) -> bool:
+        """A command invalidated this report and no newer timestamp has arrived."""
+        return self._state_must_be_newer_than is not None and (
+            self.data is None or self.data.door_state_updated_ms is None
+            or self.data.door_state_updated_ms <= self._state_must_be_newer_than
+        )
+
+    @property
+    def command_diagnostics(self) -> dict[str, Any]:
+        """Return a detached, allowlisted snapshot without activity timestamps."""
+        snapshot = dict(self._last_command)
+        if self._command_started is not None:
+            snapshot["elapsed_seconds"] = round(max(0.0, time.monotonic() - self._command_started), 3)
+        snapshot["awaiting_fresh_state"] = self.awaiting_fresh_state
+        return snapshot
+
+    def _command_phase(self, phase: str) -> None:
+        self._last_command["phase"] = phase
+        LOGGER.debug("DESLOC command phase=%s", phase)
 
     @property
     def is_locked(self) -> bool | None:
         device = self.data
         if device is None:
             return None
-        if self._state_must_be_newer_than is not None and (
-            device.door_state_updated_ms is None
-            or device.door_state_updated_ms <= self._state_must_be_newer_than
-        ):
+        if self.awaiting_fresh_state:
             return None
         return device.is_locked
 
@@ -63,33 +95,93 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
             raise DeslocUnavailable("DESLOC status is unavailable",
                 translation_domain=DOMAIN, translation_key="unavailable")
         async with self._command_lock:
-            self._state_must_be_newer_than = self.data.door_state_updated_ms or 0
+            self._state_must_be_newer_than = max(
+                self._state_must_be_newer_than or 0, self.data.door_state_updated_ms or 0,
+            )
+            self._last_command = self._new_command_diagnostics()
+            self._last_command["outcome"] = "pending"
+            started = time.monotonic()
+            self._command_started = started
+            deadline = started + 45
             self.pending_target = locked
             self.async_update_listeners()
             try:
                 async with asyncio.timeout(45):
+                    self._command_phase("sending")
                     command_id = await self.client.async_switch_lock(self.data.id, unlock=not locked)
-                    while not await self.client.async_command_complete(command_id):
+                    self._last_command["accepted"] = True
+                    self._command_phase("waiting_result")
+                    while True:
+                        self._last_command["result_poll_count"] += 1
+                        if await self.client.async_command_complete(command_id):
+                            self._last_command["acknowledged"] = True
+                            break
                         await asyncio.sleep(2)
                     # The app's result can precede the cloud's state update.
+                    self._command_phase("confirming_state")
                     for _ in range(6):
                         await self.async_refresh()
                         if self.is_locked is locked:
+                            self._last_command["outcome"] = "confirmed"
                             return
                         await asyncio.sleep(2)
+                    self._last_command["outcome"] = "state_unconfirmed"
                     raise HomeAssistantError("DESLOC acknowledged the command but the new lock state is not confirmed",
                         translation_domain=DOMAIN, translation_key="command_unconfirmed")
             except DeslocAuthError:
+                self._last_command["outcome"] = "auth_required"
                 self.entry.async_start_reauth(self.hass)
                 raise HomeAssistantError("DESLOC authentication requires attention; reauthenticate in Home Assistant",
                     translation_domain=DOMAIN, translation_key="auth_required") from None
+            except DeslocCommandTimeout:
+                self._last_command["outcome"] = "result_expired"
+                # A lost result is not proof of either bolt state. Read once,
+                # using only the original command's remaining budget; preserve
+                # the expiry error even if this read fails or confirms a state.
+                remaining = deadline - time.monotonic()
+                if remaining > 0:
+                    LOGGER.debug("DESLOC command result expired; refreshing reported state once")
+                    try:
+                        async with asyncio.timeout(min(5.0, remaining)):
+                            await self.async_refresh()
+                        self._last_command["post_expiry_refresh"] = "success" if self.last_update_success else "failed"
+                    except TimeoutError:
+                        self._last_command["post_expiry_refresh"] = "timed_out"
+                    except asyncio.CancelledError:
+                        self._last_command["post_expiry_refresh"] = "cancelled"
+                        raise
+                    except Exception:
+                        self._last_command["post_expiry_refresh"] = "failed"
+                raise HomeAssistantError("DESLOC command result expired; check the lock before retrying",
+                    translation_domain=DOMAIN, translation_key="command_timeout") from None
             except DeslocError as err:
+                self._last_command["outcome"] = "failed"
+                self._last_command["error_kind"] = next((kind for error_type, kind in (
+                    (DeslocConnectionError, "connection_error"),
+                    (DeslocRateLimitError, "rate_limited"),
+                    (DeslocProtocolError, "protocol_error"),
+                    (DeslocClockError, "clock_error"),
+                ) if isinstance(err, error_type)), "unknown_api_error")
                 raise HomeAssistantError(str(err), translation_domain=DOMAIN, translation_key="command_failed") from None
             except TimeoutError:
+                self._last_command["outcome"] = "timed_out"
                 raise HomeAssistantError("DESLOC command confirmation timed out; check the lock before retrying",
                     translation_domain=DOMAIN, translation_key="command_timeout") from None
+            except asyncio.CancelledError:
+                self._last_command["outcome"] = "cancelled"
+                raise
             finally:
+                if self._last_command["outcome"] == "pending":
+                    self._last_command["outcome"] = "failed"
+                self._last_command["elapsed_seconds"] = round(max(0.0, time.monotonic() - started), 3)
+                self._command_started = None
                 self.pending_target = None
+                snapshot = self.command_diagnostics
+                log = LOGGER.debug if snapshot["outcome"] in {"confirmed", "cancelled"} else LOGGER.warning
+                log("DESLOC command outcome=%s error_kind=%s phase=%s elapsed_seconds=%s result_poll_count=%s accepted=%s acknowledged=%s awaiting_fresh_state=%s post_expiry_refresh=%s",
+                    snapshot["outcome"], snapshot["error_kind"], snapshot["phase"], snapshot["elapsed_seconds"],
+                    snapshot["result_poll_count"], snapshot["accepted"], snapshot["acknowledged"],
+                    snapshot["awaiting_fresh_state"], snapshot["post_expiry_refresh"])
                 self.async_update_listeners()
 
     async def _async_update_data(self) -> Device | None:

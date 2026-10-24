@@ -8,15 +8,16 @@
 
 An **unofficial cloud integration** for locks linked to the
 **DESLOC mobile app**. It automatically adds every lock returned by the account
-during setup. **C100 Plus is maintainer-tested; D110 Plus is community-reported
-working.** It provides lock/unlock controls, reported bolt state, battery
+during setup. **C100 Plus is maintainer-tested; D110 Plus and K120 have community
+success reports.** It provides lock/unlock controls, reported bolt state, battery
 percentage, and Wi-Fi signal in Home Assistant.
 
 This project is independent of DESLOC, Home Assistant, and HACS. It does not
 provide local/offline or Bluetooth control. A D110 Plus owner
 [reported that it works perfectly](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18702050).
 A second owner [reported that PIN functionality also works](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18706123).
-Neither report lists complete test steps or software/firmware versions;
+A K120 owner also [reported working integration and available card entities](https://community.home-assistant.io/t/desloc-smart-locks-custom-integration-and-dashboard-card-model-compatibility-reports/1027056/2).
+These reports do not list complete test steps or software/firmware versions;
 see [model compatibility](docs/compatibility.md) for the evidence and scope.
 Models without maintainer validation still carry an **experimental** runtime
 label. Discovery alone does not establish compatibility. TTLock/Tuya accounts
@@ -105,7 +106,7 @@ operation or compatibility with every discovered model.
 - Home Assistant **2026.9.1 or newer**; 2026.9.1 is the physical validation baseline; the current synthetic CI
   runtime is 2026.10.0. Keep the installed HA instance updated independently.
 - Locks already paired with the DESLOC app, with working cloud control.
-  C100 Plus is maintainer-tested and D110 Plus has a community success report;
+  C100 Plus is maintainer-tested; D110 Plus and K120 have community success reports;
   see [model compatibility](docs/compatibility.md) for details.
 - HTTPS access from Home Assistant to `appadmin.desloc.com`.
   Keep the [verified HTTPS runtime profile](docs/security-design.md#supported-https-runtime-profile);
@@ -230,10 +231,16 @@ steps. Neither report provides software/firmware versions. The
 [compatibility notes](docs/compatibility.md) distinguish these reports from the
 feature-by-feature C100 Plus validation.
 
+On October 19, 2026, a [K120 owner reported working integration and the entities
+used by the card](https://community.home-assistant.io/t/desloc-smart-locks-custom-integration-and-dashboard-card-model-compatibility-reports/1027056/2).
+The owner used a separate DESLOC account with a shared lock for HA while keeping
+the primary account in the phone app. Individual lock/unlock and PIN tests were
+not documented; this is a community report, not maintainer validation.
+
 Every lock entity exposes `model_validation: tested` for C100 Plus and
 `model_validation: experimental` for other model names. These labels record
-maintainer validation, not certification by the vendor. D110 Plus retains its
-experimental runtime label while its community reports are recorded in the docs.
+maintainer validation, not certification by the vendor. D110 Plus and K120 retain
+their experimental runtime label while community reports are recorded in the docs.
 Unknown state codes remain
 unknown, and a command must receive a fresh matching report to be confirmed.
 

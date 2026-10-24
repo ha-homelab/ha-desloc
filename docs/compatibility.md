@@ -36,6 +36,23 @@ maintainer validation. The current integration still exposes
 `model_validation: experimental` for D110 Plus; `tested` identifies the model
 validated directly by the maintainer. These labels are not vendor certification.
 
+## K120 — community-reported working
+
+On **October 19, 2026**, **Chief915E** [reported that the integration works with
+their K120 and exposes the entities used by the DESLOC Lock Card](https://community.home-assistant.io/t/desloc-smart-locks-custom-integration-and-dashboard-card-model-compatibility-reports/1027056/2).
+
+The owner shared the lock from their primary DESLOC account to a second account
+and signed into the HA integration with the second account. They reported that
+both the phone app and HA remained usable without importing the primary
+account's session. This is one owner's account-sharing report, not a verified
+replacement for the [captured-session flow](authentication.md) in every region
+or account configuration. Shared-account permissions may differ.
+
+The report does not document separate lock/unlock or PIN-creation/keypad tests,
+firmware, or exact HA/integration versions. It does not establish that every
+feature works. K120 retains `model_validation: experimental` because the
+maintainer has not physically validated it.
+
 ## Other models
 
 Other account-returned DESLOC models are added for community testing. Discovery

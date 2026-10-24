@@ -256,6 +256,10 @@ the downloaded file before posting it.
 If a command times out while battery and Wi-Fi readings remain visible, see
 [command uncertainty and diagnostic logging](docs/troubleshooting.md#command-timeout-or-unknown-state).
 Cached telemetry does not confirm the physical bolt position.
+An accepted command can execute after its cloud result expires. The integration
+uses the remaining 45-second command window to check for a newer matching state
+without resending the command. A timeout still requires checking the physical
+lock before another action.
 
 We will fix models where this API can support them and document or exclude
 models whose protocol is incompatible. Please do not assume an untested model

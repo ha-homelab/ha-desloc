@@ -64,20 +64,24 @@ async def test_command_diagnostics_and_logs_exclude_private_command_data(hass, e
     assert set(snapshot) == {
         "phase", "outcome", "elapsed_seconds", "result_poll_count", "accepted",
         "acknowledged", "post_expiry_refresh", "awaiting_fresh_state", "error_kind",
+        "result_expired", "state_confirmed", "state_poll_count",
     }
-    assert snapshot["phase"] == "waiting_result"
+    assert snapshot["phase"] == "reconciling_state"
     assert snapshot["outcome"] == "result_expired"
     assert snapshot["accepted"] is True
     assert snapshot["acknowledged"] is False
     assert snapshot["result_poll_count"] == 1
     assert snapshot["awaiting_fresh_state"] is True
     assert snapshot["post_expiry_refresh"] == "failed"
-    assert snapshot["error_kind"] is None
+    assert snapshot["error_kind"] == "unknown_error"
+    assert snapshot["result_expired"] is True
+    assert snapshot["state_confirmed"] is False
+    assert snapshot["state_poll_count"] == 1
     diagnostic_and_log = json.dumps(result) + "\n" + caplog.text
     for private_value in private_values:
         assert private_value not in diagnostic_and_log
     assert "outcome=result_expired" in caplog.text
-    assert "phase=waiting_result" in caplog.text
+    assert "phase=reconciling_state" in caplog.text
     assert "accepted=True" in caplog.text
     assert "acknowledged=False" in caplog.text
     # Callers cannot overwrite the coordinator's retained record.
@@ -165,4 +169,63 @@ async def test_command_diagnostics_track_pending_and_freeze_completed_elapsed_ti
     assert snapshot["elapsed_seconds"] == 2.345
     assert snapshot["awaiting_fresh_state"] is False
     assert snapshot["post_expiry_refresh"] == "not_attempted"
+    assert snapshot["state_poll_count"] == 1
+    assert snapshot["state_confirmed"] is True
+    assert snapshot["result_expired"] is False
+    await coordinator.async_shutdown()
+
+
+async def test_late_confirmation_retains_expiry_without_fabricating_acknowledgement(
+    hass, entry, row, caplog,
+):
+    """A later successful state observation is evidence distinct from the result."""
+    caplog.set_level(logging.DEBUG, logger="custom_components.desloc.coordinator")
+    private_values = ["private-command-id", "private-result-token", "private door name", "825194"]
+    api = AsyncMock()
+    api.async_switch_lock.return_value = private_values[0]
+    coordinator = DeslocCoordinator(hass, entry, api)
+    entry.runtime_data = coordinator
+    coordinator.async_set_updated_data(Device.from_json(dict(row, deviceName=private_values[2])))
+    clock = SimpleNamespace(value=100.0)
+    clock.monotonic = lambda: clock.value
+
+    async def expire(_command_id):
+        clock.value = 111.0
+        raise DeslocCommandTimeout(" ".join(private_values))
+
+    async def refresh():
+        pending = coordinator.command_diagnostics
+        assert pending["phase"] == "reconciling_state"
+        assert pending["accepted"] is True
+        assert pending["result_expired"] is True
+        assert pending["acknowledged"] is False
+        assert pending["state_confirmed"] is False
+        clock.value = 124.0
+        coordinator.async_set_updated_data(Device.from_json(dict(row, doorState=1,
+            doorStateUpdateTime=row["doorStateUpdateTime"] + 1000)))
+
+    api.async_command_complete.side_effect = expire
+    with patch("custom_components.desloc.coordinator.time", clock), \
+            patch.object(coordinator, "async_refresh", new=AsyncMock(side_effect=refresh)):
+        await coordinator.async_set_locked(False)
+        clock.value = 171.0
+        result = await async_get_config_entry_diagnostics(hass, entry)
+    snapshot = result["command"]
+    assert snapshot["outcome"] == "state_confirmed_after_expiry"
+    assert snapshot["elapsed_seconds"] == 24.0, "elapsed time freezes when the attempt finishes"
+    assert snapshot["result_expired"] is True
+    assert snapshot["state_confirmed"] is True
+    assert snapshot["acknowledged"] is False
+    assert snapshot["result_poll_count"] == 1
+    assert snapshot["state_poll_count"] == 1
+    assert snapshot["post_expiry_refresh"] == "success"
+    assert snapshot["awaiting_fresh_state"] is False
+    encoded = json.dumps(result) + caplog.text
+    for value in private_values + [entry.entry_id, "test-secret", "test-phone", "001122334455"]:
+        assert value not in encoded
+    assert "result_expired=True" in caplog.text
+    assert "state_confirmed=True" in caplog.text
+    assert "acknowledged=False" in caplog.text
+    snapshot["result_expired"] = False
+    assert coordinator.command_diagnostics["result_expired"] is True
     await coordinator.async_shutdown()

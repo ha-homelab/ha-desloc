@@ -22,14 +22,37 @@ and reproducible manual procedure when automation is infeasible. Update affected
 user/API documentation and release notes. Keep assertions and static-analysis
 checks enabled, resolve new warnings, and explain any remaining warning in the
 PR. Use the private process in SECURITY.md for vulnerabilities. Required checks
-and independent review must pass before merging; do not bypass protections.
+and the review policy must pass before merging; do not bypass protections.
 
 For the public `main` branch, the required `CI gate` aggregates the test suite,
 HACS/Hassfest validation, CodeQL, dependency review, and workflow and release
-contracts. The PR must be up to date with `main`, have at least one independent
-approval covering the latest push, and have no unresolved review threads.
-New commits invalidate stale approvals; administrators follow the same merge
-requirements.
+contracts. The PR must be up to date with `main`, pass `Review policy`, and have
+no unresolved review threads. Administrators follow the same merge requirements.
+
+`Review policy` normally requires a formal approval for the current head commit
+from CodeRabbit or a collaborator with write, maintain, or admin access, other
+than the PR author. An active request for changes blocks the policy. A new push
+requires a new approval; a comment alone does not supersede a review decision.
+
+The one exception is a verified CodeRabbit quota refusal: its latest status on
+the current head must be `success` with the exact description `Review rate limited`,
+published by the authentic CodeRabbit bot. This permits merging without a new
+approval when the review allowance is exhausted. The status description explicitly
+records the exception; it does not claim that a review occurred. Required CI and
+resolved review threads still apply. Older quota signals, unknown errors, and
+unverified identities do not qualify. A newer CodeRabbit status replaces the
+old quota signal.
+
+Changes to the review-event listener require a real approval; they cannot use
+the quota exception. A scheduled reconciliation recovers missed events, but
+status updates are asynchronous. Open PRs must use distinct head commits because
+a commit status cannot represent separate reviews of the same commit.
+
+The policy is a pinned shared workflow running from trusted base-branch code.
+It reads live GitHub metadata and never executes PR code. Native approval-count
+and last-push-approval rules cannot express this conditional exception, so the
+required policy check replaces them. Reviewer independence is checked against
+the PR author; this does not assert that the reviewer was not the last pusher.
 
 The existing shared CodeRabbit workflow requests code review. CodeRabbit can
 approve after it has reviewed the latest commit, its comments are resolved,

@@ -10,7 +10,7 @@
 
 ### Fixed
 
-- Classify DESLOC command-result expiry (`2104`) as a timeout and request one bounded, read-only state refresh within the original deadline. Commands are still sent once; cached state remains unconfirmed until a newer report arrives.
+- Reconcile delayed execution after DESLOC command-result expiry (`2104`) using read-only state checks within the original 45-second deadline. A newer matching report can confirm the state without inventing a command acknowledgement. Commands are still sent once; stale or opposite reports cannot confirm completion.
 - Keep the required state timestamp from moving backward across successive command attempts.
 
 ### Upgrade

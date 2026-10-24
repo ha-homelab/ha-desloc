@@ -76,11 +76,21 @@ connection. A fresh report restores the reported state automatically. Do not
 reload the integration just to remove `Unknown`, because that does not confirm
 the physical bolt position.
 
-Starting with the 0.4.3 diagnostics update, result expiry is reported as a
-command timeout. The integration makes one bounded, read-only status refresh
-within the remaining command deadline, then resumes normal polling. A fresh
-report may restore the state, but it does not erase the original command error
-or cause the command to be sent again.
+During a supervised C100 Plus test, the cloud expired the result roughly
+11 seconds after accepting an unlock request, but the lock opened later. The
+previous implementation then waited for its next minute-based poll before
+displaying the new state. This confirms that result expiry does not cancel an
+accepted command or prove that it will not execute.
+
+The 0.4.3 late-confirmation update stops polling an expired result and continues
+read-only state checks every two seconds within the original 45-second command
+deadline. The operation remains pending during this interval. A successful
+read with a strictly newer timestamp and the requested bolt state confirms the
+reported state; diagnostics still distinguish this from a successful command
+acknowledgement. An unchanged or opposite report cannot confirm the request.
+If the deadline expires, HA reports uncertainty and resumes normal polling.
+The integration never resends the command automatically, and delivery can still
+occur after the deadline.
 
 ### Collect useful diagnostics
 
@@ -93,6 +103,9 @@ or cause the command to be sent again.
    polling with `awaiting_fresh_state` explains why HA may still show `Unknown`.
    Acceptance means a result ID was returned; acknowledgement means the cloud
    returned a successful command result. Neither is independent bolt sensing.
+   `result_expired` and `state_confirmed` are separate flags: a late matching
+   report can confirm the requested state even when acknowledgement is missing.
+   `state_poll_count` counts confirmation reads during that command attempt.
 3. If more evidence is needed, enable **debug logging** from the DESLOC
    integration menu. Capture only a deliberate, supervised operation, then
    disable debug logging and save the offered log. Do not repeatedly operate

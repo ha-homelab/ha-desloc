@@ -46,6 +46,7 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
         self._state_must_be_newer_than: int | None = None
         self._command_started: float | None = None
         self._last_command: dict[str, Any] = self._new_command_diagnostics()
+        self._last_poll_error_kind: str | None = None
 
     @staticmethod
     def _new_command_diagnostics() -> dict[str, Any]:
@@ -53,6 +54,7 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
         return {
             "phase": "idle", "outcome": "not_started", "elapsed_seconds": 0.0,
             "result_poll_count": 0, "accepted": False, "acknowledged": False,
+            "state_poll_count": 0, "result_expired": False, "state_confirmed": False,
             "post_expiry_refresh": "not_attempted", "error_kind": None,
         }
 
@@ -76,6 +78,78 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
     def _command_phase(self, phase: str) -> None:
         self._last_command["phase"] = phase
         LOGGER.debug("DESLOC command phase=%s", phase)
+
+    @staticmethod
+    def _error_kind(error: BaseException | None) -> str:
+        """Classify known failures without retaining an exception or its text."""
+        return next((kind for error_type, kind in (
+            ((DeslocAuthError, ConfigEntryAuthFailed), "auth_required"),
+            (DeslocConnectionError, "connection_error"),
+            (DeslocRateLimitError, "rate_limited"),
+            (DeslocProtocolError, "protocol_error"),
+            (DeslocClockError, "clock_error"),
+            (TimeoutError, "timed_out"),
+            (DeslocError, "unknown_api_error"),
+        ) if isinstance(error, error_type)), "unknown_error")
+
+    async def _async_reconcile_expired_command(self, locked: bool, deadline: float) -> None:
+        """Observe late delivery within the original budget; never resend it."""
+        self._command_phase("reconciling_state")
+        latest_report = self._state_must_be_newer_than or 0
+        while True:
+            if time.monotonic() >= deadline:
+                raise TimeoutError
+            self._last_command["state_poll_count"] += 1
+            self._last_poll_error_kind = None
+            try:
+                await self.async_refresh()
+            except asyncio.CancelledError:
+                self._last_command["post_expiry_refresh"] = "cancelled"
+                raise
+            except Exception as error:
+                error_kind = self._error_kind(error)
+            else:
+                if self.last_update_success:
+                    self._last_command["post_expiry_refresh"] = "success"
+                    # An opposite/unknown report raises the local watermark:
+                    # a later cached but older matching report proves nothing.
+                    timestamp = self.data.door_state_updated_ms if self.data else None
+                    if (timestamp is None or timestamp < latest_report
+                            or (timestamp == latest_report and self.data is not None
+                                and self.data.is_locked is locked)):
+                        # Do not expose a rejected cached/contradictory target
+                        # after pending clears, or use it as the next command's
+                        # baseline. A newer report is needed to restore trust.
+                        self._state_must_be_newer_than = max(
+                            self._state_must_be_newer_than or 0, latest_report,
+                        )
+                    if time.monotonic() >= deadline:
+                        raise TimeoutError
+                    if timestamp is not None and timestamp > latest_report and self.is_locked is locked:
+                        self._last_command["state_confirmed"] = True
+                        self._last_command["outcome"] = "state_confirmed_after_expiry"
+                        return
+                    latest_report = max(latest_report, timestamp or 0)
+                    error_kind = None
+                else:
+                    # HA records most refresh failures instead of raising them.
+                    # Keep the typed category captured before UpdateFailed wraps
+                    # it, with a fallback for HA-native failures such as auth.
+                    error_kind = self._last_poll_error_kind or self._error_kind(self.last_exception)
+            if error_kind is not None:
+                self._last_command["post_expiry_refresh"] = "failed"
+                self._last_command["error_kind"] = error_kind
+                if error_kind == "auth_required":
+                    raise DeslocAuthError("DESLOC authentication requires attention") from None
+                if error_kind not in {"connection_error", "timed_out"}:
+                    # Expiry remains the primary uncertainty. Stop on rate
+                    # limits, protocol errors and unexpected failures rather
+                    # than repeatedly requesting an endpoint that rejected us.
+                    raise DeslocCommandTimeout("DESLOC state confirmation is unavailable") from None
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError
+            await asyncio.sleep(min(2.0, remaining))
 
     @property
     def is_locked(self) -> bool | None:
@@ -113,15 +187,25 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
                     self._command_phase("waiting_result")
                     while True:
                         self._last_command["result_poll_count"] += 1
-                        if await self.client.async_command_complete(command_id):
+                        try:
+                            complete = await self.client.async_command_complete(command_id)
+                        except DeslocCommandTimeout:
+                            # A result record can expire before physical delivery.
+                            # Do not poll that record again or replay the command.
+                            self._last_command["result_expired"] = True
+                            await self._async_reconcile_expired_command(locked, deadline)
+                            return
+                        if complete:
                             self._last_command["acknowledged"] = True
                             break
                         await asyncio.sleep(2)
                     # The app's result can precede the cloud's state update.
                     self._command_phase("confirming_state")
                     for _ in range(6):
+                        self._last_command["state_poll_count"] += 1
                         await self.async_refresh()
-                        if self.is_locked is locked:
+                        if self.last_update_success and self.is_locked is locked:
+                            self._last_command["state_confirmed"] = True
                             self._last_command["outcome"] = "confirmed"
                             return
                         await asyncio.sleep(2)
@@ -130,41 +214,23 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
                         translation_domain=DOMAIN, translation_key="command_unconfirmed")
             except DeslocAuthError:
                 self._last_command["outcome"] = "auth_required"
+                self._last_command["error_kind"] = "auth_required"
                 self.entry.async_start_reauth(self.hass)
                 raise HomeAssistantError("DESLOC authentication requires attention; reauthenticate in Home Assistant",
                     translation_domain=DOMAIN, translation_key="auth_required") from None
             except DeslocCommandTimeout:
                 self._last_command["outcome"] = "result_expired"
-                # A lost result is not proof of either bolt state. Read once,
-                # using only the original command's remaining budget; preserve
-                # the expiry error even if this read fails or confirms a state.
-                remaining = deadline - time.monotonic()
-                if remaining > 0:
-                    LOGGER.debug("DESLOC command result expired; refreshing reported state once")
-                    try:
-                        async with asyncio.timeout(min(5.0, remaining)):
-                            await self.async_refresh()
-                        self._last_command["post_expiry_refresh"] = "success" if self.last_update_success else "failed"
-                    except TimeoutError:
-                        self._last_command["post_expiry_refresh"] = "timed_out"
-                    except asyncio.CancelledError:
-                        self._last_command["post_expiry_refresh"] = "cancelled"
-                        raise
-                    except Exception:
-                        self._last_command["post_expiry_refresh"] = "failed"
                 raise HomeAssistantError("DESLOC command result expired; check the lock before retrying",
                     translation_domain=DOMAIN, translation_key="command_timeout") from None
             except DeslocError as err:
                 self._last_command["outcome"] = "failed"
-                self._last_command["error_kind"] = next((kind for error_type, kind in (
-                    (DeslocConnectionError, "connection_error"),
-                    (DeslocRateLimitError, "rate_limited"),
-                    (DeslocProtocolError, "protocol_error"),
-                    (DeslocClockError, "clock_error"),
-                ) if isinstance(err, error_type)), "unknown_api_error")
+                self._last_command["error_kind"] = self._error_kind(err)
                 raise HomeAssistantError(str(err), translation_domain=DOMAIN, translation_key="command_failed") from None
             except TimeoutError:
-                self._last_command["outcome"] = "timed_out"
+                self._last_command["outcome"] = "result_expired" if self._last_command["result_expired"] else "timed_out"
+                if self._last_command["post_expiry_refresh"] == "cancelled":
+                    # The outer deadline cancelled the read, not the caller.
+                    self._last_command["post_expiry_refresh"] = "timed_out"
                 raise HomeAssistantError("DESLOC command confirmation timed out; check the lock before retrying",
                     translation_domain=DOMAIN, translation_key="command_timeout") from None
             except asyncio.CancelledError:
@@ -177,23 +243,27 @@ class DeslocCoordinator(DataUpdateCoordinator[Device | None]):
                 self._command_started = None
                 self.pending_target = None
                 snapshot = self.command_diagnostics
-                log = LOGGER.debug if snapshot["outcome"] in {"confirmed", "cancelled"} else LOGGER.warning
-                log("DESLOC command outcome=%s error_kind=%s phase=%s elapsed_seconds=%s result_poll_count=%s accepted=%s acknowledged=%s awaiting_fresh_state=%s post_expiry_refresh=%s",
+                log = LOGGER.debug if snapshot["outcome"] in {"confirmed", "state_confirmed_after_expiry", "cancelled"} else LOGGER.warning
+                log("DESLOC command outcome=%s error_kind=%s phase=%s elapsed_seconds=%s result_poll_count=%s state_poll_count=%s accepted=%s acknowledged=%s result_expired=%s state_confirmed=%s awaiting_fresh_state=%s post_expiry_refresh=%s",
                     snapshot["outcome"], snapshot["error_kind"], snapshot["phase"], snapshot["elapsed_seconds"],
-                    snapshot["result_poll_count"], snapshot["accepted"], snapshot["acknowledged"],
+                    snapshot["result_poll_count"], snapshot["state_poll_count"], snapshot["accepted"], snapshot["acknowledged"],
+                    snapshot["result_expired"], snapshot["state_confirmed"],
                     snapshot["awaiting_fresh_state"], snapshot["post_expiry_refresh"])
                 self.async_update_listeners()
 
     async def _async_update_data(self) -> Device | None:
+        self._last_poll_error_kind = None
         try:
             if self.account is None:
                 devices = await self.client.async_devices()
             else:
                 devices = await self.account.async_devices(force_refresh=self.pending_target is not None)
         except DeslocAuthError:
+            self._last_poll_error_kind = "auth_required"
             raise ConfigEntryAuthFailed("DESLOC authentication requires attention; reauthenticate in Home Assistant",
                 translation_domain=DOMAIN, translation_key="auth_required") from None
         except DeslocError as err:
+            self._last_poll_error_kind = self._error_kind(err)
             raise UpdateFailed(str(err)) from None
         device = next((device for device in devices if device.mac == self.mac), None)
         if device is not None:

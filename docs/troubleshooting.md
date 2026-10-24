@@ -61,9 +61,50 @@ a certificate problem.
 
 ## Command timeout or unknown state
 
-The cloud did not confirm a newer matching state in time, or a request failed.
-The command may still have reached the lock. Check physical state and the DESLOC
-app before deciding on another action. There are no automatic command retries.
+An accepted request does not prove that the bolt moved. DESLOC result code
+`2104` means the cloud no longer provides a confirmed result for that command;
+it can arrive before the integration's 45-second deadline. The command may
+still have reached the lock. This is distinct from an authentication error.
+Check physical state and the DESLOC app before deciding on another action.
+There are no automatic command retries.
+
+After an attempted command, HA suppresses the previous bolt report until the
+cloud supplies a newer state timestamp. `Unknown` can therefore coexist with
+successful polling, battery/RSSI readings, and a raw bolt code. Those readings
+can be cached; the unverified `onlineStatus` enum is not proof of a live device
+connection. A fresh report restores the reported state automatically. Do not
+reload the integration just to remove `Unknown`, because that does not confirm
+the physical bolt position.
+
+Starting with the 0.4.3 diagnostics update, result expiry is reported as a
+command timeout. The integration makes one bounded, read-only status refresh
+within the remaining command deadline, then resumes normal polling. A fresh
+report may restore the state, but it does not erase the original command error
+or cause the command to be sent again.
+
+### Collect useful diagnostics
+
+1. Open **Settings → Devices & services → DESLOC** and use the affected lock
+   entry's menu to **Download diagnostics** before reloading or restarting HA.
+   The command snapshot is kept in memory only and records the most recent
+   lock/unlock attempt, not PIN operations or a persistent activity history.
+2. Check the command phase, outcome, elapsed time, result poll count, and
+   acceptance/acknowledgement flags alongside state freshness. Successful
+   polling with `awaiting_fresh_state` explains why HA may still show `Unknown`.
+   Acceptance means a result ID was returned; acknowledgement means the cloud
+   returned a successful command result. Neither is independent bolt sensing.
+3. If more evidence is needed, enable **debug logging** from the DESLOC
+   integration menu. Capture only a deliberate, supervised operation, then
+   disable debug logging and save the offered log. Do not repeatedly operate
+   the lock simply to produce more logs. See Home Assistant's
+   [debug logging instructions](https://www.home-assistant.io/docs/configuration/troubleshooting/#debug-logs-and-diagnostics).
+
+DESLOC's command diagnostics and log messages use fixed categories and counters;
+they do not include account credentials, PINs, names, MACs, device IDs, command
+IDs, HTTP payloads, or absolute command timestamps. Review the complete HA
+download before sharing, because it can also contain platform metadata and
+messages from other components. Include whether the bolt actually moved and
+whether the app, keypad, or manual thumb turn was used after the error.
 
 ## Unavailable entities or slow updates
 

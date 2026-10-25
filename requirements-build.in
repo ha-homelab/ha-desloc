@@ -1,2 +1,3 @@
-# Exact build backend declared by the upstream HA test snapshot.
-setuptools==84.0.0
+# Security build-only override of the HA snapshot's setuptools==84.0.0 pin.
+# See docs/development.md for scope, provenance, and validation.
+setuptools==84.1.0

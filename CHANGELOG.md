@@ -21,6 +21,8 @@ The integration already includes its brand icons. HACS 2.x uses a legacy remote 
 
 The optional `/local/desloc/icon.png` URL serves only the public project icon without authentication. Keep credentials, diagnostics, and configuration backups out of `www`. Command logs omit identities, credentials, PINs, result IDs, and raw HTTP data. Session handling, TLS checks, and PIN handling are unchanged. No automatic command replay is introduced.
 
+Development and CI use Pillow 13 through a checksum-pinned, unmodified upstream Home Assistant source snapshot. The temporary test baseline is `2026.11.0.dev0`, with separately hash-locked build tooling and dependency compatibility checks. This removes the old Pillow test dependency without changing the integration package or an installed Home Assistant system.
+
 ## [0.4.2] - 2026-10-18
 
 ### Changed

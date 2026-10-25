@@ -6,8 +6,10 @@ from string import Formatter
 from unittest.mock import patch
 
 import pytest
+from awesomeversion import AwesomeVersion
 from homeassistant import loader
 from homeassistant.bootstrap import async_load_base_functionality
+from homeassistant.const import __version__ as HA_VERSION
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.translation import async_get_translations
 
@@ -142,5 +144,9 @@ async def test_localized_names_preserve_registry_identity_and_user_names(localiz
         assert registry.async_get(battery).name == "My battery title"
         assert registry.async_get(battery).original_name == "Batería"
         assert registry.async_get(rssi).original_name == "Señal Wi-Fi"
-        assert hass.states.get(battery).attributes["friendly_name"] == "My battery title"
+        expected_friendly_name = "My battery title"
+        # HA 2026.11 composes device and user-given names (core PR #184340).
+        if AwesomeVersion(HA_VERSION) >= AwesomeVersion("2026.11.0.dev0"):
+            expected_friendly_name = f"{row['deviceName']} {expected_friendly_name}"
+        assert hass.states.get(battery).attributes["friendly_name"] == expected_friendly_name
         assert await hass.config_entries.async_unload(entry.entry_id)

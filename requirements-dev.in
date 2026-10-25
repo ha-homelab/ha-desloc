@@ -1,3 +1,5 @@
-homeassistant==2026.10.3
+# Temporary upstream test snapshot: the released HA package still pins Pillow 12.3.0.
+# See docs/development.md for provenance and the return-to-release criteria.
+homeassistant @ https://github.com/home-assistant/core/archive/ae6f8602aab71b21505ff0974e7440fbff4aac21.tar.gz#sha256=f13311ec5485b619353989e9eaaab37766fe4c987e87143deb78be9cbc336e25
 pytest==9.1.1
 pytest-asyncio==1.4.0

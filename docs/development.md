@@ -36,8 +36,9 @@ python3 -m venv .venv-ci
 This is a source-warning baseline. Third-party deprecations and security-analysis
 findings are tracked separately and are not declared resolved by a clean Ruff run.
 
-Use Linux and Python 3.14.2 or newer. The locked synthetic test runtime is
-Home Assistant 2026.10.0:
+Use Linux and Python 3.14.2 or newer. The Home Assistant version and its
+dependencies for synthetic tests are pinned in
+[`requirements-dev.txt`](../requirements-dev.txt):
 
 ```sh
 uv venv --python 3.14 .venv-ha
@@ -67,6 +68,22 @@ An optional helper tests in an existing HA container that already has pytest:
 Only source, synthetic tests, and a pure-Python test plugin are transferred to a
 temporary directory. It does not read `/config`, install packages, restart HA,
 transfer account sessions, or issue device commands. Temporary files are removed.
+
+### Upstream Pillow dependency hold
+
+The pinned Home Assistant release controls the Pillow version in the isolated
+test environment. Track [Home Assistant's Pillow 13 update](https://github.com/home-assistant/core/pull/188252)
+and the corresponding released package metadata. Until a compatible Home
+Assistant release includes the fixed dependency, do not override its exact
+Pillow requirement or mark the matching dependency alerts as resolved.
+
+Once that release is available, update the Home Assistant pin in
+[`requirements-dev.in`](../requirements-dev.in), regenerate the
+[hash-locked dependencies](../CONTRIBUTING.md#reproducible-python-dependencies),
+and install them in a fresh test environment. Run dependency compatibility
+checks, the full synthetic Linux test suite, and required CI before merging.
+This updates the development environment; it does not upgrade an installed
+Home Assistant instance or add Pillow to the DESLOC package.
 
 ## Protocol research
 

@@ -1,0 +1,2 @@
+# Exact build backend declared by the upstream HA test snapshot.
+setuptools==84.0.0

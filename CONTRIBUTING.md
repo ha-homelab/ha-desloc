@@ -69,12 +69,18 @@ platforms. Install with `--require-hashes`; do not remove this check to work aro
 a missing archive. Review dependency updates and regenerate the locks with:
 
 ```sh
-uv pip compile requirements-dev.in --generate-hashes --universal --python-version 3.14.2 --output-file requirements-dev.txt
+uv pip compile requirements-build.in --generate-hashes --universal --python-version 3.14.2 --output-file requirements-build.txt
+uv venv --python 3.14 .venv-ha
+uv pip install --python .venv-ha/bin/python --only-binary=:all: --require-hashes -r requirements-build.txt
+uv pip compile requirements-dev.in --generate-hashes --universal --python-version 3.14.2 --python .venv-ha/bin/python --no-build-isolation --output-file requirements-dev.txt
 ```
 
 Run the documented tests in a fresh virtual environment after updating a lock.
 Use Python 3.14.2 or newer and the Home Assistant version pinned in
-[`requirements-dev.txt`](requirements-dev.txt). Check the
-[upstream dependency hold](docs/development.md#upstream-pillow-dependency-hold)
-before updating the test environment. Updating these test dependencies does not
-upgrade an installed Home Assistant instance.
+[`requirements-dev.txt`](requirements-dev.txt). The current
+[temporary upstream test baseline](docs/development.md#temporary-upstream-test-baseline)
+is an unreleased official source snapshot that includes the upstream Pillow 13
+fix. Its source archive, build backend and complete dependency closure are
+hash-locked. Follow the documented build-backend installation order; do not
+override Home Assistant's dependency metadata. Updating these test dependencies
+does not upgrade an installed Home Assistant instance.

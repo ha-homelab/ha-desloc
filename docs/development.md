@@ -42,7 +42,9 @@ dependencies for synthetic tests are pinned in
 
 ```sh
 uv venv --python 3.14 .venv-ha
-uv pip install --python .venv-ha/bin/python --require-hashes -r requirements-dev.txt
+uv pip install --python .venv-ha/bin/python --only-binary=:all: --require-hashes -r requirements-build.txt
+uv pip install --python .venv-ha/bin/python --only-binary=:all: --no-binary=homeassistant,pyric --no-build-isolation --require-hashes -r requirements-dev.txt
+uv pip check --python .venv-ha/bin/python
 .venv-ha/bin/python -m pytest -q
 ```
 
@@ -69,21 +71,43 @@ Only source, synthetic tests, and a pure-Python test plugin are transferred to a
 temporary directory. It does not read `/config`, install packages, restart HA,
 transfer account sessions, or issue device commands. Temporary files are removed.
 
-### Upstream Pillow dependency hold
+### Temporary upstream test baseline
 
-The pinned Home Assistant release controls the Pillow version in the isolated
-test environment. Track [Home Assistant's Pillow 13 update](https://github.com/home-assistant/core/pull/188252)
-and the corresponding released package metadata. Until a compatible Home
-Assistant release includes the fixed dependency, do not override its exact
-Pillow requirement or mark the matching dependency alerts as resolved.
+The test environment uses the unmodified official Home Assistant source at
+[`ae6f8602aab71b21505ff0974e7440fbff4aac21`](https://github.com/home-assistant/core/commit/ae6f8602aab71b21505ff0974e7440fbff4aac21),
+which identifies itself as **2026.11.0.dev0**. This is an unreleased development
+snapshot, not a stable Home Assistant release or a recommendation to upgrade
+your installed system. It includes the upstream
+[Pillow 13 dependency update](https://github.com/home-assistant/core/pull/188252).
+The published Home Assistant 2026.10.4 package still requires Pillow 12.3.0.
 
-Once that release is available, update the Home Assistant pin in
-[`requirements-dev.in`](../requirements-dev.in), regenerate the
+The source archive and complete dependency closure have SHA-256 hashes in
+[`requirements-dev.txt`](../requirements-dev.txt). The upstream build backend,
+setuptools 84.0.0, is separately hash-locked in
+[`requirements-build.txt`](../requirements-build.txt). Install that backend
+first, then use `--no-build-isolation` to prevent an implicit, unverified build
+dependency installation. All other dependencies must use binary wheels except
+the existing PyRIC 0.1.6.3 dependency, which only publishes a source archive.
+That hash-locked archive uses the same setuptools backend without additional
+build dependencies. Only Home Assistant and PyRIC may be built from source.
+Runtime dependency resolution and `pip check` remain
+enabled; no Home Assistant metadata or Pillow requirement is overridden.
+
+All existing tests still run against real Home Assistant. Current CI establishes
+compatibility with this pinned snapshot. The
+[last successful released-HA test run](https://github.com/ha-homelab/ha-desloc/actions/runs/40151456021)
+used Home Assistant 2026.10.3; it is historical evidence, not ongoing stable-version
+coverage. The snapshot change affects only development and CI: it does not
+upgrade an installed Home Assistant instance or add Pillow to the DESLOC package.
+
+When a published Home Assistant release supports the fixed Pillow version,
+replace the source URL in [`requirements-dev.in`](../requirements-dev.in) with
+that exact release. Regenerate the
 [hash-locked dependencies](../CONTRIBUTING.md#reproducible-python-dependencies),
-and install them in a fresh test environment. Run dependency compatibility
-checks, the full synthetic Linux test suite, and required CI before merging.
-This updates the development environment; it does not upgrade an installed
-Home Assistant instance or add Pillow to the DESLOC package.
+install them in a fresh environment, and run dependency compatibility checks,
+the full synthetic Linux test suite and required CI before merging. Remove the
+separate source-build setup only when it is no longer needed. Never force a
+Pillow version that conflicts with Home Assistant's package metadata.
 
 ## Protocol research
 

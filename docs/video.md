@@ -26,8 +26,9 @@ scope of each model's validation.
 
 The integration was [accepted into the default HACS catalog](https://github.com/hacs/default/pull/11471)
 on October 20, 2026. Search for **DESLOC** in HACS to install it. The separate
-dashboard card still requires a HACS custom repository; its catalog submission
-remains pending. Follow the [current installation guide](../README.md#installation).
+dashboard card was [accepted](https://github.com/hacs/default/pull/11473) on
+October 24, 2026; search for **DESLOC Lock Card** in HACS. Follow the
+[current installation guide](../README.md#installation).
 The closing scene below retains the installation instructions from the capture
 date and should not be used as current installation guidance.
 

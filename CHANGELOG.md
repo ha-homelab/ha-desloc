@@ -23,6 +23,8 @@ The optional `/local/desloc/icon.png` URL serves only the public project icon wi
 
 Development and CI use Pillow 13 through a checksum-pinned, unmodified upstream Home Assistant source snapshot. The temporary test baseline is `2026.11.0.dev0`, with separately hash-locked build tooling and dependency compatibility checks. This removes the old Pillow test dependency without changing the integration package or an installed Home Assistant system.
 
+The test source build explicitly uses patched setuptools 84.1.0 instead of upstream's 84.0.0 build pin, addressing GHSA-xmj3-9gf7-h52w. The source archive and runtime dependency requirements remain unchanged.
+
 ## [0.4.2] - 2026-10-18
 
 ### Changed

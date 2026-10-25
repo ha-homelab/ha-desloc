@@ -81,6 +81,8 @@ Use Python 3.14.2 or newer and the Home Assistant version pinned in
 [temporary upstream test baseline](docs/development.md#temporary-upstream-test-baseline)
 is an unreleased official source snapshot that includes the upstream Pillow 13
 fix. Its source archive, build backend and complete dependency closure are
-hash-locked. Follow the documented build-backend installation order; do not
-override Home Assistant's dependency metadata. Updating these test dependencies
-does not upgrade an installed Home Assistant instance.
+hash-locked. The documented build-only override uses patched setuptools 84.1.0
+instead of the upstream snapshot's 84.0.0. Follow the documented build-backend
+installation order; do not override Home Assistant's runtime dependency metadata.
+Updating these test dependencies does not upgrade an installed Home Assistant
+instance.

@@ -82,16 +82,28 @@ your installed system. It includes the upstream
 The published Home Assistant 2026.10.4 package still requires Pillow 12.3.0.
 
 The source archive and complete dependency closure have SHA-256 hashes in
-[`requirements-dev.txt`](../requirements-dev.txt). The upstream build backend,
-setuptools 84.0.0, is separately hash-locked in
-[`requirements-build.txt`](../requirements-build.txt). Install that backend
-first, then use `--no-build-isolation` to prevent an implicit, unverified build
-dependency installation. All other dependencies must use binary wheels except
+[`requirements-dev.txt`](../requirements-dev.txt). The build backend is separately
+hash-locked in [`requirements-build.txt`](../requirements-build.txt). We explicitly
+use **setuptools 84.1.0 instead of the source snapshot's declared 84.0.0**, to fix
+[GHSA-xmj3-9gf7-h52w](https://github.com/advisories/GHSA-xmj3-9gf7-h52w).
+This is a build-only override, as permitted by
+[PEP 517](https://peps.python.org/pep-0517/#recommendations-for-build-frontends-non-normative),
+not a claim that 84.1.0 satisfies upstream's exact build pin. The official source
+archive remains unchanged. Install the approved backend first, then use
+`--no-build-isolation` to prevent an implicit, unverified build dependency
+installation. All other dependencies must use binary wheels except
 the existing PyRIC 0.1.6.3 dependency, which only publishes a source archive.
 That hash-locked archive uses the same setuptools backend without additional
 build dependencies. Only Home Assistant and PyRIC may be built from source.
 Runtime dependency resolution and `pip check` remain
-enabled; no Home Assistant metadata or Pillow requirement is overridden.
+enabled; no Home Assistant runtime dependency metadata or Pillow requirement is
+overridden.
+
+When updating the build backend, rebuild Home Assistant and PyRIC without cached
+wheels (`--no-cache-dir` with pip, or `--no-cache` with uv). Compare the installed
+package source/data and runtime dependency metadata with the previous build,
+then run `pip check` and the full test suite. A successful cached install alone
+does not verify a new source build.
 
 All existing tests still run against real Home Assistant. Current CI establishes
 compatibility with this pinned snapshot. The

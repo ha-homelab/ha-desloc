@@ -73,6 +73,8 @@ uv pip compile requirements-dev.in --generate-hashes --universal --python-versio
 ```
 
 Run the documented tests in a fresh virtual environment after updating a lock.
-The isolated Home Assistant test runtime is 2026.10.0 and requires Python
-3.14.2 or newer. Updating these test dependencies does not upgrade an installed
-Home Assistant instance.
+Use Python 3.14.2 or newer and the Home Assistant version pinned in
+[`requirements-dev.txt`](requirements-dev.txt). Check the
+[upstream dependency hold](docs/development.md#upstream-pillow-dependency-hold)
+before updating the test environment. Updating these test dependencies does not
+upgrade an installed Home Assistant instance.

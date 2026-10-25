@@ -161,11 +161,11 @@ runtime dependencies. Do not copy this entire development repository into HA.
 ## Dashboard card
 
 The optional [DESLOC Lock Card](https://github.com/ha-homelab/ha-desloc-card) is
-distributed separately and is not yet in the default HACS catalog. Add
-`https://github.com/ha-homelab/ha-desloc-card` under **HACS → ⋮ → Custom
-repositories** with type **Dashboard**, then follow the card's installation
-instructions. It provides state, battery/RSSI, and lock controls with mandatory
-unlock confirmation.
+distributed separately and is available in the default HACS catalog. Open
+**HACS**, search for **DESLOC Lock Card**, and follow the
+[card's installation instructions](https://github.com/ha-homelab/ha-desloc-card#install-through-hacs).
+It provides state, battery/RSSI, and lock controls with mandatory unlock
+confirmation.
 
 ## Configuration
 

@@ -1,5 +1,9 @@
 # DESLOC for Home Assistant
 
+**[Explore the DESLOC project wiki](https://ha-homelab.github.io/ha-desloc/)** —
+installation, account setup, full and compact cards, model compatibility,
+command behavior, PIN users, and troubleshooting in one illustrated guide.
+
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15591/badge)](https://www.bestpractices.dev/projects/15591)
 [![Fuzzing: RC only](https://img.shields.io/badge/Fuzzing-RC%20only-blue)](docs/fuzzing.md)
 

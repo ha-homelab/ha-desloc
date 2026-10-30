@@ -1,0 +1,59 @@
+/* Optional presentation layer: removing this file leaves every guide usable. */
+body {
+  background-image: radial-gradient(ellipse at 95% 8%, light-dark(#d9e9dd66, #1f685129), transparent 34%),
+    radial-gradient(ellipse at 0% 36%, light-dark(#f2e9dc66, #70473512), transparent 34%);
+  background-repeat: no-repeat;
+}
+.site-header {
+  background: light-dark(#ffffffd9, #102c34de);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  box-shadow: 0 9px 30px light-dark(#26413508, #00000018);
+}
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  width: 93%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  left: 3%;
+  top: 0;
+  background: radial-gradient(ellipse, light-dark(#bbdfcf88, #255e5070), transparent 68%);
+  pointer-events: none;
+}
+.hero-orbit { position: absolute; inset: 0; overflow: clip; pointer-events: none; }
+.hero-orbit::before, .hero-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 5% -4%;
+  border: 1px solid light-dark(#6b9f812e, #6fe4c326);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+.hero-orbit::after { inset: 15% -8%; transform: rotate(27deg); }
+.demo-card {
+  box-shadow: var(--shadow), 0 3px 6px light-dark(#193b2a05, #00000018);
+  transform: rotate(-3deg);
+}
+.hero-visual > .status-chip { box-shadow: var(--shadow); border: 1px solid var(--line); transform: rotate(3deg); }
+.button, .doc-link, .theme-toggle { transition: transform .18s ease, border-color .18s ease, background-color .18s ease; }
+@media (hover: hover) and (pointer: fine) {
+  .button:hover { transform: translateY(-2px); }
+  .doc-link:hover { transform: translateY(-3px); }
+}
+.surface { box-shadow: 0 5px 16px light-dark(#1a3a2604, #00000009); }
+.section-number { position: relative; }
+.doc-link:hover { box-shadow: var(--shadow); }
+@media (max-width: 580px) {
+  .hero-orbit::before { inset: 2% 0; }
+  .hero-orbit::after { inset: 14% -1%; }
+  .demo-card { transform: rotate(-2deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button, .doc-link, .theme-toggle { transition: none; }
+  .button:hover, .doc-link:hover { transform: none; }
+}
+@media print {
+  body { background-image: none; }
+  .demo-card { transform: none; box-shadow: none; }
+}

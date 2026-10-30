@@ -8,7 +8,7 @@ body {
   background: light-dark(#ffffffd9, #102c34de);
   backdrop-filter: blur(20px) saturate(1.2);
   -webkit-backdrop-filter: blur(20px) saturate(1.2);
-  box-shadow: light-dark(0 9px 30px #26413508, 0 9px 30px #00000018);
+  box-shadow: 0 9px 30px light-dark(#26413508, #00000018);
 }
 .hero-visual::before {
   content: "";
@@ -21,7 +21,7 @@ body {
   background: radial-gradient(ellipse, light-dark(#bbdfcf88, #255e5070), transparent 68%);
   pointer-events: none;
 }
-.hero-orbit { position: absolute; inset: 0; pointer-events: none; }
+.hero-orbit { position: absolute; inset: 0; overflow: clip; pointer-events: none; }
 .hero-orbit::before, .hero-orbit::after {
   content: "";
   position: absolute;
@@ -32,7 +32,7 @@ body {
 }
 .hero-orbit::after { inset: 15% -8%; transform: rotate(27deg); }
 .demo-card {
-  box-shadow: var(--shadow), light-dark(0 3px 6px #193b2a05, 0 3px 6px #00000018);
+  box-shadow: var(--shadow), 0 3px 6px light-dark(#193b2a05, #00000018);
   transform: rotate(-3deg);
 }
 .hero-visual > .status-chip { box-shadow: var(--shadow); border: 1px solid var(--line); transform: rotate(3deg); }
@@ -41,7 +41,7 @@ body {
   .button:hover { transform: translateY(-2px); }
   .doc-link:hover { transform: translateY(-3px); }
 }
-.surface { box-shadow: light-dark(0 5px 16px #1a3a2604, 0 5px 16px #00000009); }
+.surface { box-shadow: 0 5px 16px light-dark(#1a3a2604, #00000009); }
 .section-number { position: relative; }
 .doc-link:hover { box-shadow: var(--shadow); }
 @media (max-width: 580px) {

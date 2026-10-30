@@ -13,7 +13,7 @@
   --coral-soft: light-dark(#faeae1, #45332e);
   --line: light-dark(#d4e1da, #33535a);
   --control: light-dark(#71888d, #6a8e94);
-  --shadow: light-dark(0 22px 65px #28423a12, 0 22px 65px #00000032);
+  --shadow: 0 22px 65px light-dark(#28423a12, #00000032);
   --radius: 22px;
   --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;

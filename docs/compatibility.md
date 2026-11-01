@@ -48,10 +48,42 @@ account's session. This is one owner's account-sharing report, not a verified
 replacement for the [captured-session flow](authentication.md) in every region
 or account configuration. Shared-account permissions may differ.
 
-The report does not document separate lock/unlock or PIN-creation/keypad tests,
-firmware, or exact HA/integration versions. It does not establish that every
-feature works. K120 retains `model_validation: experimental` because the
-maintainer has not physically validated it.
+That October 19 report does not document separate lock/unlock or PIN-creation/
+keypad tests, firmware, or exact HA/integration versions.
+
+On **October 31, 2026**, **ESchmitt0602** supplied a
+[more detailed K120 report](https://github.com/ha-homelab/ha-desloc/issues/103):
+
+- Discovery in HA, both lock and unlock, accurate reported lock state and battery
+  percentage worked on **HA Core 2026.10.4**.
+- K120 firmware: **`AAN_L003_A01_29260129`**; Wi-Fi firmware: **`27500`**.
+- The owner shared their K120 and K140 Plus to a second, regular DESLOC account
+  used by HA. Their primary account remained usable in the phone app at the same
+  time without conflicts.
+- **PIN creation was not tested** because the second account lacked elevated
+  privileges. Wi-Fi signal reporting was not separately confirmed.
+
+The installation used HA OS 18.4, Supervisor 2026.10.5 and Frontend 20260930.5.
+The exact integration version was not specified; the DESLOC app was described
+by a date rather than an unambiguous version number. These are owner reports,
+not maintainer validation. K120 retains `model_validation: experimental`.
+
+## K140 Plus — community-reported working
+
+On **October 31, 2026**, **ESchmitt0602** filed a
+[K140 Plus report](https://github.com/ha-homelab/ha-desloc/issues/104). It records
+the **same household and test session** as the K120 report above, separately
+for the second model; it is not an independent second-owner confirmation.
+
+Discovery, lock, unlock, accurate reported lock state and battery percentage
+worked on **HA Core 2026.10.4** with firmware **`AAN_Z001_A03_29260907`** and
+Wi-Fi firmware **`27500`**. Both locks used the second account described above.
+**PIN creation was not tested**, and Wi-Fi signal reporting was not separately
+confirmed. The exact integration version was not supplied.
+
+K140 Plus retains `model_validation: experimental` pending physical maintainer
+validation. Shared-account permissions and session behavior can vary; these
+reports do not guarantee the same result for every account or region.
 
 ## Other models
 

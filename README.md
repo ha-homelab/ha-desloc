@@ -2,7 +2,8 @@
 
 **[Explore the DESLOC project wiki](https://ha-homelab.github.io/ha-desloc/)** —
 installation, account setup, full and compact cards, model compatibility,
-command behavior, PIN users, and troubleshooting in one illustrated guide.
+command behavior, PIN users, and troubleshooting in one illustrated guide,
+available in [24 languages](docs/wiki.md#translations).
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15591/badge)](https://www.bestpractices.dev/projects/15591)
 [![Fuzzing: RC only](https://img.shields.io/badge/Fuzzing-RC%20only-blue)](docs/fuzzing.md)
@@ -12,7 +13,7 @@ command behavior, PIN users, and troubleshooting in one illustrated guide.
 
 An **unofficial cloud integration** for locks linked to the
 **DESLOC mobile app**. It automatically adds every lock returned by the account
-during setup. **C100 Plus is maintainer-tested; D110 Plus and K120 have community
+during setup. **C100 Plus is maintainer-tested; D110 Plus, K120 and K140 Plus have community
 success reports.** It provides lock/unlock controls, reported bolt state, battery
 percentage, and Wi-Fi signal in Home Assistant.
 
@@ -21,8 +22,11 @@ provide local/offline or Bluetooth control. A D110 Plus owner
 [reported that it works perfectly](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18702050).
 A second owner [reported that PIN functionality also works](https://github.com/home-assistant/feature-requests/discussions/2138#discussioncomment-18706123).
 A K120 owner also [reported working integration and available card entities](https://community.home-assistant.io/t/desloc-smart-locks-custom-integration-and-dashboard-card-model-compatibility-reports/1027056/2).
-These reports do not list complete test steps or software/firmware versions;
-see [model compatibility](docs/compatibility.md) for the evidence and scope.
+A later owner confirmed [K120](https://github.com/ha-homelab/ha-desloc/issues/103)
+and [K140 Plus](https://github.com/ha-homelab/ha-desloc/issues/104) discovery,
+lock/unlock, reported state and battery on HA Core 2026.10.4, using a second
+shared-access account alongside the phone app. PIN was not tested on those
+models. See [model compatibility](docs/compatibility.md) for firmware and scope.
 Models without maintainer validation still carry an **experimental** runtime
 label. Discovery alone does not establish compatibility. TTLock/Tuya accounts
 are not supported by this integration.
@@ -110,7 +114,7 @@ operation or compatibility with every discovered model.
 - Home Assistant **2026.9.1 or newer**; 2026.9.1 is the physical validation baseline; the current synthetic CI
   runtime is 2026.10.0. Keep the installed HA instance updated independently.
 - Locks already paired with the DESLOC app, with working cloud control.
-  C100 Plus is maintainer-tested; D110 Plus and K120 have community success reports;
+  C100 Plus is maintainer-tested; D110 Plus, K120 and K140 Plus have community success reports;
   see [model compatibility](docs/compatibility.md) for details.
 - HTTPS access from Home Assistant to `appadmin.desloc.com`.
   Keep the [verified HTTPS runtime profile](docs/security-design.md#supported-https-runtime-profile);
@@ -241,9 +245,17 @@ The owner used a separate DESLOC account with a shared lock for HA while keeping
 the primary account in the phone app. Individual lock/unlock and PIN tests were
 not documented; this is a community report, not maintainer validation.
 
+On October 31, 2026, **ESchmitt0602** reported successful discovery, lock/unlock,
+reported state and battery for both [K120](https://github.com/ha-homelab/ha-desloc/issues/103)
+and [K140 Plus](https://github.com/ha-homelab/ha-desloc/issues/104) on HA Core
+2026.10.4. HA used a second regular account with shared locks while the primary
+account remained usable in the phone app without conflicts. These two issues
+are one owner’s reports. PIN creation was not tested; the integration version
+was not specified. Firmware details are in the compatibility notes.
+
 Every lock entity exposes `model_validation: tested` for C100 Plus and
 `model_validation: experimental` for other model names. These labels record
-maintainer validation, not certification by the vendor. D110 Plus and K120 retain
+maintainer validation, not certification by the vendor. D110 Plus, K120 and K140 Plus retain
 their experimental runtime label while community reports are recorded in the docs.
 Unknown state codes remain
 unknown, and a command must receive a fresh matching report to be confirmed.

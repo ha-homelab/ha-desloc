@@ -60,7 +60,9 @@ class Page(HTMLParser):
         if tag == "link" and "canonical" in (values.get("rel") or "").split():
             self.canonicals.append(values.get("href") or "")
         elif values.get("href"):
-            self.references.append((str(values["href"]), tag != "a"))
+            language_alternate = (tag == "link" and values.get("hreflang")
+                                  and "alternate" in (values.get("rel") or "").split())
+            self.references.append((str(values["href"]), tag != "a" and not language_alternate))
         for attr in ("src", "poster", "xlink:href"):
             if values.get(attr):
                 self.references.append((str(values[attr]), True))
@@ -148,8 +150,10 @@ def check_site(root: Path) -> list[str]:
             errors.append(f"{label}: exactly one main landmark and one h1 are required")
         if not page.meta.get("description") or "width=device-width" not in page.meta.get("viewport", ""):
             errors.append(f"{label}: description and responsive viewport are required")
-        if page.canonicals != [ORIGIN + BASE_PATH]:
-            errors.append(f"{label}: canonical must point to {ORIGIN + BASE_PATH}")
+        page_suffix = "" if label.parent == Path(".") else label.parent.as_posix() + "/"
+        canonical = ORIGIN + BASE_PATH + page_suffix
+        if page.canonicals != [canonical]:
+            errors.append(f"{label}: canonical must point to {canonical}")
         if path.name == "404.html" and "noindex" not in page.meta.get("robots", ""):
             errors.append(f"{label}: 404 page must be noindex")
         for value, embedded in page.references:
@@ -269,6 +273,19 @@ class CheckerTests(unittest.TestCase):
     def test_remote_svg_asset_is_rejected(self) -> None:
         (self.root / "assets/favicon.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg"><image href="https://example.org/pixel.png"/></svg>')
         self.assertIn("remote/embedded SVG asset", "\n".join(check_site(self.root)))
+
+    def test_localized_pages_use_their_own_canonical_and_shared_assets(self) -> None:
+        (self.root / "fr").mkdir()
+        localized = self.html.replace('lang="en"', 'lang="fr"').replace(
+            'href="https://ha-homelab.github.io/ha-desloc/"',
+            'href="https://ha-homelab.github.io/ha-desloc/fr/"')
+        localized = localized.replace("</head>",
+            '<link rel="alternate" hreflang="en" href="https://ha-homelab.github.io/ha-desloc/">'
+            '<link rel="stylesheet" href="../assets/style.css"></head>')
+        (self.root / "fr/index.html").write_text(localized)
+        self.assertEqual(check_site(self.root), [])
+        (self.root / "fr/index.html").write_text(self.html)
+        self.assertIn("canonical must point", "\n".join(check_site(self.root)))
 
 
 if __name__ == "__main__":

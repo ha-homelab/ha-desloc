@@ -6,6 +6,8 @@
   const modes = ["system", "light", "dark"];
   const media = window.matchMedia("(prefers-color-scheme: dark)");
   const themeButtons = document.querySelectorAll(".theme-toggle");
+  const messages = Object.fromEntries([...document.querySelectorAll("#wiki-messages [data-message]")]
+    .map((node) => [node.dataset.message, node.textContent]));
   const validMode = (mode) => modes.includes(mode) ? mode : "system";
   const currentMode = () => validMode(root.dataset.themeMode);
 
@@ -17,13 +19,12 @@
     root.style.colorScheme = resolved;
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.content = resolved === "dark" ? "#091d24" : "#f7f8f3";
-    const next = modes[(modes.indexOf(mode) + 1) % modes.length];
     for (const button of themeButtons) {
-      const label = `Color scheme: ${mode}. Switch to ${next === "system" ? "system preference" : next}.`;
+      const label = messages[`theme_${mode}`];
       button.setAttribute("aria-label", label);
       button.title = label;
       const text = button.querySelector(".theme-label");
-      if (text) text.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+      if (text) text.textContent = messages[`mode_${mode}`];
     }
     if (persist) {
       try {
@@ -61,6 +62,32 @@
         mobileMenu.open = false;
         mobileMenu.querySelector("summary").focus();
       }
+    });
+  }
+
+  const languageMenu = document.querySelector("details.language-menu");
+  if (languageMenu) {
+    const links = [...languageMenu.querySelectorAll("a[hreflang]")];
+    // Preserve the section when changing language; plain links still work without JS.
+    const syncLanguageLinks = () => {
+      for (const link of links) link.hash = window.location.hash;
+    };
+    syncLanguageLinks();
+    window.addEventListener("hashchange", syncLanguageLinks);
+    languageMenu.addEventListener("toggle", () => {
+      if (languageMenu.open && mobileMenu) mobileMenu.open = false;
+    });
+    if (mobileMenu) mobileMenu.addEventListener("toggle", () => {
+      if (mobileMenu.open) languageMenu.open = false;
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && languageMenu.open) {
+        languageMenu.open = false;
+        languageMenu.querySelector("summary").focus();
+      }
+    });
+    document.addEventListener("click", (event) => {
+      if (!languageMenu.contains(event.target)) languageMenu.open = false;
     });
   }
 
@@ -114,10 +141,10 @@
     const entries = [...document.querySelectorAll("section[data-search][id]")].map((section) => ({
       id: section.id,
       title: headingText(section),
-      text: `${section.dataset.search} ${section.textContent}`.toLocaleLowerCase(),
+      text: `${section.dataset.search} ${section.textContent}`.toLocaleLowerCase(root.lang),
     }));
     function search() {
-      const query = searchInput.value.trim().toLocaleLowerCase();
+      const query = searchInput.value.trim().toLocaleLowerCase(root.lang);
       searchResults.replaceChildren();
       if (!query) { searchStatus.textContent = ""; return; }
       const terms = query.split(/\s+/).filter(Boolean);
@@ -130,7 +157,9 @@
         li.append(link);
         searchResults.append(li);
       }
-      searchStatus.textContent = matches.length ? `${matches.length} matching ${matches.length === 1 ? "guide" : "guides"}.` : "No matching guide. Try “login”, “PIN” or “unknown”.";
+      searchStatus.textContent = matches.length
+        ? messages.search_matches.replace("{count}", new Intl.NumberFormat(root.lang).format(matches.length))
+        : messages.search_empty;
     }
     searchInput.addEventListener("input", search);
     if (form) {
@@ -147,7 +176,7 @@
       try {
         if (!navigator.clipboard || !window.isSecureContext) throw new Error("Clipboard unavailable");
         await navigator.clipboard.writeText(target.textContent.trim());
-        button.textContent = "Copied";
+        button.textContent = messages.copied;
       } catch (_) {
         const selection = window.getSelection();
         if (selection) {
@@ -156,7 +185,7 @@
           selection.removeAllRanges();
           selection.addRange(range);
         }
-        button.textContent = "Selected — copy manually";
+        button.textContent = messages.copy_manual;
       }
       window.setTimeout(() => { button.textContent = original; }, 3000);
     });

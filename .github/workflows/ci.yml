@@ -33,6 +33,8 @@ jobs:
           .venv-ci/bin/python scripts/check_ci_actions.py
       - name: Check the public project wiki
         run: |
+          python3 scripts/test_wiki_locales.py
+          python3 scripts/build_wiki.py --check
           python3 scripts/check_wiki.py --self-test
           python3 scripts/check_wiki.py
           node --check site/assets/app.js

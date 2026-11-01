@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - site/**
+      - wiki/**
+      - scripts/build_wiki.py
+      - scripts/test_wiki_locales.py
       - scripts/check_wiki.py
       - .github/workflows/wiki.yml
   workflow_dispatch: {}
@@ -32,6 +35,8 @@ jobs:
           persist-credentials: false
       - name: Validate the wiki and its checker
         run: |
+          python3 scripts/test_wiki_locales.py
+          python3 scripts/build_wiki.py --check
           python3 scripts/check_wiki.py --self-test
           python3 scripts/check_wiki.py
           node --check site/assets/app.js

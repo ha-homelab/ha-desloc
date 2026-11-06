@@ -58,7 +58,6 @@ jobs:
     needs:
       - scope
       - workflow-contracts
-    if: ${{ needs.scope.outputs.run == 'true' }}
   check-2:
     uses: ./.github/workflows/codeql.yml
     permissions:
@@ -169,7 +168,7 @@ jobs:
           import json, os
           results = json.loads(os.environ['RESULTS'])
           expected = ['check-0', 'check-1', 'check-2', 'check-3', 'check-4', 'release-contracts', 'scope', 'workflow-contracts']
-          always = ['check-2', 'check-4', 'scope', 'workflow-contracts']
+          always = ['check-1', 'check-2', 'check-4', 'scope', 'workflow-contracts']
           if set(results) != set(expected):
               raise SystemExit('Validation job inventory differs')
           scope = results['scope']

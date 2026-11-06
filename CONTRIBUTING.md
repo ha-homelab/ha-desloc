@@ -86,3 +86,30 @@ instead of the upstream snapshot's 84.0.0. Follow the documented build-backend
 installation order; do not override Home Assistant's runtime dependency metadata.
 Updating these test dependencies does not upgrade an installed Home Assistant
 instance.
+
+## Security fixes for manually maintained locks
+
+For a direct or transitive advisory in the manually maintained environment,
+identify the affected package and the advisory's fixed version range. A plain
+lock regeneration may retain the existing transitive pin. Replace
+`AFFECTED_PACKAGE` below with the advisory's package name and request its update
+explicitly in the existing reviewed build environment:
+
+```sh
+uv pip compile requirements-dev.in --generate-hashes --universal --python-version 3.14.2 --python .venv-ha/bin/python --no-build-isolation --output-file requirements-dev.txt --upgrade-package AFFECTED_PACKAGE
+```
+
+Review any direct or parent constraint that prevents selection of a fixed
+release; qualify that constraint change together with the lock. Preserve the
+documented interpreter, platform, hash and build-isolation requirements.
+Check the resulting affected-package versions against the advisory's affected
+and fixed ranges in every applicable Python/platform marker branch and every
+coupled lock or export. A successful resolver exit alone is not proof of a fix.
+If no compatible fixed resolution exists, keep the advisory open and document
+the blocker instead of marking it remediated.
+
+Preserve the `.venv-ha` interpreter and documented build-backend installation order. If the affected package is copied into `scripts/requirements-ci.txt`, refresh that source-owned subset from the reviewed development lock as well.
+
+Run the repository's complete existing dependency, runtime and CI qualification
+before merging the source constraints and generated files together. GitHub
+vulnerability alerts remain enabled for these manually maintained units.

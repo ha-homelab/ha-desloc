@@ -9,7 +9,8 @@
     "ci.yml",
     "validate.yml",
     "codeql.yml",
-    "dependency-review.yml"
+    "dependency-review.yml",
+    "documentation.yml"
   ],
   "artifact_pattern": "release-assets*",
   "local_checks": [
@@ -23,7 +24,9 @@
   "notes": [
     "The existing Home Assistant pytest suite, HACS and Hassfest validators remain required. These do not prove physical DESLOC lock behavior or cloud account acceptance.",
     "ha-desloc.zip preserves the published custom_components/desloc layout. Install this receipted asset manually to test the exact beta/RC overlay; existing HACS/source-archive installation retains committed base metadata.",
-    "The committed base is declared in version and synchronized with the integration manifest; the old v0.3.3b1 prerelease is preserved and does not qualify as a versioned RC. New beta/RC tags use the shared SemVer channel format."
+    "The committed base is declared in version and synchronized with the integration manifest; the old v0.3.3b1 prerelease is preserved and does not qualify as a versioned RC. New beta/RC tags use the shared SemVer channel format.",
+    "The configured release-note file remains a full-validation input so its current release section, upgrade notes and security notes are checked.",
+    "HACS information-file and image checks remain active for documentation-only pull requests."
   ],
   "versioning": {
     "schema": 1,
@@ -59,5 +62,19 @@
   },
   "fuzzing": {
     "toolkit_ref": "35ea6ef05730806bd85e27fdbbeed326ac5c3deb"
+  },
+  "change_scope": {
+    "documentation_paths": [
+      "GOVERNANCE.md",
+      "ROADMAP.md"
+    ],
+    "required_paths": [
+      "CHANGELOG.md"
+    ],
+    "always_validate_workflows": [
+      "codeql.yml",
+      "documentation.yml",
+      "validate.yml"
+    ]
   }
 }

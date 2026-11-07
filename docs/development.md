@@ -21,7 +21,7 @@ Changing saved credentials creates a separate session during reauthentication.
 
 ## Validation
 
-The CI source-warning check uses hash-locked Ruff 0.16.5 and checks all maintained
+The CI source-warning check uses hash-locked Ruff 0.17.4 and checks all maintained
 Python files, including tests and release helpers, with `--select F --ignore-noqa`.
 Pyflakes error and warning findings must be resolved before merging; the command
 exits nonzero for any finding and does not accept inline suppression comments.
@@ -84,11 +84,11 @@ The published Home Assistant 2026.10.4 package still requires Pillow 12.3.0.
 The source archive and complete dependency closure have SHA-256 hashes in
 [`requirements-dev.txt`](../requirements-dev.txt). The build backend is separately
 hash-locked in [`requirements-build.txt`](../requirements-build.txt). We explicitly
-use **setuptools 84.1.0 instead of the source snapshot's declared 84.0.0**, to fix
+use **setuptools 84.2.1 instead of the source snapshot's declared 84.0.0**, to fix
 [GHSA-xmj3-9gf7-h52w](https://github.com/advisories/GHSA-xmj3-9gf7-h52w).
 This is a build-only override, as permitted by
 [PEP 517](https://peps.python.org/pep-0517/#recommendations-for-build-frontends-non-normative),
-not a claim that 84.1.0 satisfies upstream's exact build pin. The official source
+not a claim that 84.2.1 satisfies upstream's exact build pin. The official source
 archive remains unchanged. Install the approved backend first, then use
 `--no-build-isolation` to prevent an implicit, unverified build dependency
 installation. All other dependencies must use binary wheels except

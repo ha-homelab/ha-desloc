@@ -32,7 +32,7 @@ jobs:
       pull-requests: read
       statuses: write
     # Replace this pin with the reviewed toolkit commit containing this workflow.
-    uses: victron-venus/venus-os-ci-toolkit/.github/workflows/review-policy-reusable.yml@f54201ae71e91d85514bb16ed1ffdf31b82b149f # main
+    uses: victron-venus/venus-os-ci-toolkit/.github/workflows/review-policy-reusable.yml@0047a13b5eb79dfa770e31070a83e9696ddd36d1 # main
     with:
       allow-coderabbit-rate-limit: true
       pull-request-number: ${{ inputs.pull-request-number || '' }}

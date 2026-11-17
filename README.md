@@ -283,6 +283,8 @@ works solely because it appears in HA.
 
 ## Documentation and contributions
 
+Docs index: [docs/README.md](docs/README.md).
+
 - [Model compatibility and community reports](docs/compatibility.md)
 - [Screenshots and setup walkthrough](docs/screenshots.md)
 - [Session capture and cleanup](docs/authentication.md)

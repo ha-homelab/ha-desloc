@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.4.4] - Unreleased
+
+### Changed
+
+- keep local instruction files out of git.
+- add a navigation index for docs/.
+- verify current default branch before reviewed merges (#126).
+- reevaluate reviewed dependency merges after CI (#125).
+- classify governance and roadmap changes as documentation (#123).
+- retain HACS documentation checks and release qualification (#122).
+- skip heavy validation for documentation-only changes (#121).
+- Document targeted security updates for manual dependency locks (#120).
+- Complete dependency update migration to Renovate (#119).
+- reconcile lost creation responses (#117).
+
+### Upgrade
+
+The integration already includes its brand icons. HACS 2.x uses a legacy remote image URL for its update entity; installing this release alone does not replace that URL. Follow [the branding guide](docs/branding.md) to apply the optional customization. Restart Home Assistant after updating the integration. Existing configuration, authentication, and entity identifiers are preserved.
+
+### Security
+
+The optional `/local/desloc/icon.png` URL serves only the public project icon without authentication. Keep credentials, diagnostics, and configuration backups out of `www`. Command logs omit identities, credentials, PINs, result IDs, and raw HTTP data. Session handling, TLS checks, and PIN handling are unchanged. No automatic command replay is introduced.
+
+Development and CI use Pillow 13 through a checksum-pinned, unmodified upstream Home Assistant source snapshot. The temporary test baseline is `2026.11.0.dev0`, with separately hash-locked build tooling and dependency compatibility checks. This removes the old Pillow test dependency without changing the integration package or an installed Home Assistant system.
+
+The test source build explicitly uses patched setuptools 84.1.0 instead of upstream's 84.0.0 build pin, addressing GHSA-xmj3-9gf7-h52w. The source archive and runtime dependency requirements remain unchanged.
+
 ## [0.4.3] - 2026-10-25
 
 ### Added

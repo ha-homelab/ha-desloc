@@ -1,5 +1,5 @@
 {
-  "source_sha256": "b3482d911841188a2584e7401a00ac8e32f176b5dd85ee89273cb4d4ce026fab",
+  "source_sha256": "9ee3361a0d556ca069e9060d8744ba7ec77dce73035e8af1c4af2d3edff0f062",
   "messages": {
     "m001": "DESLOC Wiki · Một nơi thuận tiện hơn cho khóa của bạn",
     "m002": "Chuyển đến nội dung",
@@ -237,7 +237,7 @@
     "m234": "Thẻ khóa",
     "m235": "Cộng đồng",
     "m236": "Giấy phép MIT",
-    "m237": "Độc lập với DESLOC, Home Assistant và HACS. Tên và nhãn hiệu thuộc về các chủ sở hữu tương ứng. Trang này không có phân tích, theo dõi, phông chữ từ xa hay kết nối trực tiếp đến thiết bị.",
+    "m237": "Độc lập với DESLOC, Home Assistant và HACS. Tên và nhãn hiệu thuộc về các chủ sở hữu tương ứng. Trang này không có theo dõi, phông chữ từ xa hay kết nối trực tiếp đến thiết bị. Lượt xem trang được đếm tổng hợp mà không dùng cookie.",
     "m238": "Phối màu: hệ thống. Chuyển sang sáng.",
     "m239": "Phối màu: sáng. Chuyển sang tối.",
     "m240": "Phối màu: tối. Chuyển theo hệ thống.",

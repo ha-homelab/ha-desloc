@@ -159,6 +159,10 @@ def check_site(root: Path) -> list[str]:
         for value, embedded in page.references:
             url = urlsplit(value)
             if embedded and (url.scheme or url.netloc):
+                # Cloudflare Web Analytics is the only approved remote embed:
+                # cookieless aggregate page views, disclosed on every page.
+                if url.netloc == "static.cloudflareinsights.com":
+                    continue
                 errors.append(f"{label}: remote/embedded asset is not allowed: {value}")
                 continue
             if url.scheme and url.scheme not in {"https", "mailto", "http"}:

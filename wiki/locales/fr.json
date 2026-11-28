@@ -1,5 +1,5 @@
 {
-  "source_sha256": "b3482d911841188a2584e7401a00ac8e32f176b5dd85ee89273cb4d4ce026fab",
+  "source_sha256": "9ee3361a0d556ca069e9060d8744ba7ec77dce73035e8af1c4af2d3edff0f062",
   "messages": {
     "m001": "Wiki DESLOC · Un meilleur foyer pour vos serrures",
     "m002": "Aller au contenu",
@@ -237,7 +237,7 @@
     "m234": "Carte de serrure",
     "m235": "Communauté",
     "m236": "Licence MIT",
-    "m237": "Indépendant de DESLOC, Home Assistant et HACS. Les noms et marques appartiennent à leurs propriétaires respectifs. Aucun outil d’analyse, suivi, police distante ou connexion à un appareil réel sur ce site.",
+    "m237": "Indépendant de DESLOC, Home Assistant et HACS. Les noms et marques appartiennent à leurs propriétaires respectifs. Aucun suivi, police distante ou connexion à un appareil réel sur ce site. Les pages vues sont comptées de façon agrégée, sans cookies.",
     "m238": "Thème : système. Passer au thème clair.",
     "m239": "Thème : clair. Passer au thème sombre.",
     "m240": "Thème : sombre. Utiliser la préférence du système.",

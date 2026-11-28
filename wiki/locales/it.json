@@ -1,5 +1,5 @@
 {
-  "source_sha256": "b3482d911841188a2584e7401a00ac8e32f176b5dd85ee89273cb4d4ce026fab",
+  "source_sha256": "9ee3361a0d556ca069e9060d8744ba7ec77dce73035e8af1c4af2d3edff0f062",
   "messages": {
     "m001": "Wiki DESLOC · Una casa migliore per le tue serrature",
     "m002": "Vai al contenuto",
@@ -237,7 +237,7 @@
     "m234": "Scheda serratura",
     "m235": "Comunità",
     "m236": "Licenza MIT",
-    "m237": "Indipendente da DESLOC, Home Assistant e HACS. Nomi e marchi appartengono ai rispettivi proprietari. Questo sito non usa analisi, tracciamento, caratteri remoti o connessioni a dispositivi reali.",
+    "m237": "Indipendente da DESLOC, Home Assistant e HACS. Nomi e marchi appartengono ai rispettivi proprietari. Questo sito non usa tracciamento, caratteri remoti o connessioni a dispositivi reali. Le visualizzazioni sono conteggiate in forma aggregata e senza cookie.",
     "m238": "Tema: sistema. Passa al chiaro.",
     "m239": "Tema: chiaro. Passa allo scuro.",
     "m240": "Tema: scuro. Usa la preferenza di sistema.",

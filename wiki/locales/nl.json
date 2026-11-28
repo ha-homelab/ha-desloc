@@ -1,5 +1,5 @@
 {
-  "source_sha256": "b3482d911841188a2584e7401a00ac8e32f176b5dd85ee89273cb4d4ce026fab",
+  "source_sha256": "9ee3361a0d556ca069e9060d8744ba7ec77dce73035e8af1c4af2d3edff0f062",
   "messages": {
     "m001": "DESLOC-wiki · Een beter thuis voor je sloten",
     "m002": "Naar de inhoud",
@@ -237,7 +237,7 @@
     "m234": "Slotkaart",
     "m235": "Gemeenschap",
     "m236": "MIT-licentie",
-    "m237": "Onafhankelijk van DESLOC, Home Assistant en HACS. Namen en handelsmerken behoren toe aan hun eigenaren. Deze site gebruikt geen analyses, tracking, externe lettertypen of liveverbindingen met apparaten.",
+    "m237": "Onafhankelijk van DESLOC, Home Assistant en HACS. Namen en handelsmerken behoren toe aan hun eigenaren. Deze site gebruikt geen tracking, externe lettertypen of liveverbindingen met apparaten. Paginaweergaven worden geaggregeerd en zonder cookies geteld.",
     "m238": "Kleurenschema: systeem. Naar licht schakelen.",
     "m239": "Kleurenschema: licht. Naar donker schakelen.",
     "m240": "Kleurenschema: donker. Systeemvoorkeur gebruiken.",

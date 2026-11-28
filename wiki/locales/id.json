@@ -1,5 +1,5 @@
 {
-  "source_sha256": "b3482d911841188a2584e7401a00ac8e32f176b5dd85ee89273cb4d4ce026fab",
+  "source_sha256": "9ee3361a0d556ca069e9060d8744ba7ec77dce73035e8af1c4af2d3edff0f062",
   "messages": {
     "m001": "DESLOC Wiki · Tempat yang lebih baik untuk kunci Anda",
     "m002": "Lewati ke konten",
@@ -237,7 +237,7 @@
     "m234": "Kartu Kunci",
     "m235": "Komunitas",
     "m236": "Lisensi MIT",
-    "m237": "Independen dari DESLOC, Home Assistant, dan HACS. Nama dan merek dagang milik pemilik masing-masing. Situs ini tidak memakai analitik, pelacakan, font jarak jauh, atau koneksi perangkat langsung.",
+    "m237": "Independen dari DESLOC, Home Assistant, dan HACS. Nama dan merek dagang milik pemilik masing-masing. Situs ini tidak memakai pelacakan, font jarak jauh, atau koneksi perangkat langsung. Tayangan halaman dihitung secara agregat tanpa cookie.",
     "m238": "Skema warna: sistem. Beralih ke terang.",
     "m239": "Skema warna: terang. Beralih ke gelap.",
     "m240": "Skema warna: gelap. Beralih ke preferensi sistem.",

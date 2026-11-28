@@ -1,5 +1,5 @@
 {
-  "source_sha256": "b3482d911841188a2584e7401a00ac8e32f176b5dd85ee89273cb4d4ce026fab",
+  "source_sha256": "9ee3361a0d556ca069e9060d8744ba7ec77dce73035e8af1c4af2d3edff0f062",
   "messages": {
     "m001": "Wiki DESLOC · Uma casa melhor para suas fechaduras",
     "m002": "Ir para o conteúdo",
@@ -237,7 +237,7 @@
     "m234": "Cartão de fechadura",
     "m235": "Comunidade",
     "m236": "Licença MIT",
-    "m237": "Independente de DESLOC, Home Assistant e HACS. Os nomes e as marcas pertencem a seus respectivos proprietários. Este site não usa análises, rastreamento, fontes remotas nem conexões com dispositivos reais.",
+    "m237": "Independente de DESLOC, Home Assistant e HACS. Os nomes e as marcas pertencem a seus respectivos proprietários. Este site não usa rastreamento, fontes remotas nem conexões com dispositivos reais. As visualizações são contadas de forma agregada e sem cookies.",
     "m238": "Tema: sistema. Mudar para claro.",
     "m239": "Tema: claro. Mudar para escuro.",
     "m240": "Tema: escuro. Usar a preferência do sistema.",

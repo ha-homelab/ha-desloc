@@ -1,5 +1,5 @@
 {
-  "source_sha256": "b3482d911841188a2584e7401a00ac8e32f176b5dd85ee89273cb4d4ce026fab",
+  "source_sha256": "9ee3361a0d556ca069e9060d8744ba7ec77dce73035e8af1c4af2d3edff0f062",
   "messages": {
     "m001": "DESLOC-Wiki · Ein besseres Zuhause für deine Schlösser",
     "m002": "Zum Inhalt springen",
@@ -237,7 +237,7 @@
     "m234": "Schlosskarte",
     "m235": "Community",
     "m236": "MIT-Lizenz",
-    "m237": "Unabhängig von DESLOC, Home Assistant und HACS. Namen und Marken gehören ihren jeweiligen Inhabern. Diese Website nutzt keine Analysen, kein Tracking, keine externen Schriften und keine Live-Verbindungen zu Geräten.",
+    "m237": "Unabhängig von DESLOC, Home Assistant und HACS. Namen und Marken gehören ihren jeweiligen Inhabern. Diese Website nutzt kein Tracking, keine externen Schriften und keine Live-Verbindungen zu Geräten. Seitenaufrufe werden aggregiert und ohne Cookies gezählt.",
     "m238": "Farbschema: System. Zu hell wechseln.",
     "m239": "Farbschema: hell. Zu dunkel wechseln.",
     "m240": "Farbschema: dunkel. Systemeinstellung verwenden.",

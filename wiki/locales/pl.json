@@ -1,5 +1,5 @@
 {
-  "source_sha256": "b3482d911841188a2584e7401a00ac8e32f176b5dd85ee89273cb4d4ce026fab",
+  "source_sha256": "9ee3361a0d556ca069e9060d8744ba7ec77dce73035e8af1c4af2d3edff0f062",
   "messages": {
     "m001": "Wiki DESLOC · Lepszy dom dla Twoich zamków",
     "m002": "Przejdź do treści",
@@ -237,7 +237,7 @@
     "m234": "Karta zamka",
     "m235": "Społeczność",
     "m236": "Licencja MIT",
-    "m237": "Projekt niezależny od DESLOC, Home Assistant i HACS. Nazwy i znaki towarowe należą do odpowiednich właścicieli. Ta witryna nie używa analityki, śledzenia, zdalnych fontów ani połączeń z rzeczywistymi urządzeniami.",
+    "m237": "Projekt niezależny od DESLOC, Home Assistant i HACS. Nazwy i znaki towarowe należą do odpowiednich właścicieli. Ta witryna nie używa śledzenia, zdalnych fontów ani połączeń z rzeczywistymi urządzeniami. Odsłony są liczone zbiorczo, bez plików cookie.",
     "m238": "Motyw: systemowy. Przełącz na jasny.",
     "m239": "Motyw: jasny. Przełącz na ciemny.",
     "m240": "Motyw: ciemny. Użyj ustawienia systemu.",

@@ -69,7 +69,9 @@ do not certify idiomatic language: native-speaker corrections are welcome.
 ## Design and content contracts
 
 - HTML, CSS and vanilla JavaScript only. No runtime package dependencies,
-  external fonts, analytics or remote embedded assets.
+  external fonts or remote embedded assets. The only third-party runtime
+  request is the cookieless Cloudflare Web Analytics beacon, which counts
+  aggregate page views without cookies or a cross-site identifier.
 - `style.css` owns theme tokens, content and layout. `elevate.css` adds optional
   decoration. Both themes need readable text and visible focus.
 - Keep existing section IDs stable. There is one anchor offset, implemented
